@@ -1,0 +1,2 @@
+"""Candle aggregation strategies."""
+
