@@ -1,5 +1,0 @@
-supabase
-python-dotenv
-pandas
-numpy
-MetaTrader5

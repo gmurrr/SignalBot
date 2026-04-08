@@ -1,0 +1,78 @@
+from dataclasses import dataclass
+import os
+from pathlib import Path
+
+from dotenv import load_dotenv
+
+
+BASE_DIR = Path(__file__).resolve().parents[2]
+load_dotenv(BASE_DIR / ".env")
+
+
+@dataclass(frozen=True)
+class Settings:
+    supabase_url: str
+    supabase_service_role_key: str
+    app_mode: str
+    mt5_symbol: str
+    mt5_login: str | None
+    mt5_password: str | None
+    mt5_server: str | None
+    mt5_tick_poll_interval_sec: float
+    market_data_throttle_sec: float
+    backtest_csv_path: str
+    market_data_table: str
+    signals_table: str
+    signal_window_size: int
+    signal_expiry_minutes: int
+    signal_tp_atr_multiplier: float
+    signal_sl_atr_multiplier: float
+    pip_size: float
+    price_decimals: int
+    seed_candle_count: int
+    log_level: str
+
+
+def _required_env(name: str) -> str:
+    value = os.getenv(name, "").strip()
+    if not value:
+        raise ValueError(f"Missing required environment variable: {name}")
+    return value
+
+
+def _optional_env(name: str) -> str | None:
+    value = os.getenv(name, "").strip()
+    return value if value else None
+
+
+def load_settings() -> Settings:
+    app_mode = os.getenv("APP_MODE", "PROD").strip().upper()
+    if app_mode not in {"PROD", "BACKTEST"}:
+        raise ValueError("APP_MODE must be either PROD or BACKTEST")
+
+    return Settings(
+        supabase_url=_required_env("SUPABASE_URL"),
+        supabase_service_role_key=(
+            _required_env("SUPABASE_SERVICE_ROLE_KEY")
+            if app_mode == "PROD"
+            else os.getenv("SUPABASE_SERVICE_ROLE_KEY", "backtest-mode").strip()
+        ),
+        app_mode=app_mode,
+        mt5_symbol=os.getenv("MT5_SYMBOL", "XAUUSD").strip(),
+        mt5_login=_optional_env("MT5_LOGIN"),
+        mt5_password=_optional_env("MT5_PASSWORD"),
+        mt5_server=_optional_env("MT5_SERVER"),
+        mt5_tick_poll_interval_sec=float(os.getenv("MT5_TICK_POLL_INTERVAL_SEC", "0.2")),
+        market_data_throttle_sec=float(os.getenv("MARKET_DATA_THROTTLE_SEC", "1.0")),
+        backtest_csv_path=os.getenv("BACKTEST_CSV_PATH", "backtest_results.csv").strip(),
+        market_data_table=os.getenv("MARKET_DATA_TABLE", "market_data").strip(),
+        signals_table=os.getenv("SIGNALS_TABLE", "signals").strip(),
+        signal_window_size=int(os.getenv("SIGNAL_WINDOW_SIZE", "360")),
+        signal_expiry_minutes=int(os.getenv("SIGNAL_EXPIRY_MINUTES", "30")),
+        signal_tp_atr_multiplier=float(os.getenv("SIGNAL_TP_ATR_MULTIPLIER", "1.8")),
+        signal_sl_atr_multiplier=float(os.getenv("SIGNAL_SL_ATR_MULTIPLIER", "1.1")),
+        pip_size=float(os.getenv("PIP_SIZE", "0.01")),
+        price_decimals=int(os.getenv("PRICE_DECIMALS", "2")),
+        seed_candle_count=int(os.getenv("SEED_CANDLE_COUNT", "400")),
+        log_level=os.getenv("LOG_LEVEL", "INFO").strip().upper(),
+    )

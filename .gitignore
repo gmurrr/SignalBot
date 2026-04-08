@@ -5,3 +5,9 @@ __pycache__/
 .env
 logs/
 *.csv
+backend/.env
+backend/logs/
+frontend/.env
+frontend/.env.local
+frontend/.next/
+frontend/node_modules/

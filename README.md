@@ -1,122 +1,163 @@
-# SignalBot Backend (Python)
+# SignalBot Monorepo
 
-Backend bota sygnałowego, który:
-- łączy się z lokalnym terminalem MetaTrader5,
-- pobiera dane M1 oraz stale aktualizuje świecę M1 na podstawie ticków w RAM,
-- zapisuje cenę do Supabase (`market_data`) z throttlingiem (max 1 upsert/s),
-- wylicza sygnały lokalnie (RAM) i zapisuje je do Supabase (`signals`) jako nowe rekordy,
-- działa stabilnie na VPS dzięki logowaniu do `logs/bot.log`.
+Profesjonalna platforma sygnałowa XAU/USD z architekturą:
 
-## Struktura projektu
+- `backend/` - Python + MetaTrader5 + `supabase-py`
+- `frontend/` - Next.js App Router + Tailwind CSS + Framer Motion + komponenty w stylu shadcn/ui
+- `supabase/` - współdzielony schemat SQL dla `market_data` i `signals`
+
+## Struktura
 
 ```text
 SignalBot/
-  src/
-    clients/
-      supabase_client.py
-      mt5_client.py
-    config/
-      settings.py
-    data/
-      aggregators/
-        candle_aggregator.py
-    models/
-      tick.py
-    services/
-      bot_runner.py
-    strategy/
-      signal_engine.py
-    utils/
-      logger.py
-    main.py
-  .env.example
-  requirements.txt
+  backend/
+    .env.example
+    requirements.txt
+    src/
+      clients/
+      config/
+      data/
+      models/
+      services/
+      strategy/
+      utils/
+      main.py
+  frontend/
+    .env.example
+    app/
+    components/
+    lib/
+    types/
+    package.json
+  supabase/
+    schema.sql
   README.md
 ```
 
-## Wymagania
+## Co zmieniło się w architekturze
 
-- Python 3.10+
-- Działający terminal MetaTrader5 na tym samym systemie
-- Projekt Supabase z tabelami:
-  - `market_data`
-  - `signals`
+- Backend działa jako silnik sygnałów i monitor pozycji.
+- Frontend tylko odczytuje dane przez klucz `anon`.
+- Supabase jest warstwą synchronizacji i realtime pomiędzy obiema częściami.
+- Tabela `signals` przechowuje pełny stan pozycji: `ACTIVE`, `CLOSED`, `EXPIRED`.
+- Bot utrzymuje rolling windows w RAM dla `S10`, `M1` i `M5`.
 
-## Konfiguracja `.env`
+## Backend
+
+### Odpowiedzialność
+
+- pobieranie ticków z MetaTrader5,
+- agregacja świec `S10`, `M1`, `M5` w pamięci,
+- generowanie nowych sygnałów XAU/USD,
+- zapis nowych sygnałów do Supabase ze statusem `ACTIVE`,
+- monitorowanie aktywnej pozycji do TP, SL albo wygaśnięcia po `30` minutach,
+- aktualizacja statusu rekordu na `CLOSED` lub `EXPIRED`.
+
+### Konfiguracja
 
 1. Skopiuj:
-   - `.env.example` -> `.env`
-2. Uzupełnij wartości:
+   - `backend/.env.example` -> `backend/.env`
+2. Uzupełnij:
    - `SUPABASE_URL`
-   - `SUPABASE_KEY`
-   - `APP_MODE` (`PROD` lub `BACKTEST`)
-   - `MT5_SYMBOL` (domyślnie `XAUUSD`)
-   - opcjonalnie: `MT5_LOGIN`, `MT5_PASSWORD`, `MT5_SERVER` (jeśli broker wymaga loginu)
-   - `MT5_TICK_POLL_INTERVAL_SEC`
-   - `MARKET_DATA_THROTTLE_SEC`
-   - `BACKTEST_CSV_PATH`
+   - `SUPABASE_SERVICE_ROLE_KEY`
+   - dane MT5
 
-## Schemat bazy (Supabase)
+Najważniejsze zmienne:
+
+- `SIGNAL_EXPIRY_MINUTES=30`
+- `SIGNAL_TP_ATR_MULTIPLIER=1.8`
+- `SIGNAL_SL_ATR_MULTIPLIER=1.1`
+- `PIP_SIZE=0.01`
+
+### Instalacja i start
+
+```bash
+cd backend
+python -m venv .venv
+.venv\Scripts\activate
+pip install -r requirements.txt
+python -m src.main
+```
+
+### Backtest
+
+```bash
+cd backend
+python -m src.main
+```
+
+Ustaw wcześniej `APP_MODE=BACKTEST` w `backend/.env`.
+
+## Frontend
+
+### Odpowiedzialność
+
+- landing page w stylu Dark Premium Classic,
+- dashboard z live tickerem i historią sygnałów,
+- realtime subskrypcje Supabase dla `signals` i `market_data`,
+- animacje wejścia, glow aktywnego sygnału i przejścia do historii,
+- gotowe ekrany auth z miejscem pod EasyCart,
+- osadzony widget TradingView dla XAU/USD.
+
+### Konfiguracja
+
+1. Skopiuj:
+   - `frontend/.env.example` -> `frontend/.env.local`
+2. Uzupełnij:
+   - `NEXT_PUBLIC_SUPABASE_URL`
+   - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+
+### Instalacja i start
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+Domyślnie dashboard będzie dostępny pod:
+
+- `http://localhost:3000/dashboard`
+
+## Supabase
 
 Plik schematu:
+
 - `supabase/schema.sql`
 
-Jak uruchomić:
+Skrypt tworzy:
+
+- `market_data` z upsertem po `symbol`,
+- `signals` z polami pozycji i statusami `ACTIVE/CLOSED/EXPIRED`,
+- indeksy pod szybkie odczyty,
+- polityki RLS tylko do odczytu dla frontendu,
+- wpisy do `supabase_realtime` dla obu tabel.
+
+### Jak wdrożyć schemat
+
 1. Otwórz Supabase SQL Editor.
 2. Wklej zawartość `supabase/schema.sql`.
 3. Uruchom skrypt.
 
-Skrypt tworzy:
-- `market_data` (z `upsert` po `symbol`, bez tworzenia wiersza dla każdego ticka),
-- `signals` (sygnały + snapshot wskaźników i metadata),
-- indeksy pod szybkie odczyty.
+## Realtime flow
 
-Jeśli korzystasz z istniejącej bazy utworzonej pod poprzedni schemat (np. unikalność po `(symbol, tick_time)`), musisz wykonać migrację/odświeżenie tabel, aby `on_conflict="symbol"` działał poprawnie.
+1. Backend zapisuje tick do `market_data` maksymalnie raz na sekundę.
+2. Backend zapisuje nowy rekord w `signals` jako `ACTIVE`.
+3. Frontend subskrybuje zmiany w `signals` i `market_data`.
+4. Gdy TP, SL lub timeout zamkną pozycję, backend robi `UPDATE`.
+5. Frontend natychmiast zmienia kartę sygnału i przenosi ją do historii.
 
-## Instalacja
+## Design system
 
-```bash
-python -m venv venv
-venv\Scripts\activate
-pip install -r requirements.txt
-```
+- Tło: `#050505`
+- Akcent: mosiężne złoto `#D4AF37`
+- Nagłówki: font szeryfowy
+- Dane: `Inter`
+- Ruch: Framer Motion, reveal-on-scroll, glow aktywnych sygnałów
 
-## Uruchomienie
+## Uwagi
 
-```bash
-python -m src.main
-```
-
-## Co robi bot w runtime
-
-1. `APP_MODE=PROD`: startuje MT5 i pobiera ostatnie `200` świec M1 dla `MT5_SYMBOL`.
-2. Inicjalizuje engine sygnałów w RAM i zaczyna pętlę pollingową ticków (`mt5.symbol_info_tick`).
-3. `market_data`: aktualizuje Supabase maksymalnie raz na sekundę (throttling) przez `.upsert()` na kluczu `symbol`.
-4. `signals`: przy zamknięciu kolejnej świecy M1 oblicza sygnał lokalnie w Pythonie i zapisuje nowy rekord przez `.insert()`.
-5. Logi trafiają do:
-   - konsoli,
-   - `logs/bot.log` (rotacja pliku).
-
-1. `APP_MODE=BACKTEST`: MT5 jest tylko źródłem historii M1, ale nie ma żadnych zapisów do Supabase.
-2. Sygnały + prosty wynik (P/L na następnym candle) są zapisywane do CSV (`BACKTEST_CSV_PATH`) i podsumowane w logach.
-
-## Rozszerzanie projektu
-
-- Nowe wskaźniki/interwały:
-  - rozbuduj `src/strategy/signal_engine.py`.
-- Zmiany struktury danych:
-  - dodawaj kolumny przez nowe migracje SQL (np. `supabase/migrations/*.sql`),
-  - dla szybkich iteracji używaj pól `extra`, `indicator_snapshot`, `metadata` (`jsonb`),
-  - wersjonuj strategię przez `strategy_version`.
-- Inne instrumenty:
-  - ustaw `MT5_SYMBOL` w `.env`.
-- Frontend:
-  - możesz dodać osobny katalog np. `frontend/` i korzystać z tych samych tabel Supabase.
-
-## Uwagi produkcyjne (VPS)
-
-- Użyj menedżera procesów (np. `systemd`, `supervisor`, `pm2`) do auto restartu.
-- Regularnie sprawdzaj `logs/signalbot.log`.
-- Regularnie sprawdzaj `logs/bot.log`.
-- W Supabase ustaw klucz unikalny dla `market_data`:
-  - rekomendacja: unikalny `symbol` (żeby `upsert(on_conflict="symbol")` działał).
+- Frontend korzysta z klucza `anon`, więc nie ma uprawnień do zapisu.
+- Backend powinien korzystać z `service_role`, ponieważ wykonuje `insert` i `update`.
+- Widget TradingView ładuje skrypt zewnętrzny po stronie przeglądarki.
+- Jeżeli w bazie istnieje stary schemat `signals`, przed wdrożeniem nowego SQL warto wykonać migrację albo odświeżenie tabel.

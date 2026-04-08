@@ -1,0 +1,82 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at top, rgba(212, 175, 55, 0.12), transparent 24%),
+    linear-gradient(180deg, #0a0a0a 0%, #050505 38%, #030303 100%);
+  color: #f6f1e1;
+}
+
+body::before {
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+  background-size: 64px 64px;
+  content: "";
+  mask-image: radial-gradient(circle at center, black, transparent 88%);
+  pointer-events: none;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.gold-glow {
+  box-shadow:
+    0 0 0 1px rgba(212, 175, 55, 0.12),
+    0 0 40px rgba(212, 175, 55, 0.22),
+    0 24px 80px rgba(0, 0, 0, 0.35);
+}
+
+.signal-glow {
+  animation: signalGlow 2.8s ease-in-out infinite;
+}
+
+.status-dot {
+  animation: blinkLive 1.6s ease-in-out infinite;
+}
+
+@keyframes signalGlow {
+  0%, 100% {
+    box-shadow:
+      0 0 0 1px rgba(212, 175, 55, 0.14),
+      0 0 24px rgba(212, 175, 55, 0.12),
+      0 16px 48px rgba(0, 0, 0, 0.36);
+  }
+  50% {
+    box-shadow:
+      0 0 0 1px rgba(212, 175, 55, 0.24),
+      0 0 56px rgba(212, 175, 55, 0.22),
+      0 22px 60px rgba(0, 0, 0, 0.42);
+  }
+}
+
+@keyframes blinkLive {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.45;
+    transform: scale(0.92);
+  }
+}
