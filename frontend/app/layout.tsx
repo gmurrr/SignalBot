@@ -15,13 +15,13 @@ const cormorant = Cormorant_Garamond({
 });
 
 export const metadata: Metadata = {
-  title: "SignalBot XAU/USD",
-  description: "Premium signal platform for gold traders powered by MT5, Supabase and Next.js."
+  title: "Zeta Signals | Precyzyjne Sygnały XAU/USD",
+  description: "Luksusowa platforma sygnałowa XAU/USD z realtime danymi rynkowymi i algorytmiczną kontrolą ryzyka."
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="pl">
       <body className={`${inter.variable} ${cormorant.variable} bg-background font-sans text-foreground antialiased [font-family:var(--font-inter)]`}>
         {children}
       </body>

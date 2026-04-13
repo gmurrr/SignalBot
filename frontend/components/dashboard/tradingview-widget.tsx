@@ -20,12 +20,12 @@ export function TradingViewWidget() {
     script.async = true;
     script.innerHTML = JSON.stringify({
       autosize: true,
-      symbol: "OANDA:XAUUSD",
+      symbol: "TVC:GOLD",
       interval: "15",
       timezone: "Europe/Warsaw",
       theme: "dark",
       style: "1",
-      locale: "en",
+      locale: "pl",
       withdateranges: true,
       allow_symbol_change: false,
       calendar: false,
@@ -38,9 +38,9 @@ export function TradingViewWidget() {
   }, [containerId]);
 
   return (
-    <Card className="h-[560px] overflow-hidden">
+    <Card className="h-[560px] overflow-hidden border-[#1A1A1A]">
       <CardHeader>
-        <CardTitle className="font-[family-name:var(--font-cormorant)] text-3xl">XAU/USD Market Structure</CardTitle>
+        <CardTitle className="font-[family-name:var(--font-cormorant)] text-3xl">Struktura rynku XAU/USD</CardTitle>
       </CardHeader>
       <CardContent className="h-[470px]">
         <div className="tradingview-widget-container h-full">

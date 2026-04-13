@@ -23,6 +23,11 @@ body {
   color: #f6f1e1;
 }
 
+::selection {
+  background: rgba(212, 175, 55, 0.28);
+  color: #f6f1e1;
+}
+
 body::before {
   position: fixed;
   inset: 0;
@@ -53,6 +58,10 @@ a {
 
 .status-dot {
   animation: blinkLive 1.6s ease-in-out infinite;
+}
+
+.page-shell {
+  min-height: 100vh;
 }
 
 @keyframes signalGlow {

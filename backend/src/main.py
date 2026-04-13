@@ -13,4 +13,8 @@ async def run_bot() -> None:
 
 
 if __name__ == "__main__":
-    asyncio.run(run_bot())
+    try:
+        asyncio.run(run_bot())
+    except KeyboardInterrupt:
+        logger = setup_logger("INFO")
+        logger.info("SignalBot stopped by user.")

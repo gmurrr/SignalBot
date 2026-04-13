@@ -3,12 +3,12 @@ import { AuthShell } from "@/components/auth/auth-shell";
 export default function SignUpPage() {
   return (
     <AuthShell
-      title="Private Access Request"
-      subtitle="This registration screen is prepared for your premium onboarding flow, including billing confirmation and gated invite handling."
-      cta="Create Access Request"
-      footerLabel="Already onboarded?"
+      title="Zgłoszenie dostępu premium"
+      subtitle="Ekran rejestracji jest przygotowany pod płatny onboarding, potwierdzenie zakupu oraz obsługę zaproszeń do Zeta Signals."
+      cta="Utwórz zgłoszenie"
+      footerLabel="Masz już dostęp?"
       footerHref="/auth/sign-in"
-      footerText="Sign in"
+      footerText="Zaloguj się"
     />
   );
 }

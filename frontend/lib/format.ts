@@ -20,11 +20,11 @@ export function formatSignedPips(value?: number | null) {
 
 export function formatRelativeTimestamp(timestamp?: string | null) {
   if (!timestamp) {
-    return "Waiting";
+    return "Oczekiwanie";
   }
 
   const date = new Date(timestamp);
-  return new Intl.DateTimeFormat("en-GB", {
+  return new Intl.DateTimeFormat("pl-PL", {
     hour: "2-digit",
     minute: "2-digit",
     second: "2-digit",

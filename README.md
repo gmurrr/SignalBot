@@ -1,12 +1,12 @@
 # SignalBot Monorepo
 
-Profesjonalna platforma sygnałowa XAU/USD z architekturą:
+Professional XAU/USD signal platform built as a monorepo:
 
 - `backend/` - Python + MetaTrader5 + `supabase-py`
-- `frontend/` - Next.js App Router + Tailwind CSS + Framer Motion + komponenty w stylu shadcn/ui
-- `supabase/` - współdzielony schemat SQL dla `market_data` i `signals`
+- `frontend/` - Next.js App Router + Tailwind CSS + Framer Motion
+- `supabase/` - shared database schema and realtime contract
 
-## Struktura
+## Structure
 
 ```text
 SignalBot/
@@ -34,42 +34,23 @@ SignalBot/
   README.md
 ```
 
-## Co zmieniło się w architekturze
+## Runtime Flow
 
-- Backend działa jako silnik sygnałów i monitor pozycji.
-- Frontend tylko odczytuje dane przez klucz `anon`.
-- Supabase jest warstwą synchronizacji i realtime pomiędzy obiema częściami.
-- Tabela `signals` przechowuje pełny stan pozycji: `ACTIVE`, `CLOSED`, `EXPIRED`.
-- Bot utrzymuje rolling windows w RAM dla `S10`, `M1` i `M5`.
+1. MT5 streams XAU/USD and DXY prices into the Python process.
+2. Backend keeps rolling market windows in RAM and evaluates AlphaNode V2.
+3. Backend writes market snapshots and signal state to Supabase.
+4. Frontend listens with Supabase Realtime and updates the dashboard instantly.
 
-## Backend
+## Backend Quick Start
 
-### Odpowiedzialność
-
-- pobieranie ticków z MetaTrader5,
-- agregacja świec `S10`, `M1`, `M5` w pamięci,
-- generowanie nowych sygnałów XAU/USD,
-- zapis nowych sygnałów do Supabase ze statusem `ACTIVE`,
-- monitorowanie aktywnej pozycji do TP, SL albo wygaśnięcia po `30` minutach,
-- aktualizacja statusu rekordu na `CLOSED` lub `EXPIRED`.
-
-### Konfiguracja
-
-1. Skopiuj:
-   - `backend/.env.example` -> `backend/.env`
-2. Uzupełnij:
+1. Copy `backend/.env.example` to `backend/.env`
+2. Fill:
    - `SUPABASE_URL`
    - `SUPABASE_SERVICE_ROLE_KEY`
-   - dane MT5
-
-Najważniejsze zmienne:
-
-- `SIGNAL_EXPIRY_MINUTES=30`
-- `SIGNAL_TP_ATR_MULTIPLIER=1.8`
-- `SIGNAL_SL_ATR_MULTIPLIER=1.1`
-- `PIP_SIZE=0.01`
-
-### Instalacja i start
+   - `MT5_SYMBOL`
+   - `DXY_SYMBOL`
+   - optional MT5 login fields
+3. Run:
 
 ```bash
 cd backend
@@ -79,35 +60,21 @@ pip install -r requirements.txt
 python -m src.main
 ```
 
-### Backtest
+### Important backend variables
 
-```bash
-cd backend
-python -m src.main
-```
+- `SEED_CANDLE_COUNT` - M1 history used to derive M5 execution windows
+- `H1_SEED_CANDLE_COUNT` - XAU H1 bias history
+- `DXY_SEED_H1_COUNT` - DXY H1 bias history
+- `SIGNAL_EXPIRY_MINUTES` - hard timeout for stale trades
+- `TRADING_TIMEZONE` - local session clock, default `Europe/Warsaw`
 
-Ustaw wcześniej `APP_MODE=BACKTEST` w `backend/.env`.
+## Frontend Quick Start
 
-## Frontend
-
-### Odpowiedzialność
-
-- landing page w stylu Dark Premium Classic,
-- dashboard z live tickerem i historią sygnałów,
-- realtime subskrypcje Supabase dla `signals` i `market_data`,
-- animacje wejścia, glow aktywnego sygnału i przejścia do historii,
-- gotowe ekrany auth z miejscem pod EasyCart,
-- osadzony widget TradingView dla XAU/USD.
-
-### Konfiguracja
-
-1. Skopiuj:
-   - `frontend/.env.example` -> `frontend/.env.local`
-2. Uzupełnij:
+1. Copy `frontend/.env.example` to `frontend/.env.local`
+2. Fill:
    - `NEXT_PUBLIC_SUPABASE_URL`
    - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
-
-### Instalacja i start
+3. Run:
 
 ```bash
 cd frontend
@@ -115,49 +82,152 @@ npm install
 npm run dev
 ```
 
-Domyślnie dashboard będzie dostępny pod:
+Dashboard:
 
 - `http://localhost:3000/dashboard`
 
-## Supabase
+## Supabase Setup
 
-Plik schematu:
+Apply [supabase/schema.sql](C:\Users\gmdam\Documents\GitHub\SignalBot\supabase\schema.sql) in Supabase SQL Editor.
 
-- `supabase/schema.sql`
+The schema provides:
 
-Skrypt tworzy:
+- `market_data` with one live row per symbol
+- `signals` with lifecycle states and AlphaNode V2 context fields
+- public read policies for frontend consumption
+- realtime publication for both tables
 
-- `market_data` z upsertem po `symbol`,
-- `signals` z polami pozycji i statusami `ACTIVE/CLOSED/EXPIRED`,
-- indeksy pod szybkie odczyty,
-- polityki RLS tylko do odczytu dla frontendu,
-- wpisy do `supabase_realtime` dla obu tabel.
+## AlphaNode V2 Strategy Handbook
 
-### Jak wdrożyć schemat
+AlphaNode V2 replaces the older indicator-score approach with a hierarchy based on market structure, environment filters and liquidity behavior.
 
-1. Otwórz Supabase SQL Editor.
-2. Wklej zawartość `supabase/schema.sql`.
-3. Uruchom skrypt.
+### Decision Hierarchy
 
-## Realtime flow
+```mermaid
+flowchart TD
+    A["Time-Block Filter"] --> B["DXY Correlation Filter"]
+    B --> C["H1 Bias: EMA200 + Ichimoku Kumo"]
+    C --> D["H1 Liquidity Sweep"]
+    D --> E["M5 Trigger: FVG or Engulfing + RSI Reversal"]
+    E --> F["Risk Engine: SL under sweep, TP1 1:1.5, TP2 next H1 liquidity"]
+```
 
-1. Backend zapisuje tick do `market_data` maksymalnie raz na sekundę.
-2. Backend zapisuje nowy rekord w `signals` jako `ACTIVE`.
-3. Frontend subskrybuje zmiany w `signals` i `market_data`.
-4. Gdy TP, SL lub timeout zamkną pozycję, backend robi `UPDATE`.
-5. Frontend natychmiast zmienia kartę sygnału i przenosi ją do historii.
+Why this order matters:
 
-## Design system
+- If session liquidity is poor, execution is disabled before technical signals are considered.
+- If DXY is hostile for gold longs, the engine blocks long setups even when XAU looks attractive on local indicators.
+- Only after environment conditions are valid does the engine look for liquidity events and M5 triggers.
 
-- Tło: `#050505`
-- Akcent: mosiężne złoto `#D4AF37`
-- Nagłówki: font szeryfowy
-- Dane: `Inter`
-- Ruch: Framer Motion, reveal-on-scroll, glow aktywnych sygnałów
+### H1 Bias / M5 Execution Architecture
 
-## Uwagi
+Layer 1: H1 Directional Bias
 
-- Frontend korzysta z klucza `anon`, więc nie ma uprawnień do zapisu.
-- Backend powinien korzystać z `service_role`, ponieważ wykonuje `insert` i `update`.
-- Widget TradingView ładuje skrypt zewnętrzny po stronie przeglądarki.
-- Jeżeli w bazie istnieje stary schemat `signals`, przed wdrożeniem nowego SQL warto wykonać migrację albo odświeżenie tabel.
+- XAU H1 price is evaluated against EMA 200.
+- XAU H1 price must also be positioned above or below the Ichimoku cloud.
+- DXY H1 is evaluated independently and can block long gold setups.
+- Session windows:
+  - `LONDON_OPEN`: 09:00 - 12:00 local trading time
+  - `NY_OPEN_OVERLAP`: 14:30 - 18:30 local trading time
+  - Outside these windows the engine stays in `MONITORING`
+
+Layer 2: Liquidity Sweep
+
+- The engine scans the last 24 H1 candles for swing highs and swing lows.
+- A long setup requires a sweep below the tracked H1 swing low and a reclaim above that level within 3 M5 candles.
+- A short setup mirrors the same logic above H1 swing highs.
+
+Layer 3: M5 Execution Trigger
+
+- After liquidity is cleared, the engine waits for:
+  - bullish or bearish Fair Value Gap
+  - or bullish / bearish engulfing
+  - plus RSI reversal from exhaustion
+- Stop loss is anchored beyond the candle that performed the sweep.
+- TP1 is fixed at 1:1.5 RR.
+- TP2 is the next H1 liquidity pool and is stored in metadata.
+
+### Psychology of the System
+
+AlphaNode V2 follows the Smart Money Concepts idea that the cleanest move often comes after the market first runs liquidity.
+
+Why the system waits for the sweep:
+
+- Retail traders often place stops around obvious highs and lows.
+- Stronger players can push price through those levels to collect liquidity.
+- Entering before that event often means buying directly into the trap.
+- By waiting for the sweep and then a reclaim, the system looks for confirmation that the manipulation has already happened.
+
+In practice this means AlphaNode V2 prefers:
+
+- patience over frequency
+- execution after displacement, not before
+- structural confirmation over raw indicator crossover events
+
+### Technical Stack
+
+- Python process:
+  - receives live MT5 ticks
+  - maintains M1, M5, H1 and DXY H1 rolling windows in RAM
+  - computes bias, sweep state, trigger and risk parameters
+- MT5:
+  - provides XAU/USD and DXY market data
+  - remains the low-latency source of truth for live prices
+- Supabase:
+  - stores `market_data` snapshots and `signals`
+  - distributes updates to the frontend through Realtime
+
+## Data Contract
+
+### `signals`
+
+Core columns:
+
+- `id`
+- `symbol`
+- `type`
+- `entry_price`
+- `tp`
+- `sl`
+- `status`
+- `timestamp`
+- `expires_at`
+
+AlphaNode V2 fields:
+
+- `dxy_bias`
+- `session_name`
+- `liquidity_cleared`
+- `indicator_snapshot`
+- `metadata`
+
+### `market_data`
+
+Each row contains a single live snapshot per symbol.
+
+For XAU the `extra` field now carries:
+
+- `market_health_score`
+- `market_health_components`
+- `bias_side`
+- `trend_state`
+- `session_name`
+- `execution_mode`
+- `dxy_bias`
+- `liquidity_cleared`
+- `reference_liquidity`
+
+For DXY the `extra` field carries:
+
+- `dxy_bias`
+- `ema200`
+- `ema_slope`
+- `market_health_score`
+
+This allows the frontend to build a Market Health Score panel without recomputing backend logic in the browser.
+
+## Notes
+
+- Frontend reads data with the public anon key only.
+- Backend writes with the Supabase service role key.
+- If your broker uses a different DXY symbol name, override `DXY_SYMBOL` in `backend/.env`.
+- TradingView widget is client-side and loads an external script in the frontend.

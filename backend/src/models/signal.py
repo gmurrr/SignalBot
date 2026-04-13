@@ -20,6 +20,9 @@ class SignalPosition:
     timeframe: str
     strategy_version: str
     reason: str
+    dxy_bias: str
+    session_name: str
+    liquidity_cleared: bool
     indicator_snapshot: dict[str, Any] = field(default_factory=dict)
     metadata: dict[str, Any] = field(default_factory=dict)
     exit_price: float | None = None
@@ -45,6 +48,9 @@ class SignalPosition:
             "timeframe": self.timeframe,
             "strategy_version": self.strategy_version,
             "reason": self.reason,
+            "dxy_bias": self.dxy_bias,
+            "session_name": self.session_name,
+            "liquidity_cleared": self.liquidity_cleared,
             "indicator_snapshot": self.indicator_snapshot,
             "metadata": self.metadata,
         }
@@ -65,6 +71,9 @@ class SignalPosition:
             timeframe=str(record.get("timeframe") or "M1"),
             strategy_version=str(record.get("strategy_version") or "smart-signals-v2"),
             reason=str(record.get("reason") or "signal_generated"),
+            dxy_bias=str(record.get("dxy_bias") or "NEUTRAL"),
+            session_name=str(record.get("session_name") or "MONITORING"),
+            liquidity_cleared=bool(record.get("liquidity_cleared") or False),
             indicator_snapshot=dict(record.get("indicator_snapshot") or {}),
             metadata=dict(record.get("metadata") or {}),
             exit_price=float(record["exit_price"]) if record.get("exit_price") is not None else None,

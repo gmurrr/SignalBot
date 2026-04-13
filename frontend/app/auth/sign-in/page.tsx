@@ -3,12 +3,12 @@ import { AuthShell } from "@/components/auth/auth-shell";
 export default function SignInPage() {
   return (
     <AuthShell
-      title="Desk Sign In"
-      subtitle="Secure access to the private XAU/USD dashboard with room for EasyCart-based entitlement checks."
-      cta="Enter Dashboard"
-      footerLabel="Need a new account?"
+      title="Logowanie / Rejestracja"
+      subtitle="Bezpieczny dostęp do prywatnego panelu Zeta Signals dla XAU/USD, z miejscem na przyszłą walidację uprawnień przez EasyCart."
+      cta="Wejdź do panelu"
+      footerLabel="Nie masz jeszcze konta?"
       footerHref="/auth/sign-up"
-      footerText="Request access"
+      footerText="Poproś o dostęp"
     />
   );
 }

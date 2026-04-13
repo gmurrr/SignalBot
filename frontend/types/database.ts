@@ -10,6 +10,7 @@ export interface MarketDataRow {
   mid: number;
   source: string;
   timeframe: string;
+  extra: Record<string, unknown>;
   updated_at: string;
 }
 
@@ -31,8 +32,11 @@ export interface SignalRow {
   timeframe: string;
   strategy_version: string;
   reason: string;
+  dxy_bias: string;
+  session_name: string;
+  liquidity_cleared: boolean;
   indicator_snapshot: Record<string, number | string | null>;
-  metadata: Record<string, number | string | null>;
+  metadata: Record<string, number | string | boolean | null>;
 }
 
 export interface Database {

@@ -39,10 +39,22 @@ create table if not exists public.signals (
     timeframe text not null default 'M1',
     strategy_version text not null default 'smart-signals-v2',
     reason text not null default 'signal_generated',
+    dxy_bias text not null default 'NEUTRAL_DXY',
+    session_name text not null default 'MONITORING',
+    liquidity_cleared boolean not null default false,
     indicator_snapshot jsonb not null default '{}'::jsonb,
     metadata jsonb not null default '{}'::jsonb,
     updated_at timestamptz not null default now()
 );
+
+alter table public.signals
+    add column if not exists dxy_bias text not null default 'NEUTRAL_DXY';
+
+alter table public.signals
+    add column if not exists session_name text not null default 'MONITORING';
+
+alter table public.signals
+    add column if not exists liquidity_cleared boolean not null default false;
 
 create index if not exists signals_symbol_timestamp_idx
     on public.signals (symbol, "timestamp" desc);

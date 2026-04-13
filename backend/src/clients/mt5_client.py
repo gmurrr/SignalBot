@@ -51,18 +51,21 @@ class MT5Client:
             self._initialized = False
 
     def get_recent_m1_candles(self, symbol: str, count: int) -> pd.DataFrame:
-        rates = mt5.copy_rates_from_pos(symbol, mt5.TIMEFRAME_M1, 0, count)
+        return self.get_recent_candles(symbol, "M1", count)
+
+    def get_recent_candles(self, symbol: str, timeframe: str, count: int) -> pd.DataFrame:
+        self._ensure_symbol(symbol)
+        rates = mt5.copy_rates_from_pos(symbol, self._timeframe_constant(timeframe), 0, count)
         if rates is None or len(rates) == 0:
-            raise RuntimeError(f"MT5 copy_rates_from_pos returned no data for {symbol}")
+            raise RuntimeError(f"MT5 copy_rates_from_pos returned no data for {symbol} ({timeframe})")
 
         df = pd.DataFrame(rates)
-        # MT5 provides: time, open, high, low, close, tick_volume, spread, real_volume
         df["time"] = df["time"].apply(self._epoch_to_iso)
         df["volume"] = df["tick_volume"].astype(float)
-
         return df[["time", "open", "high", "low", "close", "volume"]].copy()
 
     def get_latest_tick(self, symbol: str) -> Tick:
+        self._ensure_symbol(symbol)
         tick = mt5.symbol_info_tick(symbol)
         if tick is None:
             raise RuntimeError(f"MT5 symbol_info_tick returned None for {symbol}")
@@ -80,6 +83,25 @@ class MT5Client:
             mid=mid,
             timestamp=self._epoch_to_iso(tick.time),
         )
+
+    @staticmethod
+    def _timeframe_constant(timeframe: str) -> int:
+        mapping = {
+            "M1": mt5.TIMEFRAME_M1,
+            "M5": mt5.TIMEFRAME_M5,
+            "H1": mt5.TIMEFRAME_H1,
+        }
+        if timeframe not in mapping:
+            raise ValueError(f"Unsupported timeframe: {timeframe}")
+        return mapping[timeframe]
+
+    @staticmethod
+    def _ensure_symbol(symbol: str) -> None:
+        symbol_info = mt5.symbol_info(symbol)
+        if symbol_info is None:
+            raise RuntimeError(f"MT5 symbol_info returned None for {symbol}")
+        if not symbol_info.visible and not mt5.symbol_select(symbol, True):
+            raise RuntimeError(f"MT5 could not select symbol {symbol}")
 
     @staticmethod
     def _epoch_to_iso(epoch_value: int | float) -> str:
