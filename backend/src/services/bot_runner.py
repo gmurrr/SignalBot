@@ -40,6 +40,7 @@ class BotRunner:
         self._logger = logger
         self._mt5_client = MT5Client(settings)
         self._supabase_repository: SupabaseRepository | None = None
+        self._last_supabase_market_warning = 0.0
 
     async def run(self) -> None:
         try:
@@ -416,17 +417,31 @@ class BotRunner:
         dxy_tick,
         market_snapshot: dict[str, Any],
     ) -> None:
-        self._supabase_repository.upsert_market_tick(
+        xau_written = self._supabase_repository.upsert_market_tick(
             xau_tick,
             extra=self._build_xau_market_extra(market_snapshot),
             source="mt5",
             timeframe="tick",
         )
-        self._supabase_repository.upsert_market_tick(
+        dxy_written = self._supabase_repository.upsert_market_tick(
             dxy_tick,
             extra=self._build_dxy_market_extra(market_snapshot),
             source="mt5_dxy",
             timeframe="H1",
+        )
+        if not xau_written or not dxy_written:
+            self._log_transient_market_data_drop(xau_written=xau_written, dxy_written=dxy_written)
+
+    def _log_transient_market_data_drop(self, *, xau_written: bool, dxy_written: bool) -> None:
+        now = time.monotonic()
+        if now - self._last_supabase_market_warning < 60.0:
+            return
+
+        self._last_supabase_market_warning = now
+        self._logger.warning(
+            "Transient Supabase market_data write failed after retries; dropped tick snapshot (xau_written=%s, dxy_written=%s).",
+            xau_written,
+            dxy_written,
         )
 
     def _write_backtest_csv(self, rows: list[SignalRow]) -> None:

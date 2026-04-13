@@ -6,6 +6,7 @@ import threading
 from typing import Any
 
 import httpx
+from postgrest.exceptions import APIError
 from supabase import Client, create_client
 
 from src.config.settings import Settings
@@ -39,7 +40,7 @@ class SupabaseRepository:
         extra: dict[str, Any] | None = None,
         source: str = "mt5",
         timeframe: str = "tick",
-    ) -> None:
+    ) -> bool:
         payload: dict[str, Any] = {
             "symbol": tick.symbol,
             "bid": tick.bid,
@@ -51,8 +52,12 @@ class SupabaseRepository:
             "timeframe": timeframe,
             "extra": extra or {},
         }
-        self._execute_with_retry(
-            lambda: self._client.table(self._market_data_table).upsert(payload, on_conflict="symbol").execute()
+        return bool(
+            self._execute_with_retry(
+                lambda: self._client.table(self._market_data_table).upsert(payload, on_conflict="symbol").execute() or True,
+                retries=3,
+                suppress_transient=True,
+            )
         )
 
     def insert_signal(self, signal: SignalPosition) -> SignalPosition:
@@ -99,21 +104,56 @@ class SupabaseRepository:
             lambda: self._client.table(self._signals_table).update(payload).eq("id", signal_id).execute()
         )
 
-    def _execute_with_retry(self, operation, retries: int = 3):
+    def _execute_with_retry(self, operation, retries: int = 3, suppress_transient: bool = False):
         last_error: Exception | None = None
 
         for attempt in range(retries):
             try:
                 with self._request_lock:
                     return operation()
+            except APIError as exc:
+                if not self._is_transient_api_error(exc):
+                    raise
+
+                last_error = exc
+                self._recreate_client()
+                if attempt < retries - 1:
+                    self._sleep_before_retry(attempt)
             except (httpx.HTTPError, OSError) as exc:
                 last_error = exc
                 self._recreate_client()
                 if attempt < retries - 1:
-                    time.sleep(0.35 * (attempt + 1))
+                    self._sleep_before_retry(attempt)
 
         assert last_error is not None
+        if suppress_transient and self._is_transient_error(last_error):
+            return None
         raise last_error
+
+    @staticmethod
+    def _sleep_before_retry(attempt: int) -> None:
+        time.sleep(min(0.5 * (2**attempt), 5.0))
+
+    @staticmethod
+    def _is_transient_error(exc: Exception) -> bool:
+        return isinstance(exc, (httpx.HTTPError, OSError)) or (
+            isinstance(exc, APIError) and SupabaseRepository._is_transient_api_error(exc)
+        )
+
+    @staticmethod
+    def _is_transient_api_error(exc: APIError) -> bool:
+        code = str(exc.code or "")
+        details = str(exc.details or "")
+        message = str(exc.message or "")
+        haystack = f"{message} {details}".lower()
+
+        return (
+            code in {"502", "503", "504", "520", "521", "522", "523", "524"}
+            or "bad gateway" in haystack
+            or "cloudflare" in haystack
+            or "<!doctype html" in haystack
+            or ("json could not be generated" in haystack and any(status in haystack for status in ("502", "503", "504")))
+        )
 
     def _recreate_client(self) -> None:
         self._client = create_client(
