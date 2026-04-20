@@ -3,9 +3,11 @@
 import { useEffect, useState } from "react";
 
 import { Badge } from "@/components/ui/badge";
+import { useI18n } from "@/lib/i18n/provider";
 import { cn } from "@/lib/utils";
 
 export function MarketStatusBadge({ className }: { className?: string }) {
+  const { dict } = useI18n();
   const [isOpen, setIsOpen] = useState(() => isGoldMarketOpen());
 
   useEffect(() => {
@@ -22,7 +24,7 @@ export function MarketStatusBadge({ className }: { className?: string }) {
           isOpen ? "status-dot bg-emerald-400 shadow-[0_0_18px_rgba(52,211,153,0.55)]" : "bg-zinc-500"
         )}
       />
-      {isOpen ? "RYNEK OTWARTY" : "RYNEK ZAMKNIĘTY"}
+      {isOpen ? dict.common.marketOpen : dict.common.marketClosed}
     </Badge>
   );
 }

@@ -1,14 +1,11 @@
 import { AuthShell } from "@/components/auth/auth-shell";
+import { SiteHeader } from "@/components/site-header";
 
 export default function SignUpPage() {
   return (
-    <AuthShell
-      title="Zgłoszenie dostępu premium"
-      subtitle="Ekran rejestracji jest przygotowany pod płatny onboarding, potwierdzenie zakupu oraz obsługę zaproszeń do Zeta Signals."
-      cta="Utwórz zgłoszenie"
-      footerLabel="Masz już dostęp?"
-      footerHref="/auth/sign-in"
-      footerText="Zaloguj się"
-    />
+    <>
+      <SiteHeader />
+      <AuthShell mode="signUp" />
+    </>
   );
 }

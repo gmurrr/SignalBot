@@ -7,6 +7,7 @@ import { ArrowUpRight, Radio } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { formatPrice, formatRelativeTimestamp } from "@/lib/format";
+import { useI18n } from "@/lib/i18n/provider";
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 import type { MarketDataRow } from "@/types/database";
 
@@ -14,6 +15,7 @@ const preferredSymbol = process.env.NEXT_PUBLIC_SIGNAL_SYMBOL ?? "XAUUSD";
 const marketTable = process.env.NEXT_PUBLIC_SUPABASE_MARKET_DATA_TABLE ?? "market_data";
 
 export function LiveTicker() {
+  const { dict, locale } = useI18n();
   const [market, setMarket] = useState<MarketDataRow | null>(null);
   const [flash, setFlash] = useState(false);
   const lastMidRef = useRef<number | null>(null);
@@ -78,7 +80,7 @@ export function LiveTicker() {
       <div className="flex items-center justify-between gap-3">
         <Badge className="gap-2">
           <span className="status-dot h-2.5 w-2.5 rounded-full bg-brass" />
-          CENA NA ŻYWO
+          {dict.ticker.livePrice}
         </Badge>
         <div className="flex items-center gap-2 text-xs uppercase tracking-[0.28em] text-muted">
           <Radio className="h-3.5 w-3.5 text-brass" />
@@ -99,21 +101,21 @@ export function LiveTicker() {
           </motion.span>
           <span className="mb-2 inline-flex items-center gap-1 rounded-full border border-[rgba(212,175,55,0.18)] px-3 py-1 text-xs uppercase tracking-[0.24em] text-brass">
             <ArrowUpRight className="h-3.5 w-3.5" />
-            Złoto spot
+            {dict.ticker.goldSpot}
           </span>
         </div>
         <div className="grid gap-3 text-sm text-muted md:grid-cols-3">
           <div>
-            <p className="uppercase tracking-[0.28em] text-[11px]">Cena kupna</p>
+            <p className="uppercase tracking-[0.28em] text-[11px]">{dict.ticker.bid}</p>
             <p className="mt-1 text-lg text-foreground">{formatPrice(market?.bid)}</p>
           </div>
           <div>
-            <p className="uppercase tracking-[0.28em] text-[11px]">Cena sprzedaży</p>
+            <p className="uppercase tracking-[0.28em] text-[11px]">{dict.ticker.ask}</p>
             <p className="mt-1 text-lg text-foreground">{formatPrice(market?.ask)}</p>
           </div>
           <div>
-            <p className="uppercase tracking-[0.28em] text-[11px]">Aktualizacja</p>
-            <p className="mt-1 text-lg text-foreground">{formatRelativeTimestamp(market?.updated_at)}</p>
+            <p className="uppercase tracking-[0.28em] text-[11px]">{dict.ticker.updated}</p>
+            <p className="mt-1 text-lg text-foreground">{formatRelativeTimestamp(market?.updated_at, locale)}</p>
           </div>
         </div>
       </div>

@@ -1,0 +1,201 @@
+{
+  "common": {
+    "brand": "Zeta Signals",
+    "symbol": "XAU / USD",
+    "start": "Rozpocznij",
+    "auth": "Logowanie / Rejestracja",
+    "faq": "FAQ",
+    "terms": "Regulamin",
+    "contact": "Kontakt",
+    "dashboard": "Panel",
+    "history": "Historia",
+    "howItWorks": "Jak to działa",
+    "marketOpen": "RYNEK OTWARTY",
+    "marketClosed": "RYNEK ZAMKNIĘTY",
+    "languageSwitcher": "Przełącznik języka"
+  },
+  "nav": {
+    "story": "Historia",
+    "process": "Jak to działa",
+    "faq": "FAQ",
+    "dashboard": "Panel"
+  },
+  "home": {
+    "heroTitle": "Zeta Signals dla XAU/USD z algorytmiczną precyzją.",
+    "heroBody": "Platforma sygnałowa dla rynku złota, oparta na H1 Bias, DXY, liquidity sweep i egzekucji M5. Wszystko zaprojektowane tak, aby aktywny sygnał nigdy nie był mylony z pozycją historyczną.",
+    "algoLabel": "Opis algorytmu",
+    "algoBody": "Wielowarstwowa konfluencja danych ogranicza szum rynkowy i błędy decyzyjne. System dopuszcza wyłącznie setupy, które przechodzą przez filtry środowiska, płynności i potwierdzenia na M5.",
+    "stats": [
+      { "label": "Trend i Bias", "value": "EMA 200 + Ichimoku + DXY" },
+      { "label": "Timing", "value": "Londyn + Nowy Jork" },
+      { "label": "Płynność", "value": "Sweep poziomów H1" },
+      { "label": "Egzekucja", "value": "FVG / Engulfing + RSI" }
+    ],
+    "storyLabel": "Historia",
+    "storyTitle": "Od skryptu do platformy Zeta Signals",
+    "story": [
+      "Zeta Signals powstało z potrzeby uporządkowania decyzji na rynku złota. Zamiast reagować na każdy ruch świecy, system buduje kontekst z wyższych interwałów, filtruje szum i dopuszcza tylko te setupy, które mają sens w strukturze rynku oraz w oknach wysokiej płynności."
+    ],
+    "processLabel": "Jak to działa?",
+    "processTitle": "Trzy warstwy, jedna decyzja",
+    "steps": [
+      {
+        "title": "Warstwa 1: H1 Bias",
+        "body": "Fundamentem każdego sygnału jest analiza trendu na interwale H1. Silnik sprawdza położenie ceny względem EMA 200 oraz Chmury Ichimoku. Dodatkowym filtrem bezpieczeństwa jest analiza indeksu DXY, która blokuje ryzykowne setupy. Całość działa wyłącznie w oknach płynności: Londyn (09:00-12:00) oraz Nowy Jork (14:30-18:30)."
+      },
+      {
+        "title": "Warstwa 2: Liquidity Sweep",
+        "body": "Algorytm skanuje ostatnie 24 godziny H1 w poszukiwaniu kluczowych szczytów i dołków. Setup powstaje dopiero po agresywnym wyczyszczeniu płynności i szybkim powrocie ceny ponad poziom w ciągu maksymalnie 3 świec M5."
+      },
+      {
+        "title": "Warstwa 3: M5 Trigger",
+        "body": "Finalny sygnał pojawia się po potwierdzeniu impetu przez Fair Value Gap albo formację Engulfing, wspartą odwróceniem RSI. Stop Loss jest kotwiczony za świecą czyszczącą płynność, a cele bazują na RR oraz kolejnych poziomach H1."
+      }
+    ],
+    "faqTitle": "Praktyczne odpowiedzi",
+    "faq": [
+      {
+        "q": "Dlaczego nie ma sygnałów co kilka minut?",
+        "a": "Stawiamy na jakość, nie ilość. System generuje sygnał tylko wtedy, gdy zgadzają się warunki H1, korelacja DXY, okno płynności i trigger M5."
+      },
+      {
+        "q": "Czy muszę mieć konto u konkretnego brokera?",
+        "a": "Nie. Sygnały bazują na XAU/USD i mogą być używane u dowolnego brokera oferującego złoto, choć najlepsze efekty daje niskie opóźnienie oraz stabilny spread."
+      },
+      {
+        "q": "W jakich godzinach system jest aktywny?",
+        "a": "Egzekucja sygnałów działa głównie podczas sesji londyńskiej i nowojorskiej. Poza tymi blokami system przechodzi w tryb monitoringu."
+      }
+    ]
+  },
+  "dashboard": {
+    "title": "Zeta Signals - panel XAU/USD",
+    "body": "Rynek złota to środowisko o wyjątkowej płynności i ponadprzeciętnej zmienności. Panel pokazuje cenę, status rynku oraz sygnały w czasie rzeczywistym, bez przeładowywania strony.",
+    "notesLabel": "Uwagi twórcy",
+    "notesTitle": "Monitoring i ochrona sygnałów",
+    "notes": [
+      "Tylko jeden aktywny sygnał jest dostępny w danym momencie, więc przestarzałe wpisy nigdy nie pozostają podświetlone.",
+      "Gdy TP, SL albo limit czasu rozstrzygnie pozycję, backend wysyła zmianę statusu do każdego połączonego terminala.",
+      "Ticker, badge rynku i historia sygnałów zostały zaprojektowane tak, aby decyzje były szybkie, czytelne i jednoznaczne."
+    ],
+    "easyCartLabel": "Strefa EasyCart",
+    "easyCartBody": "Miejsce jest przygotowane pod integrację płatności, walidację dostępu i przyszłe blokady dashboardu dla klientów premium.",
+    "chartTitle": "Struktura rynku XAU/USD"
+  },
+  "ticker": {
+    "livePrice": "CENA NA ŻYWO",
+    "goldSpot": "Złoto spot",
+    "bid": "Cena kupna",
+    "ask": "Cena sprzedaży",
+    "updated": "Aktualizacja"
+  },
+  "signals": {
+    "currentLabel": "Aktualny sygnał",
+    "terminalTitle": "Terminal sygnałowy",
+    "activeBadge": "Sygnał aktywny",
+    "waitingBadge": "Oczekiwanie na setup",
+    "emptyTitle": "Brak otwartej pozycji",
+    "emptyBody": "Algorytm czeka na właściwy układ rynkowy.",
+    "emptyDescription": "Gdy pojawi się nowy sygnał dla XAU/USD, karta wjedzie z efektem złotej poświaty, a poprzednie pozycje automatycznie trafią do historii.",
+    "historyTitle": "Historia Sygnałów",
+    "latestRecords": "Ostatnie 5 rekordów",
+    "executionOpen": "Okno egzekucji otwarte",
+    "positionClosed": "Pozycja zamknięta",
+    "activeDescription": "Setup jest monitorowany w czasie rzeczywistym. TP, SL oraz wygaśnięcie sygnału są pilnowane przez backend.",
+    "closedDescriptionPrefix": "Zamknięto przez",
+    "closedDescriptionSuffix": "z wynikiem",
+    "generated": "Wygenerowano",
+    "confidence": "Pewność",
+    "entry": "Cena Wejścia",
+    "tp": "Cel / Take Profit",
+    "sl": "Stop Loss",
+    "liveResult": "Wynik bieżący",
+    "finalResult": "Wynik końcowy",
+    "monitoringActive": "Monitoring aktywny",
+    "monitoringStopped": "Monitoring zatrzymany",
+    "expires": "Wygasa",
+    "expired": "Sygnał wygasł",
+    "status": {
+      "ACTIVE": "Aktywny",
+      "CLOSED": "Zamknięty",
+      "EXPIRED": "Wygasły"
+    },
+    "type": {
+      "Buy": "Kupno",
+      "Sell": "Sprzedaż"
+    },
+    "closeReasons": {
+      "fallback": "aktualizację systemu",
+      "tp": "Take Profit",
+      "tp1_hit": "Take Profit",
+      "sl": "Stop Loss",
+      "stop_loss": "Stop Loss",
+      "expired": "wygaśnięcie",
+      "time_expired": "wygaśnięcie",
+      "desk update": "aktualizację systemu"
+    }
+  },
+  "auth": {
+    "clientAccess": "Dostęp klienta",
+    "easyCartLabel": "Strefa EasyCart",
+    "easyCartBody": "Ten blok jest przygotowany pod bramkę płatności, podsumowanie pakietu lub walidację członkostwa po podłączeniu EasyCart.",
+    "email": "Adres e-mail",
+    "password": "Hasło",
+    "accessCode": "Kod dostępu lub notatka zaproszenia",
+    "helper": "Magic link, logowanie społecznościowe i kontrola uprawnień EasyCart mogą zostać dodane tutaj bez przebudowy całego ekranu.",
+    "signIn": {
+      "title": "Logowanie / Rejestracja",
+      "subtitle": "Bezpieczny dostęp do prywatnego panelu Zeta Signals dla XAU/USD, z miejscem na przyszłą walidację uprawnień przez EasyCart.",
+      "cta": "Wejdź do panelu",
+      "footerLabel": "Nie masz jeszcze konta?",
+      "footerText": "Poproś o dostęp"
+    },
+    "signUp": {
+      "title": "Zgłoszenie dostępu premium",
+      "subtitle": "Ekran rejestracji jest przygotowany pod płatny onboarding, potwierdzenie zakupu oraz obsługę zaproszeń do Zeta Signals.",
+      "cta": "Utwórz zgłoszenie",
+      "footerLabel": "Masz już dostęp?",
+      "footerText": "Zaloguj się"
+    }
+  },
+  "footer": {
+    "tagline": "Profesjonalny terminal sygnałowy dla rynku złota.",
+    "linksLabel": "Nawigacja",
+    "riskWarning": "Ostrzeżenie o ryzyku: Handel na rynku XAU/USD wiąże się z wysokim ryzykiem straty. Zeta Signals dostarcza sygnały o charakterze informacyjnym. Korzystasz z nich na własną odpowiedzialność."
+  },
+  "terms": {
+    "eyebrow": "Dokumenty prawne",
+    "title": "Regulamin, prywatność i cookies",
+    "intro": "Poniższa treść jest profesjonalnym szkieletem pod finalne dokumenty prawne. Zastąp placeholdery treścią przygotowaną przez prawnika przed publikacją produkcyjną.",
+    "toc": "Spis treści",
+    "sections": [
+      {
+        "id": "terms-of-service",
+        "title": "Regulamin Usługi",
+        "body": [
+          "LOREM IPSUM: W tym miejscu należy opisać zasady korzystania z platformy Zeta Signals, zakres usługi, wymagania techniczne, sposób uzyskania dostępu oraz zasady odpowiedzialności użytkownika.",
+          "LOREM IPSUM: Należy wskazać, że sygnały mają charakter informacyjny i edukacyjny, nie stanowią indywidualnej rekomendacji inwestycyjnej oraz nie gwarantują osiągnięcia zysku.",
+          "LOREM IPSUM: W tej sekcji można dodać warunki zawieszenia dostępu, procedury reklamacyjne, informacje o płatnościach oraz zasady zakończenia korzystania z usługi."
+        ]
+      },
+      {
+        "id": "privacy-policy",
+        "title": "Polityka Prywatności",
+        "body": [
+          "LOREM IPSUM: W tej sekcji należy wskazać administratora danych, zakres zbieranych danych osobowych, cele przetwarzania oraz podstawy prawne przetwarzania.",
+          "LOREM IPSUM: Należy opisać czas przechowywania danych, prawa użytkownika, sposób kontaktu w sprawach prywatności oraz podmioty przetwarzające dane w imieniu administratora.",
+          "LOREM IPSUM: Warto uwzględnić informacje o narzędziach analitycznych, systemach płatności, usługach hostingowych i zabezpieczeniach technicznych."
+        ]
+      },
+      {
+        "id": "cookies-policy",
+        "title": "Polityka Cookies",
+        "body": [
+          "LOREM IPSUM: W tym miejscu należy opisać, jakie pliki cookies i podobne technologie są używane przez serwis oraz w jakich celach.",
+          "LOREM IPSUM: Należy wskazać podział na cookies niezbędne, analityczne, funkcjonalne oraz marketingowe, jeśli takie będą wykorzystywane.",
+          "LOREM IPSUM: Dodaj instrukcję zarządzania zgodami cookies oraz informację, jak użytkownik może zmienić ustawienia przeglądarki."
+        ]
+      }
+    ]
+  }
+}

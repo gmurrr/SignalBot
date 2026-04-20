@@ -1,19 +1,21 @@
 "use client";
 
-import { useEffect, useId, useRef } from "react";
+import { useEffect, useId } from "react";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useI18n } from "@/lib/i18n/provider";
 
 export function TradingViewWidget() {
+  const { dict, locale } = useI18n();
   const containerId = useId().replace(/:/g, "");
-  const mountedRef = useRef(false);
 
   useEffect(() => {
-    if (mountedRef.current) {
+    const container = document.getElementById(containerId);
+    if (!container) {
       return;
     }
 
-    mountedRef.current = true;
+    container.innerHTML = "";
     const script = document.createElement("script");
     script.src = "https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js";
     script.type = "text/javascript";
@@ -25,7 +27,7 @@ export function TradingViewWidget() {
       timezone: "Europe/Warsaw",
       theme: "dark",
       style: "1",
-      locale: "pl",
+      locale,
       withdateranges: true,
       allow_symbol_change: false,
       calendar: false,
@@ -34,13 +36,13 @@ export function TradingViewWidget() {
       support_host: "https://www.tradingview.com"
     });
 
-    document.getElementById(containerId)?.appendChild(script);
-  }, [containerId]);
+    container.appendChild(script);
+  }, [containerId, locale]);
 
   return (
     <Card className="h-[560px] overflow-hidden border-[#1A1A1A]">
       <CardHeader>
-        <CardTitle className="font-[family-name:var(--font-cormorant)] text-3xl">Struktura rynku XAU/USD</CardTitle>
+        <CardTitle className="font-[family-name:var(--font-cormorant)] text-3xl">{dict.dashboard.chartTitle}</CardTitle>
       </CardHeader>
       <CardContent className="h-[470px]">
         <div className="tradingview-widget-container h-full">

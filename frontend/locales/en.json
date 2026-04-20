@@ -1,0 +1,201 @@
+{
+  "common": {
+    "brand": "Zeta Signals",
+    "symbol": "XAU / USD",
+    "start": "Get Started",
+    "auth": "Login / Sign Up",
+    "faq": "FAQ",
+    "terms": "Terms",
+    "contact": "Contact",
+    "dashboard": "Dashboard",
+    "history": "History",
+    "howItWorks": "How it works",
+    "marketOpen": "MARKET OPEN",
+    "marketClosed": "MARKET CLOSED",
+    "languageSwitcher": "Language switcher"
+  },
+  "nav": {
+    "story": "Story",
+    "process": "How it works",
+    "faq": "FAQ",
+    "dashboard": "Dashboard"
+  },
+  "home": {
+    "heroTitle": "Zeta Signals for XAU/USD with algorithmic precision.",
+    "heroBody": "A signal platform for the gold market, built around H1 Bias, DXY, liquidity sweep and M5 execution. Everything is designed so an active signal is never confused with a historical position.",
+    "algoLabel": "Algorithm brief",
+    "algoBody": "Multi-layer data confluence reduces market noise and decision errors. The system only accepts setups that pass environment, liquidity and M5 confirmation filters.",
+    "stats": [
+      { "label": "Trend & Bias", "value": "EMA 200 + Ichimoku + DXY" },
+      { "label": "Timing", "value": "London + New York" },
+      { "label": "Liquidity", "value": "H1 level sweep" },
+      { "label": "Execution", "value": "FVG / Engulfing + RSI" }
+    ],
+    "storyLabel": "Story",
+    "storyTitle": "From script to Zeta Signals platform",
+    "story": [
+      "Zeta Signals was created to bring structure to gold-market decisions. Instead of reacting to every candle, the system builds higher-timeframe context, filters noise and allows only setups that make sense inside market structure and high-liquidity windows."
+    ],
+    "processLabel": "How it works",
+    "processTitle": "Three layers, one decision",
+    "steps": [
+      {
+        "title": "Layer 1: H1 Bias",
+        "body": "Every signal starts with H1 trend analysis. The engine checks price position against EMA 200 and the Ichimoku Cloud. DXY analysis adds a safety filter that blocks risky setups. Execution only runs during liquidity windows: London (09:00-12:00) and New York (14:30-18:30)."
+      },
+      {
+        "title": "Layer 2: Liquidity Sweep",
+        "body": "The algorithm scans the last 24 hours of H1 structure for key highs and lows. A setup forms only after aggressive liquidity clearing and a quick return above or below the level within a maximum of 3 M5 candles."
+      },
+      {
+        "title": "Layer 3: M5 Trigger",
+        "body": "The final signal appears after momentum confirmation through a Fair Value Gap or Engulfing formation supported by an RSI reversal. Stop Loss is anchored behind the liquidity-clearing candle and targets are based on RR plus the next H1 levels."
+      }
+    ],
+    "faqTitle": "Practical answers",
+    "faq": [
+      {
+        "q": "Why are there no signals every few minutes?",
+        "a": "We prioritize quality over quantity. The system generates a signal only when H1 conditions, DXY correlation, liquidity window and M5 trigger align."
+      },
+      {
+        "q": "Do I need an account with a specific broker?",
+        "a": "No. Signals are based on XAU/USD and can be used with any broker offering gold, although low latency and stable spreads are recommended."
+      },
+      {
+        "q": "When is the system active?",
+        "a": "Signal execution runs mainly during London and New York sessions. Outside these blocks, the system switches into monitoring mode."
+      }
+    ]
+  },
+  "dashboard": {
+    "title": "Zeta Signals - XAU/USD dashboard",
+    "body": "Gold is a market of exceptional liquidity and above-average volatility. The panel shows price, market status and realtime signals without page reloads.",
+    "notesLabel": "Creator notes",
+    "notesTitle": "Signal monitoring and protection",
+    "notes": [
+      "Only one active signal is available at a time, so stale entries never remain highlighted.",
+      "When TP, SL or time limit resolves a position, the backend sends a status update to every connected terminal.",
+      "The ticker, market badge and signal history are designed to make decisions fast, clear and unambiguous."
+    ],
+    "easyCartLabel": "EasyCart zone",
+    "easyCartBody": "This area is prepared for payment integration, access validation and future dashboard gating for premium clients.",
+    "chartTitle": "XAU/USD market structure"
+  },
+  "ticker": {
+    "livePrice": "LIVE PRICE",
+    "goldSpot": "Gold spot",
+    "bid": "Bid",
+    "ask": "Ask",
+    "updated": "Updated"
+  },
+  "signals": {
+    "currentLabel": "Current signal",
+    "terminalTitle": "Signal terminal",
+    "activeBadge": "Signal active",
+    "waitingBadge": "Waiting for setup",
+    "emptyTitle": "No open position",
+    "emptyBody": "The algorithm is waiting for the right market structure.",
+    "emptyDescription": "When a new XAU/USD signal appears, the card enters with a gold glow and previous positions move into history automatically.",
+    "historyTitle": "Signal History",
+    "latestRecords": "Latest 5 records",
+    "executionOpen": "Execution window open",
+    "positionClosed": "Position closed",
+    "activeDescription": "The setup is monitored in realtime. TP, SL and signal expiry are guarded by the backend.",
+    "closedDescriptionPrefix": "Closed via",
+    "closedDescriptionSuffix": "with result",
+    "generated": "Generated",
+    "confidence": "Confidence",
+    "entry": "Entry Price",
+    "tp": "Target / Take Profit",
+    "sl": "Stop Loss",
+    "liveResult": "Live Result",
+    "finalResult": "Final Result",
+    "monitoringActive": "Live monitoring",
+    "monitoringStopped": "Monitoring stopped",
+    "expires": "Expires",
+    "expired": "Signal expired",
+    "status": {
+      "ACTIVE": "Active",
+      "CLOSED": "Closed",
+      "EXPIRED": "Expired"
+    },
+    "type": {
+      "Buy": "Buy",
+      "Sell": "Sell"
+    },
+    "closeReasons": {
+      "fallback": "desk update",
+      "tp": "Take Profit",
+      "tp1_hit": "Take Profit",
+      "sl": "Stop Loss",
+      "stop_loss": "Stop Loss",
+      "expired": "expiry",
+      "time_expired": "expiry",
+      "desk update": "desk update"
+    }
+  },
+  "auth": {
+    "clientAccess": "Client access",
+    "easyCartLabel": "EasyCart zone",
+    "easyCartBody": "This block is prepared for your payment wall, package summary or membership validation once EasyCart is connected.",
+    "email": "Email address",
+    "password": "Password",
+    "accessCode": "Access code or invite note",
+    "helper": "Magic link, social login and EasyCart entitlement checks can be added here without rebuilding the whole screen.",
+    "signIn": {
+      "title": "Login / Sign Up",
+      "subtitle": "Secure access to the private Zeta Signals XAU/USD dashboard, with room for future EasyCart entitlement validation.",
+      "cta": "Enter dashboard",
+      "footerLabel": "Need a new account?",
+      "footerText": "Request access"
+    },
+    "signUp": {
+      "title": "Premium access request",
+      "subtitle": "The registration screen is prepared for paid onboarding, purchase confirmation and invite handling for Zeta Signals.",
+      "cta": "Create request",
+      "footerLabel": "Already have access?",
+      "footerText": "Sign in"
+    }
+  },
+  "footer": {
+    "tagline": "Professional signal terminal for the gold market.",
+    "linksLabel": "Navigation",
+    "riskWarning": "Risk Warning: Trading XAU/USD involves high risk. Zeta Signals provides informational signals. Use them at your own risk."
+  },
+  "terms": {
+    "eyebrow": "Legal documents",
+    "title": "Terms, privacy and cookies",
+    "intro": "The content below is a professional scaffold for final legal documents. Replace the placeholders with lawyer-approved text before production release.",
+    "toc": "Table of contents",
+    "sections": [
+      {
+        "id": "terms-of-service",
+        "title": "Terms of Service",
+        "body": [
+          "LOREM IPSUM: Use this section to describe the rules for using Zeta Signals, scope of service, technical requirements, access model and user responsibility.",
+          "LOREM IPSUM: State that signals are informational and educational, do not constitute individual investment advice and do not guarantee profit.",
+          "LOREM IPSUM: Add access suspension terms, complaint procedures, payment information and rules for ending service usage."
+        ]
+      },
+      {
+        "id": "privacy-policy",
+        "title": "Privacy Policy",
+        "body": [
+          "LOREM IPSUM: Identify the data controller, the scope of personal data collected, processing purposes and legal bases.",
+          "LOREM IPSUM: Describe retention periods, user rights, privacy contact methods and processors acting on behalf of the controller.",
+          "LOREM IPSUM: Include analytics tools, payment systems, hosting services and technical safeguards."
+        ]
+      },
+      {
+        "id": "cookies-policy",
+        "title": "Cookies Policy",
+        "body": [
+          "LOREM IPSUM: Describe what cookies and similar technologies are used by the service and for what purposes.",
+          "LOREM IPSUM: Separate necessary, analytical, functional and marketing cookies if they are used.",
+          "LOREM IPSUM: Add consent-management instructions and explain how users can change browser settings."
+        ]
+      }
+    ]
+  }
+}

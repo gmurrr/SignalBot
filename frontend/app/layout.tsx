@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import { Cormorant_Garamond, Inter } from "next/font/google";
 
+import { Footer } from "@/components/footer";
+import { I18nProvider } from "@/lib/i18n/provider";
+
 import "./globals.css";
 
 const inter = Inter({
@@ -23,7 +26,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="pl">
       <body className={`${inter.variable} ${cormorant.variable} bg-background font-sans text-foreground antialiased [font-family:var(--font-inter)]`}>
-        {children}
+        <I18nProvider>
+          {children}
+          <Footer />
+        </I18nProvider>
       </body>
     </html>
   );
