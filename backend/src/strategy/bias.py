@@ -87,6 +87,8 @@ def evaluate_h1_bias(
     live_price: float,
     dxy_context: DxyContext,
     session_context: SessionContext,
+    *,
+    ignore_dxy_block: bool = False,
 ) -> BiasContext:
     working_df = append_live_price(h1_df, live_price)
     if working_df.empty or len(working_df) < 210:
@@ -129,10 +131,12 @@ def evaluate_h1_bias(
     else:
         reasons.append("mixed_h1_structure")
 
-    if side == "LONG" and dxy_context.blocks_longs:
+    if side == "LONG" and dxy_context.blocks_longs and not ignore_dxy_block:
         reasons.append("dxy_blocks_longs")
         side = "NEUTRAL"
         trend_state = "DXY_BLOCKED"
+    elif side == "LONG" and dxy_context.blocks_longs:
+        reasons.append("dxy_block_relaxed_for_backtest")
 
     if not session_context.execution_enabled:
         reasons.append("time_block_monitoring_mode")

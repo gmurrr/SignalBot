@@ -8,7 +8,12 @@ import pandas as pd
 from src.strategy.bias import determine_session, evaluate_dxy_bias, evaluate_h1_bias
 from src.strategy.execution import build_execution_setup
 from src.strategy.indicators import prepare_ohlcv, safe_float
-from src.strategy.liquidity import advance_sweep_state, find_tp2_target, identify_reference_liquidity
+from src.strategy.liquidity import (
+    advance_sweep_state,
+    build_relaxed_m5_liquidity_state,
+    find_tp2_target,
+    identify_reference_liquidity,
+)
 from src.strategy.types import SweepState
 
 
@@ -79,13 +84,21 @@ class RollingSignalEngineMTF:
         live_price: float,
         live_dxy_price: float,
         evaluation_time: str,
+        execution_profile: str = "STRICT",
     ) -> dict[str, Any]:
+        relaxed = execution_profile.upper() == "RELAXED"
         h1_df = pd.DataFrame(list(self._candles_by_timeframe["H1"]))
         dxy_h1_df = pd.DataFrame(list(self._candles_by_timeframe["DXY_H1"]))
 
         session_context = determine_session(evaluation_time, self._timezone_name)
         dxy_context = evaluate_dxy_bias(dxy_h1_df, live_dxy_price, self._dxy_symbol)
-        bias_context = evaluate_h1_bias(h1_df, live_price, dxy_context, session_context)
+        bias_context = evaluate_h1_bias(
+            h1_df,
+            live_price,
+            dxy_context,
+            session_context,
+            ignore_dxy_block=relaxed,
+        )
 
         reference_level = None
         if bias_context.side in {"LONG", "SHORT"}:
@@ -134,6 +147,7 @@ class RollingSignalEngineMTF:
                 "sweep_time": sweep_state.sweep_time if sweep_state else None,
                 "reclaim_time": sweep_state.reclaim_time if sweep_state else None,
                 "dxy_symbol": dxy_context.symbol,
+                "execution_profile": execution_profile.upper(),
             },
         }
 
@@ -142,8 +156,11 @@ class RollingSignalEngineMTF:
         live_price: float,
         live_dxy_price: float,
         evaluation_time: str,
+        execution_profile: str = "STRICT",
     ) -> dict[str, Any]:
-        snapshot = self.build_market_snapshot(live_price, live_dxy_price, evaluation_time)
+        profile = execution_profile.upper()
+        relaxed = profile == "RELAXED"
+        snapshot = self.build_market_snapshot(live_price, live_dxy_price, evaluation_time, execution_profile=profile)
         m5_df = prepare_ohlcv(pd.DataFrame(list(self._candles_by_timeframe["M5"])))
         h1_df = prepare_ohlcv(pd.DataFrame(list(self._candles_by_timeframe["H1"])))
 
@@ -151,7 +168,7 @@ class RollingSignalEngineMTF:
             snapshot["reason"] = "waiting_for_m5_history"
             return snapshot
 
-        if snapshot["execution_mode"] != "EXECUTION":
+        if snapshot["execution_mode"] != "EXECUTION" and not relaxed:
             snapshot["reason"] = "time_block_monitoring"
             return snapshot
 
@@ -174,8 +191,14 @@ class RollingSignalEngineMTF:
             reference_level,
             latest_m5,
             self._sweep_states.get(direction),
+            max_reclaim_candles=6 if relaxed else 3,
         )
         self._sweep_states[direction] = updated_state
+        used_relaxed_m5_liquidity = False
+
+        if updated_state is None and relaxed:
+            updated_state = build_relaxed_m5_liquidity_state(direction, m5_df)
+            used_relaxed_m5_liquidity = updated_state is not None
 
         if updated_state is None:
             snapshot["reason"] = "waiting_for_liquidity_sweep"
@@ -186,6 +209,7 @@ class RollingSignalEngineMTF:
         snapshot["reference_liquidity"] = round(updated_state.reference_level, self._price_decimals)
         snapshot["metadata"]["sweep_time"] = updated_state.sweep_time
         snapshot["metadata"]["reclaim_time"] = updated_state.reclaim_time
+        snapshot["metadata"]["relaxed_m5_liquidity"] = used_relaxed_m5_liquidity
 
         if not updated_state.liquidity_cleared:
             snapshot["reason"] = "waiting_for_m5_reclaim"
@@ -199,6 +223,7 @@ class RollingSignalEngineMTF:
             tp2_target,
             self._pip_size,
             self._price_decimals,
+            relaxed=relaxed,
         )
         if execution_setup is None:
             snapshot["reason"] = "trigger_not_confirmed"

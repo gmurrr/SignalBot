@@ -82,6 +82,11 @@ SUPABASE_URL=https://your-project.supabase.co
 MT5_SYMBOL=XAUUSD
 DXY_SYMBOL=DXY
 BACKTEST_CSV_PATH=backtest_results.csv
+BACKTEST_DIAGNOSTICS_CSV_PATH=backtest_diagnostics.csv
+BACKTEST_PROFILE=RELAXED
+BACKTEST_MIN_CONFIDENCE=0.70
+BACKTEST_COOLDOWN_MINUTES=20
+BACKTEST_REQUIRE_EXECUTION_SESSION=true
 SEED_CANDLE_COUNT=400
 H1_SEED_CANDLE_COUNT=260
 DXY_SEED_H1_COUNT=260
@@ -98,6 +103,37 @@ Uwaga: nawet w trybie `BACKTEST` aplikacja nadal inicjalizuje MetaTrader 5, poni
 
 `SUPABASE_SERVICE_ROLE_KEY` nie jest wymagany do zapisu w trybie `BACKTEST`, ale obecny loader konfiguracji nadal wymaga `SUPABASE_URL`, więc zostaw w `.env` poprawny adres projektu Supabase albo dowolną wartość testową zgodną z formatem URL.
 
+### Profile backtestu
+
+Backtest obsługuje dwa profile:
+
+- `BACKTEST_PROFILE=RELAXED` - domyślny profil badawczy. Nadal wymaga kierunku H1, liquidity sweep i triggera M5, ale luzuje część filtrów, które w krótkiej próbce historycznej potrafią wyzerować liczbę sygnałów.
+- `BACKTEST_PROFILE=STRICT` - profil produkcyjny. Używa takich samych rygorystycznych bramek jak tryb live, czyli między innymi Time-Block, DXY block dla longów, reclaim w maksymalnie 3 świecach M5 oraz jednoczesne potwierdzenie FVG/Engulfing + RSI reversal.
+
+W profilu `RELAXED`:
+
+- blok DXY dla longów jest oznaczany w metadanych, ale nie zeruje kierunku H1
+- filtr Time-Block nie zatrzymuje testu poza oknami London / NY
+- reclaim po sweepie może pojawić się do 6 świec M5 zamiast 3
+- jeśli pełny sweep H1 nie wystąpi, backtest może użyć badawczego mikro-sweepu / pullback reclaim na M5
+- trigger M5 może przejść przez FVG/Engulfing, złagodzony RSI reversal albo momentum reclaim, zamiast wymagać wszystkich warunków jednocześnie
+
+Tryb `RELAXED` nie powinien być traktowany jako finalna skuteczność strategii. Jego zadaniem jest wygenerowanie próbek do analizy i pokazanie, czy koncepcja reaguje na właściwe fragmenty rynku.
+
+### Filtry jakościowe backtestu
+
+Backtest ma dodatkowe zabezpieczenia, które pomagają odsiać najsłabsze sygnały badawcze:
+
+- `BACKTEST_MIN_CONFIDENCE=0.70` - minimalna pewność sygnału, zanim zostanie policzony jako transakcja.
+- `BACKTEST_COOLDOWN_MINUTES=20` - blokuje kolejne sygnały przez określoną liczbę minut po zaakceptowanym wejściu.
+- `BACKTEST_REQUIRE_EXECUTION_SESSION=true` - wymaga, aby sygnał powstał w trybie `EXECUTION`, nawet jeśli profil `RELAXED` nadal analizuje świece poza sesją.
+
+Odrzucone sygnały nie trafiają do `backtest_results.csv`, ale pozostają widoczne w diagnostyce z powodami:
+
+- `below_confidence_threshold`
+- `backtest_cooldown`
+- `backtest_session_filter`
+
 ### Co dokładnie robi backtest
 
 1. Backend startuje w trybie `BACKTEST`, gdy `APP_MODE=BACKTEST`.
@@ -109,9 +145,12 @@ Uwaga: nawet w trybie `BACKTEST` aplikacja nadal inicjalizuje MetaTrader 5, poni
 4. Backtest przechodzi świeca po świecy po historii M1.
 5. Przy każdej świecy M1 silnik aktualizuje kontekst H1 oraz DXY H1 tylko tymi świecami, które faktycznie byłyby już znane w danym momencie testu.
 6. Silnik wywołuje `evaluate_signal(...)` dokładnie tak jak w trybie live.
-7. Jeśli pojawi się sygnał, backend buduje obiekt sygnału i symuluje wynik na podstawie zamknięcia następnej świecy M1.
-8. Wyniki są zapisywane do pliku CSV, domyślnie `backend/backtest_results.csv`.
-9. Na końcu backend wypisuje w logach raport: liczba sygnałów, winrate, suma pipsów, liczba wygranych i przegranych.
+7. Jeśli pojawi się sygnał, backend sprawdza filtry jakościowe backtestu: sesję, minimalne confidence i cooldown.
+8. Zaakceptowany sygnał jest symulowany świeca po świecy aż do TP, SL albo `SIGNAL_EXPIRY_MINUTES`.
+9. Jeśli TP i SL pojawią się w tej samej świecy M1, backtest przyjmuje konserwatywnie, że pierwszy trafiony został SL.
+10. Wyniki są zapisywane do pliku CSV, domyślnie `backend/backtest_results.csv`.
+11. Diagnostyka każdego kroku jest zapisywana do `backend/backtest_diagnostics.csv`.
+12. Na końcu backend wypisuje w logach raport: liczba sygnałów, winrate, suma pipsów, średnie MFE/MAE, powody zamknięcia oraz najczęstsze powody odrzucenia setupów.
 
 ### Plik wynikowy CSV
 
@@ -120,19 +159,60 @@ CSV zawiera następujące kolumny:
 - `candle_time` - czas świecy, na której pojawił się sygnał
 - `symbol` - testowany symbol, np. XAU/USD u danego brokera
 - `type` - kierunek sygnału, `Buy` albo `Sell`
-- `status` - w backteście wpisy są zapisywane jako `CLOSED`
+- `status` - wynik symulacji: `CLOSED` po TP/SL albo `EXPIRED` po limicie czasu
 - `reason` - powód wygenerowania sygnału zwrócony przez strategię
 - `confidence` - ocena pewności setupu
+- `signal_grade` - typ sygnału, np. `STRICT`, `RELAXED` albo `RESEARCH_M5`
 - `entry_price` - cena wejścia wyliczona przez silnik
+- `tp` - symulowany Take Profit
+- `sl` - symulowany Stop Loss
 - `exit_price` - cena wyjścia użyta w symulacji
+- `closed_at` - czas zamknięcia pozycji w symulacji
+- `close_reason` - `tp1_hit`, `stop_loss`, `time_expired`, `history_ended` albo konserwatywne `ambiguous_stop_loss_first`
 - `dxy_bias` - kontekst DXY
 - `session_name` - sesja rynkowa, np. London / NY / Monitoring
 - `liquidity_cleared` - czy warunek sweepu płynności został spełniony
+- `relaxed_m5_liquidity` - czy wejście korzystało z badawczego fallbacku M5
+- `max_favorable_pips` - maksymalny ruch na korzyść pozycji przed zamknięciem
+- `max_adverse_pips` - maksymalny ruch przeciw pozycji przed zamknięciem
+- `minutes_in_trade` - czas utrzymania pozycji
 - `result_pips` - wynik w pipsach
+
+### Plik diagnostyczny CSV
+
+`backtest_diagnostics.csv` powstaje nawet wtedy, gdy strategia nie wygeneruje żadnego sygnału. To najważniejszy plik do debugowania zbyt restrykcyjnych filtrów.
+
+Kolumny diagnostyczne:
+
+- `candle_time` - czas analizowanej świecy
+- `reason` - powód, dla którego sygnał nie został wygenerowany albo powód wygenerowania sygnału
+- `bias_side` - aktualny kierunek H1: `LONG`, `SHORT` lub `NEUTRAL`
+- `trend_state` - stan struktury H1
+- `execution_mode` - `EXECUTION` albo `MONITORING`
+- `session_name` - wykryta sesja
+- `dxy_bias` - kontekst DXY
+- `liquidity_cleared` - czy sweep i reclaim zostały potwierdzone
+- `relaxed_m5_liquidity` - czy profil `RELAXED` użył fallbacku M5 zamiast klasycznego sweepu H1
+- `confidence` - confidence zwrócone przez silnik dla danego kroku
+- `signal_grade` - klasa setupu, jeśli dotyczy
+- `reference_liquidity` - poziom H1 używany jako punkt odniesienia
+- `market_health_score` - syntetyczna ocena gotowości rynku
+
+Najczęstsze wartości `reason`:
+
+- `time_block_monitoring` - świeca była poza oknem egzekucji; występuje tylko w profilu `STRICT`
+- `h1_bias_not_aligned` - cena nie spełnia warunków kierunku H1
+- `waiting_for_liquidity_sweep` - bias istnieje, ale nie było jeszcze wybicia płynności
+- `waiting_for_m5_reclaim` - sweep wystąpił, ale cena nie wróciła nad/pod poziom w wymaganym czasie
+- `trigger_not_confirmed` - sweep i reclaim były, ale zabrakło triggera M5
+- `awaiting_new_m5_close` - analizowana świeca M1 nie zamknęła jeszcze nowej świecy M5
+- `below_confidence_threshold` - setup powstał, ale confidence było poniżej progu backtestu
+- `backtest_cooldown` - setup został odrzucony, bo poprzednia pozycja była zbyt świeża
+- `backtest_session_filter` - setup powstał poza oknem `EXECUTION`
 
 ### Jak interpretować wynik
 
-Backtest w obecnej wersji jest szybkim testem logiki sygnałów, a nie pełnym symulatorem egzekucji brokerskiej. Wynik `result_pips` jest liczony względem następnego zamknięcia M1, więc służy głównie do oceny, czy sygnał pojawia się w sensownym kierunku i kontekście.
+Backtest w obecnej wersji symuluje TP/SL/expiry na świecach M1, więc jest znacznie bliższy realnemu zarządzaniu pozycją niż szybkie sprawdzenie kolejnej świecy. Nadal nie jest jednak pełnym symulatorem brokerskim.
 
 To oznacza, że backtest:
 
@@ -140,13 +220,14 @@ To oznacza, że backtest:
 - pozwala szybko zobaczyć liczbę sygnałów oraz ich rozkład
 - tworzy CSV do ręcznej analizy w Excelu, Google Sheets lub Pythonie
 - nie uwzględnia spreadu, prowizji, poślizgu ani realnego wykonania zleceń
-- nie sprawdza intrabar, czy TP/SL zostały trafione wewnątrz kolejnej świecy
+- używa konserwatywnego założenia, że przy TP i SL w tej samej świecy M1 pierwszy trafiony jest SL
 - nie zapisuje sygnałów do Supabase i nie aktualizuje dashboardu
 
 ### Najczęstsze problemy
 
 - `Not enough M1 candles for backtest` oznacza, że MT5 zwrócił mniej niż 120 świec M1. Zwiększ zakres historii w terminalu MT5 lub sprawdź nazwę symbolu.
-- Brak sygnałów nie musi oznaczać błędu. AlphaNode V2 ma restrykcyjne filtry: H1 Bias, DXY, Time-Block, Liquidity Sweep i M5 Trigger.
+- Brak sygnałów nie musi oznaczać błędu. Najpierw sprawdź `backtest_diagnostics.csv` oraz log `BACKTEST top rejection reasons`.
+- Jeśli w profilu `STRICT` nie ma sygnałów, uruchom `BACKTEST_PROFILE=RELAXED`, żeby sprawdzić, czy blokują Time-Block, DXY, sweep czy trigger M5.
 - Jeśli broker używa niestandardowych nazw instrumentów, ustaw dokładne wartości `MT5_SYMBOL` i `DXY_SYMBOL` zgodnie z Market Watch w MT5.
 - `BACKTEST_CSV_PATH` może być ścieżką względną lub absolutną. Ścieżka względna jest liczona od katalogu `backend/`.
 

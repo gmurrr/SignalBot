@@ -21,6 +21,7 @@ def build_execution_setup(
     tp2_target: float | None,
     pip_size: float,
     price_decimals: int,
+    relaxed: bool = False,
 ) -> ExecutionSetup | None:
     working_df = prepare_ohlcv(m5_df)
     if len(working_df) < 4:
@@ -35,10 +36,14 @@ def build_execution_setup(
 
     if direction == "LONG":
         has_pattern = detect_bullish_fvg(working_df) or detect_bullish_engulfing(working_df)
-        rsi_reversal = previous_rsi < 30 and current_rsi > previous_rsi and current_rsi >= 30
+        strict_rsi_reversal = previous_rsi < 30 and current_rsi > previous_rsi and current_rsi >= 30
+        relaxed_rsi_reversal = previous_rsi < 45 and current_rsi > previous_rsi
+        rsi_reversal = relaxed_rsi_reversal if relaxed else strict_rsi_reversal
+        momentum_reclaim = safe_float(latest["close"]) > safe_float(latest["open"]) and safe_float(latest["close"]) > safe_float(previous["high"])
         stop_loss = round(sweep_state.stop_anchor - pip_size, price_decimals)
         risk = entry_price - stop_loss
-        if not has_pattern or not rsi_reversal or risk <= pip_size:
+        trigger_confirmed = (has_pattern or rsi_reversal or momentum_reclaim) if relaxed else (has_pattern and rsi_reversal)
+        if not trigger_confirmed or risk <= pip_size:
             return None
 
         tp1 = round(entry_price + (risk * 1.5), price_decimals)
@@ -50,7 +55,7 @@ def build_execution_setup(
             sl=stop_loss,
             tp1=tp1,
             tp2=round(tp2_target, price_decimals) if tp2_target is not None else None,
-            reason="h1_bias_m5_reclaim_long",
+            reason="h1_bias_m5_reclaim_long_relaxed" if relaxed else "h1_bias_m5_reclaim_long",
             confidence=confidence,
             indicator_snapshot={
                 "m5_rsi": round(current_rsi, 2),
@@ -58,7 +63,9 @@ def build_execution_setup(
                 "reclaim_level": round(sweep_state.reference_level, price_decimals),
             },
             metadata={
-                "trigger": "bullish_fvg_or_engulfing_with_rsi_reversal",
+                "trigger": "bullish_fvg_or_engulfing_or_rsi_reversal" if relaxed else "bullish_fvg_or_engulfing_with_rsi_reversal",
+                "backtest_relaxed": relaxed,
+                "momentum_reclaim": momentum_reclaim,
                 "sweep_time": sweep_state.sweep_time,
                 "reclaim_time": sweep_state.reclaim_time,
                 "candles_waited": sweep_state.candles_waited,
@@ -67,10 +74,14 @@ def build_execution_setup(
         )
 
     has_pattern = detect_bearish_fvg(working_df) or detect_bearish_engulfing(working_df)
-    rsi_reversal = previous_rsi > 70 and current_rsi < previous_rsi and current_rsi <= 70
+    strict_rsi_reversal = previous_rsi > 70 and current_rsi < previous_rsi and current_rsi <= 70
+    relaxed_rsi_reversal = previous_rsi > 55 and current_rsi < previous_rsi
+    rsi_reversal = relaxed_rsi_reversal if relaxed else strict_rsi_reversal
+    momentum_reclaim = safe_float(latest["close"]) < safe_float(latest["open"]) and safe_float(latest["close"]) < safe_float(previous["low"])
     stop_loss = round(sweep_state.stop_anchor + pip_size, price_decimals)
     risk = stop_loss - entry_price
-    if not has_pattern or not rsi_reversal or risk <= pip_size:
+    trigger_confirmed = (has_pattern or rsi_reversal or momentum_reclaim) if relaxed else (has_pattern and rsi_reversal)
+    if not trigger_confirmed or risk <= pip_size:
         return None
 
     tp1 = round(entry_price - (risk * 1.5), price_decimals)
@@ -82,7 +93,7 @@ def build_execution_setup(
         sl=stop_loss,
         tp1=tp1,
         tp2=round(tp2_target, price_decimals) if tp2_target is not None else None,
-        reason="h1_bias_m5_reclaim_short",
+        reason="h1_bias_m5_reclaim_short_relaxed" if relaxed else "h1_bias_m5_reclaim_short",
         confidence=confidence,
         indicator_snapshot={
             "m5_rsi": round(current_rsi, 2),
@@ -90,7 +101,9 @@ def build_execution_setup(
             "reclaim_level": round(sweep_state.reference_level, price_decimals),
         },
         metadata={
-            "trigger": "bearish_fvg_or_engulfing_with_rsi_reversal",
+            "trigger": "bearish_fvg_or_engulfing_or_rsi_reversal" if relaxed else "bearish_fvg_or_engulfing_with_rsi_reversal",
+            "backtest_relaxed": relaxed,
+            "momentum_reclaim": momentum_reclaim,
             "sweep_time": sweep_state.sweep_time,
             "reclaim_time": sweep_state.reclaim_time,
             "candles_waited": sweep_state.candles_waited,

@@ -22,6 +22,11 @@ class Settings:
     mt5_tick_poll_interval_sec: float
     market_data_throttle_sec: float
     backtest_csv_path: str
+    backtest_diagnostics_csv_path: str
+    backtest_profile: str
+    backtest_min_confidence: float
+    backtest_cooldown_minutes: int
+    backtest_require_execution_session: bool
     market_data_table: str
     signals_table: str
     signal_window_size: int
@@ -49,10 +54,21 @@ def _optional_env(name: str) -> str | None:
     return value if value else None
 
 
+def _bool_env(name: str, default: bool) -> bool:
+    value = os.getenv(name, "").strip().strip("\"'").lower()
+    if not value:
+        return default
+    return value in {"1", "true", "yes", "y", "on"}
+
+
 def load_settings() -> Settings:
     app_mode = os.getenv("APP_MODE", "PROD").strip().upper()
     if app_mode not in {"PROD", "BACKTEST"}:
         raise ValueError("APP_MODE must be either PROD or BACKTEST")
+
+    backtest_profile = os.getenv("BACKTEST_PROFILE", "RELAXED").strip().upper()
+    if backtest_profile not in {"STRICT", "RELAXED"}:
+        raise ValueError("BACKTEST_PROFILE must be either STRICT or RELAXED")
 
     return Settings(
         supabase_url=_required_env("SUPABASE_URL"),
@@ -70,6 +86,11 @@ def load_settings() -> Settings:
         mt5_tick_poll_interval_sec=float(os.getenv("MT5_TICK_POLL_INTERVAL_SEC", "0.2")),
         market_data_throttle_sec=float(os.getenv("MARKET_DATA_THROTTLE_SEC", "1.0")),
         backtest_csv_path=os.getenv("BACKTEST_CSV_PATH", "backtest_results.csv").strip().strip("\"'"),
+        backtest_diagnostics_csv_path=os.getenv("BACKTEST_DIAGNOSTICS_CSV_PATH", "backtest_diagnostics.csv").strip().strip("\"'"),
+        backtest_profile=backtest_profile,
+        backtest_min_confidence=float(os.getenv("BACKTEST_MIN_CONFIDENCE", "0.70")),
+        backtest_cooldown_minutes=int(os.getenv("BACKTEST_COOLDOWN_MINUTES", "20")),
+        backtest_require_execution_session=_bool_env("BACKTEST_REQUIRE_EXECUTION_SESSION", True),
         market_data_table=os.getenv("MARKET_DATA_TABLE", "market_data").strip().strip("\"'"),
         signals_table=os.getenv("SIGNALS_TABLE", "signals").strip().strip("\"'"),
         signal_window_size=int(os.getenv("SIGNAL_WINDOW_SIZE", "360")),

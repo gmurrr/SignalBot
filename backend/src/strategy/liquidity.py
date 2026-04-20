@@ -59,6 +59,7 @@ def advance_sweep_state(
     reference_level: LiquidityLevel | None,
     latest_m5_candle: pd.Series,
     current_state: SweepState | None,
+    max_reclaim_candles: int = 3,
 ) -> SweepState | None:
     if reference_level is None:
         return None
@@ -83,7 +84,7 @@ def advance_sweep_state(
             return None
 
         waited = current_state.candles_waited + 1
-        if candle_close > current_state.reference_level and waited <= 3:
+        if candle_close > current_state.reference_level and waited <= max_reclaim_candles:
             return SweepState(
                 direction=direction,
                 reference_level=current_state.reference_level,
@@ -96,7 +97,7 @@ def advance_sweep_state(
                 liquidity_cleared=True,
             )
 
-        if waited >= 3:
+        if waited >= max_reclaim_candles:
             return None
 
         return SweepState(
@@ -125,7 +126,7 @@ def advance_sweep_state(
         return None
 
     waited = current_state.candles_waited + 1
-    if candle_close < current_state.reference_level and waited <= 3:
+    if candle_close < current_state.reference_level and waited <= max_reclaim_candles:
         return SweepState(
             direction=direction,
             reference_level=current_state.reference_level,
@@ -138,7 +139,7 @@ def advance_sweep_state(
             liquidity_cleared=True,
         )
 
-    if waited >= 3:
+    if waited >= max_reclaim_candles:
         return None
 
     return SweepState(
@@ -151,6 +152,60 @@ def advance_sweep_state(
         reclaim_time=current_state.reclaim_time,
         candles_waited=waited,
         liquidity_cleared=False,
+    )
+
+
+def build_relaxed_m5_liquidity_state(direction: str, m5_df: pd.DataFrame, lookback: int = 12) -> SweepState | None:
+    working_df = prepare_ohlcv(m5_df)
+    if len(working_df) < 4:
+        return None
+
+    latest = working_df.iloc[-1]
+    previous_window = working_df.iloc[:-1].tail(lookback)
+    if previous_window.empty:
+        return None
+
+    candle_time = latest["time"].isoformat()
+    candle_low = safe_float(latest["low"])
+    candle_high = safe_float(latest["high"])
+    candle_open = safe_float(latest["open"])
+    candle_close = safe_float(latest["close"])
+
+    if direction == "LONG":
+        reference_level = safe_float(previous_window["low"].min())
+        swept_and_reclaimed = candle_low <= reference_level and candle_close > reference_level
+        bullish_pullback_reclaim = candle_close > candle_open and candle_close > safe_float(working_df.iloc[-2]["high"])
+        if not swept_and_reclaimed and not bullish_pullback_reclaim:
+            return None
+
+        return SweepState(
+            direction=direction,
+            reference_level=reference_level,
+            swing_time=previous_window.loc[previous_window["low"].idxmin(), "time"].isoformat(),
+            sweep_time=candle_time,
+            sweep_extreme=candle_low,
+            stop_anchor=candle_low,
+            reclaim_time=candle_time,
+            candles_waited=1,
+            liquidity_cleared=True,
+        )
+
+    reference_level = safe_float(previous_window["high"].max())
+    swept_and_reclaimed = candle_high >= reference_level and candle_close < reference_level
+    bearish_pullback_reclaim = candle_close < candle_open and candle_close < safe_float(working_df.iloc[-2]["low"])
+    if not swept_and_reclaimed and not bearish_pullback_reclaim:
+        return None
+
+    return SweepState(
+        direction=direction,
+        reference_level=reference_level,
+        swing_time=previous_window.loc[previous_window["high"].idxmax(), "time"].isoformat(),
+        sweep_time=candle_time,
+        sweep_extreme=candle_high,
+        stop_anchor=candle_high,
+        reclaim_time=candle_time,
+        candles_waited=1,
+        liquidity_cleared=True,
     )
 
 
