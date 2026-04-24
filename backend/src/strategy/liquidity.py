@@ -8,31 +8,38 @@ from src.strategy.indicators import find_swings, prepare_ohlcv, safe_float
 from src.strategy.types import LiquidityLevel, SweepState
 
 
-def identify_reference_liquidity(h1_df: pd.DataFrame, direction: str) -> LiquidityLevel | None:
+def identify_reference_liquidity(
+    h1_df: pd.DataFrame,
+    direction: str,
+    current_price: float,
+    lookback_hours: int = 48,
+) -> LiquidityLevel | None:
     working_df = prepare_ohlcv(h1_df)
     if working_df.empty:
         return None
 
-    last_24_hours = working_df.tail(24)
-    swings = find_swings(last_24_hours)
+    swings = find_swings(working_df.tail(lookback_hours))
     if swings.empty:
         return None
 
     if direction == "LONG":
         eligible = swings[swings["type"] == "low"]
-        label = "H1_SWING_LOW"
+        directional = eligible[pd.to_numeric(eligible["price"], errors="coerce") < float(current_price)]
+        label = "H1_NEAREST_SWING_LOW"
     else:
         eligible = swings[swings["type"] == "high"]
-        label = "H1_SWING_HIGH"
+        directional = eligible[pd.to_numeric(eligible["price"], errors="coerce") > float(current_price)]
+        label = "H1_NEAREST_SWING_HIGH"
 
     if eligible.empty:
         return None
 
-    latest = eligible.iloc[-1]
+    candidates = directional if not directional.empty else eligible
+    latest = min(candidates.to_dict("records"), key=lambda row: abs(safe_float(row["price"]) - float(current_price)))
     return LiquidityLevel(
         direction=direction,
         price=safe_float(latest["price"]),
-        swing_time=latest["time"].isoformat(),
+        swing_time=latest["time"].isoformat() if hasattr(latest["time"], "isoformat") else str(latest["time"]),
         label=label,
     )
 
@@ -63,6 +70,9 @@ def advance_sweep_state(
 ) -> SweepState | None:
     if reference_level is None:
         return None
+
+    if current_state is not None and current_state.swing_time != reference_level.swing_time:
+        current_state = None
 
     candle_time = latest_m5_candle["time"].isoformat()
     candle_low = safe_float(latest_m5_candle["low"])

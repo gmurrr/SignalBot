@@ -27,12 +27,15 @@ class Settings:
     backtest_min_confidence: float
     backtest_cooldown_minutes: int
     backtest_require_execution_session: bool
+    backtest_lookback_days: int
+    backtest_include_research_signals: bool
     market_data_table: str
     signals_table: str
     signal_window_size: int
     signal_expiry_minutes: int
     signal_tp_atr_multiplier: float
     signal_sl_atr_multiplier: float
+    signal_max_stop_distance: float
     pip_size: float
     price_decimals: int
     seed_candle_count: int
@@ -91,12 +94,15 @@ def load_settings() -> Settings:
         backtest_min_confidence=float(os.getenv("BACKTEST_MIN_CONFIDENCE", "0.70")),
         backtest_cooldown_minutes=int(os.getenv("BACKTEST_COOLDOWN_MINUTES", "20")),
         backtest_require_execution_session=_bool_env("BACKTEST_REQUIRE_EXECUTION_SESSION", True),
+        backtest_lookback_days=int(os.getenv("BACKTEST_LOOKBACK_DAYS", "20")),
+        backtest_include_research_signals=_bool_env("BACKTEST_INCLUDE_RESEARCH_SIGNALS", False),
         market_data_table=os.getenv("MARKET_DATA_TABLE", "market_data").strip().strip("\"'"),
         signals_table=os.getenv("SIGNALS_TABLE", "signals").strip().strip("\"'"),
         signal_window_size=int(os.getenv("SIGNAL_WINDOW_SIZE", "360")),
         signal_expiry_minutes=int(os.getenv("SIGNAL_EXPIRY_MINUTES", "30")),
         signal_tp_atr_multiplier=float(os.getenv("SIGNAL_TP_ATR_MULTIPLIER", "1.8")),
         signal_sl_atr_multiplier=float(os.getenv("SIGNAL_SL_ATR_MULTIPLIER", "1.1")),
+        signal_max_stop_distance=float(os.getenv("SIGNAL_MAX_STOP_DISTANCE", "5.0")),
         pip_size=float(os.getenv("PIP_SIZE", "0.01")),
         price_decimals=int(os.getenv("PRICE_DECIMALS", "2")),
         seed_candle_count=int(os.getenv("SEED_CANDLE_COUNT", "400")),

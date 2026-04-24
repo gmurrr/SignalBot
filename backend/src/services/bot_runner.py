@@ -132,6 +132,8 @@ class BotRunner:
             pip_size=self._settings.pip_size,
             price_decimals=self._settings.price_decimals,
             dxy_symbol=self._settings.dxy_symbol,
+            signal_sl_atr_multiplier=self._settings.signal_sl_atr_multiplier,
+            signal_max_stop_distance=self._settings.signal_max_stop_distance,
         )
 
         last_m1_candle = xau_m1_df.iloc[-1].to_dict()
@@ -239,27 +241,30 @@ class BotRunner:
 
     async def _run_backtest(self) -> None:
         self._logger.info(
-            "Starting BACKTEST mode | symbol=%s dxy=%s profile=%s",
+            "Starting BACKTEST mode | symbol=%s dxy=%s profile=%s lookback_days=%d include_research=%s",
             self._settings.mt5_symbol,
             self._settings.dxy_symbol,
             self._settings.backtest_profile,
+            self._settings.backtest_lookback_days,
+            self._settings.backtest_include_research_signals,
         )
         self._mt5_client.initialize()
+        m1_count, h1_count, dxy_h1_count = self._resolve_backtest_history_counts()
 
         xau_m1_df = self._mt5_client.get_recent_candles(
             self._settings.mt5_symbol,
             "M1",
-            self._settings.seed_candle_count,
+            m1_count,
         ).sort_values("time")
         xau_h1_df = self._mt5_client.get_recent_candles(
             self._settings.mt5_symbol,
             "H1",
-            self._settings.h1_seed_candle_count,
+            h1_count,
         ).sort_values("time")
         dxy_h1_df = self._mt5_client.get_recent_candles(
             self._settings.dxy_symbol,
             "H1",
-            self._settings.dxy_seed_h1_count,
+            dxy_h1_count,
         ).sort_values("time")
 
         if len(xau_m1_df) < 120:
@@ -272,14 +277,20 @@ class BotRunner:
             pip_size=self._settings.pip_size,
             price_decimals=self._settings.price_decimals,
             dxy_symbol=self._settings.dxy_symbol,
+            signal_sl_atr_multiplier=self._settings.signal_sl_atr_multiplier,
+            signal_max_stop_distance=self._settings.signal_max_stop_distance,
         )
 
         start_index = min(120, len(xau_m1_df) - 2)
         engine.seed_from_m1(xau_m1_df.iloc[:start_index].copy())
 
         first_eval_time = self._parse_iso(str(xau_m1_df.iloc[start_index]["time"]))
-        xau_h1_seed = xau_h1_df[pd.to_datetime(xau_h1_df["time"], utc=True) < first_eval_time]
-        dxy_h1_seed = dxy_h1_df[pd.to_datetime(dxy_h1_df["time"], utc=True) < first_eval_time]
+        xau_h1_seed = xau_h1_df[
+            pd.to_datetime(xau_h1_df["time"], utc=True, errors="coerce", format="ISO8601") < first_eval_time
+        ]
+        dxy_h1_seed = dxy_h1_df[
+            pd.to_datetime(dxy_h1_df["time"], utc=True, errors="coerce", format="ISO8601") < first_eval_time
+        ]
 
         engine.seed_from_h1(xau_h1_seed.copy())
         engine.seed_dxy_from_h1(dxy_h1_seed.copy())
@@ -451,6 +462,12 @@ class BotRunner:
         if self._settings.backtest_require_execution_session and signal_context.get("execution_mode") != "EXECUTION":
             return self._reject_backtest_signal(signal_context, "backtest_session_filter")
 
+        if (
+            not self._settings.backtest_include_research_signals
+            and self._build_backtest_signal_grade(signal_context) == "RESEARCH_M5"
+        ):
+            return self._reject_backtest_signal(signal_context, "research_signal_excluded")
+
         confidence = float(signal_context.get("confidence") or 0.0)
         if confidence < self._settings.backtest_min_confidence:
             return self._reject_backtest_signal(signal_context, "below_confidence_threshold")
@@ -582,6 +599,19 @@ class BotRunner:
         if str(metadata.get("execution_profile") or "").upper() == "RELAXED":
             return "RELAXED"
         return "STRICT"
+
+    def _resolve_backtest_history_counts(self) -> tuple[int, int, int]:
+        if self._settings.backtest_lookback_days <= 0:
+            return (
+                self._settings.seed_candle_count,
+                self._settings.h1_seed_candle_count,
+                self._settings.dxy_seed_h1_count,
+            )
+
+        m1_count = max(self._settings.seed_candle_count, self._settings.backtest_lookback_days * 24 * 60)
+        h1_count = max(self._settings.h1_seed_candle_count, (self._settings.backtest_lookback_days * 24) + 260)
+        dxy_h1_count = max(self._settings.dxy_seed_h1_count, (self._settings.backtest_lookback_days * 24) + 260)
+        return m1_count, h1_count, dxy_h1_count
 
     def _build_xau_market_extra(self, market_snapshot: dict[str, Any]) -> dict[str, Any]:
         return {
@@ -805,6 +835,23 @@ class BotRunner:
         )
         self._logger.info("BACKTEST close reasons: %s", dict(Counter(row.close_reason or "unknown" for row in rows)))
         self._logger.info("BACKTEST signal grades: %s", dict(Counter(row.signal_grade for row in rows)))
+
+        tradeable_rows = [row for row in rows if row.signal_grade != "RESEARCH_M5"]
+        if tradeable_rows:
+            tradeable_wins = sum(1 for row in tradeable_rows if row.result_pips is not None and row.result_pips > 0)
+            tradeable_losses = sum(1 for row in tradeable_rows if row.result_pips is not None and row.result_pips <= 0)
+            tradeable_total_pips = sum(float(row.result_pips or 0.0) for row in tradeable_rows)
+            tradeable_winrate = tradeable_wins / max(1, tradeable_wins + tradeable_losses)
+            self._logger.info(
+                "BACKTEST tradeable-only report: signals=%d winrate=%.2f total_pips=%.1f (wins=%d losses=%d)",
+                len(tradeable_rows),
+                tradeable_winrate,
+                tradeable_total_pips,
+                tradeable_wins,
+                tradeable_losses,
+            )
+        else:
+            self._logger.info("BACKTEST tradeable-only report: no STRICT/RELAXED signals, only RESEARCH_M5 samples.")
 
     @staticmethod
     def _advance_history_pointer(

@@ -35,11 +35,15 @@ class RollingSignalEngineMTF:
         pip_size: float = 0.01,
         price_decimals: int = 2,
         dxy_symbol: str = "DXY",
+        signal_sl_atr_multiplier: float = 1.1,
+        signal_max_stop_distance: float = 5.0,
     ) -> None:
         self._timezone_name = timezone_name
         self._pip_size = pip_size
         self._price_decimals = price_decimals
         self._dxy_symbol = dxy_symbol
+        self._signal_sl_atr_multiplier = signal_sl_atr_multiplier
+        self._signal_max_stop_distance = signal_max_stop_distance
         self._candles_by_timeframe: dict[str, deque[dict[str, Any]]] = {
             "M1": deque(maxlen=window_size),
             "M5": deque(maxlen=max(window_size // 5, 96)),
@@ -102,7 +106,7 @@ class RollingSignalEngineMTF:
 
         reference_level = None
         if bias_context.side in {"LONG", "SHORT"}:
-            reference_level = identify_reference_liquidity(h1_df, bias_context.side)
+            reference_level = identify_reference_liquidity(h1_df, bias_context.side, live_price)
 
         sweep_state = self._sweep_states.get(bias_context.side) if bias_context.side in {"LONG", "SHORT"} else None
         liquidity_cleared = bool(sweep_state and sweep_state.liquidity_cleared)
@@ -185,7 +189,7 @@ class RollingSignalEngineMTF:
         self._last_processed_m5_time = latest_m5_time
 
         direction = str(snapshot["bias_side"])
-        reference_level = identify_reference_liquidity(h1_df, direction)
+        reference_level = identify_reference_liquidity(h1_df, direction, safe_float(latest_m5["close"]))
         updated_state = advance_sweep_state(
             direction,
             reference_level,
@@ -216,17 +220,19 @@ class RollingSignalEngineMTF:
             return snapshot
 
         tp2_target = find_tp2_target(h1_df, direction, safe_float(latest_m5["close"]))
-        execution_setup = build_execution_setup(
+        execution_setup, execution_reason = build_execution_setup(
             direction,
             m5_df,
             updated_state,
             tp2_target,
             self._pip_size,
             self._price_decimals,
+            self._signal_sl_atr_multiplier,
+            self._signal_max_stop_distance,
             relaxed=relaxed,
         )
         if execution_setup is None:
-            snapshot["reason"] = "trigger_not_confirmed"
+            snapshot["reason"] = execution_reason
             return snapshot
 
         signal_key = f"{latest_m5_time}:{execution_setup.type}:{execution_setup.reason}"
