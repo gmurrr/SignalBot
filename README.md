@@ -69,6 +69,17 @@ python -m src.main
 - `SIGNAL_EXPIRY_MINUTES` - maksymalny czas życia sygnału
 - `TRADING_TIMEZONE` - lokalna strefa sesyjna, domyślnie `Europe/Warsaw`
 - `MARKET_DATA_THROTTLE_SEC` - jak często backend publikuje snapshot rynku do Supabase
+- `H1_BIAS_MIN_SCORE` - minimalny score H1 wymagany do uznania kierunku
+- `H1_BIAS_PERSISTENCE_BARS` - ile zamkniętych świec H1 musi utrzymać się bias
+- `H1_BIAS_MAX_DISTANCE_ATR` - maksymalny dystans live price od EMA200 w ATR(H1), zanim bias zostanie uznany za zbyt rozciągnięty
+- `BACKTEST_H1_BIAS_MIN_SCORE` - opcjonalny override score H1 tylko dla backtestu
+- `BACKTEST_H1_BIAS_PERSISTENCE_BARS` - opcjonalny override persistence tylko dla backtestu
+- `BACKTEST_H1_BIAS_MAX_DISTANCE_ATR` - opcjonalny override twardego progu `OVEREXTENDED` tylko dla backtestu
+- `BACKTEST_H1_SOFT_OVEREXTENDED_ATR` - miękki próg `OVEREXTENDED` tylko dla backtestu `RELAXED`
+- `BACKTEST_RESEARCH_MIN_BIAS_AGE_BARS` - minimalny wiek biasu H1 dopuszczany dla sygnałów `RESEARCH_M5`
+- `BACKTEST_RESEARCH_MAX_BIAS_AGE_BARS` - maksymalny wiek biasu H1 dopuszczany dla sygnałów `RESEARCH_M5`
+- `BACKTEST_RESEARCH_MIN_DISTANCE_TO_EMA_ATR` - minimalny dystans od EMA200 w ATR(H1) dla sygnałów `RESEARCH_M5`
+- `BACKTEST_RESEARCH_FIRST_PER_REFERENCE` - przepuszcza tylko pierwszy sygnał `RESEARCH_M5` na daną strefę płynności w obrębie tej samej sesji
 
 ## Tryb Backtest
 
@@ -93,6 +104,17 @@ BACKTEST_LOOKBACK_DAYS=20
 BACKTEST_INCLUDE_RESEARCH_SIGNALS=false
 SIGNAL_SL_ATR_MULTIPLIER=1.1
 SIGNAL_MAX_STOP_DISTANCE=5.0
+H1_BIAS_MIN_SCORE=3
+H1_BIAS_PERSISTENCE_BARS=2
+H1_BIAS_MAX_DISTANCE_ATR=2.5
+BACKTEST_H1_BIAS_MIN_SCORE=3
+BACKTEST_H1_BIAS_PERSISTENCE_BARS=1
+BACKTEST_H1_BIAS_MAX_DISTANCE_ATR=2.5
+BACKTEST_H1_SOFT_OVEREXTENDED_ATR=3.0
+BACKTEST_RESEARCH_MIN_BIAS_AGE_BARS=2
+BACKTEST_RESEARCH_MAX_BIAS_AGE_BARS=6
+BACKTEST_RESEARCH_MIN_DISTANCE_TO_EMA_ATR=1.0
+BACKTEST_RESEARCH_FIRST_PER_REFERENCE=true
 SEED_CANDLE_COUNT=400
 H1_SEED_CANDLE_COUNT=260
 DXY_SEED_H1_COUNT=260
@@ -152,19 +174,53 @@ Backtest ma dodatkowe filtry, które nie wpływają na tryb live:
 - `BACKTEST_INCLUDE_RESEARCH_SIGNALS=false` - domyślnie nie wlicza do wyniku setupów `RESEARCH_M5`; pozostają one w diagnostyce
 - `SIGNAL_SL_ATR_MULTIPLIER=1.1` - odrzuca setupy, których stop jest za szeroki względem bieżącego ATR M5
 - `SIGNAL_MAX_STOP_DISTANCE=5.0` - dodatkowy twardy limit szerokości stopa w cenie instrumentu
+- `BACKTEST_RESEARCH_MIN_BIAS_AGE_BARS=2` - odrzuca sygnały `RESEARCH_M5`, jeśli bias H1 jest jeszcze zbyt świeży
+- `BACKTEST_RESEARCH_MAX_BIAS_AGE_BARS=6` - odrzuca sygnały `RESEARCH_M5`, jeśli bias H1 jest już zbyt stary
+- `BACKTEST_RESEARCH_MIN_DISTANCE_TO_EMA_ATR=1.0` - odrzuca sygnały `RESEARCH_M5`, jeśli wejście jest zbyt blisko EMA200
+- `BACKTEST_RESEARCH_FIRST_PER_REFERENCE=true` - odrzuca kolejne wejścia `RESEARCH_M5` w tę samą strefę `reference_liquidity` w obrębie tej samej sesji
 
-Odrzucone setupy nadal pojawią się w `backtest_diagnostics.csv` z powodami takimi jak:
+### H1 Bias Tuning
 
-- `below_confidence_threshold`
-- `backtest_cooldown`
-- `backtest_session_filter`
-- `research_signal_excluded`
-- `risk_too_wide_for_m5_atr`
-- `risk_too_wide_absolute`
+Od tej wersji bias H1 jest stabilizowany zanim M5 dostanie prawo do szukania wejścia:
+
+- bias liczony jest z ostatniej zamkniętej świecy H1, a nie z live ticka "dopinającego" bieżącą godzinę
+- kierunek H1 dostaje score oparty o EMA200, nachylenie EMA, pozycję względem Kumo, relację Tenkan/Kijun oraz prostą strukturę poprzedniej świecy
+- bias musi utrzymać się przez określoną liczbę zamkniętych świec H1
+- jeśli live price jest zbyt daleko od EMA200 względem ATR(H1), system oznacza stan jako `OVEREXTENDED` i blokuje nowy sygnał
+
+Domyślne ustawienia:
+
+```env
+H1_BIAS_MIN_SCORE=3
+H1_BIAS_PERSISTENCE_BARS=2
+H1_BIAS_MAX_DISTANCE_ATR=2.5
+```
+
+Domyślne strojenie backtestu `RELAXED`:
+
+```env
+BACKTEST_H1_BIAS_MIN_SCORE=3
+BACKTEST_H1_BIAS_PERSISTENCE_BARS=1
+BACKTEST_H1_BIAS_MAX_DISTANCE_ATR=2.5
+BACKTEST_H1_SOFT_OVEREXTENDED_ATR=3.0
+BACKTEST_RESEARCH_MIN_BIAS_AGE_BARS=2
+BACKTEST_RESEARCH_MAX_BIAS_AGE_BARS=6
+BACKTEST_RESEARCH_MIN_DISTANCE_TO_EMA_ATR=1.0
+BACKTEST_RESEARCH_FIRST_PER_REFERENCE=true
+```
+
+Praktyczne strojenie:
+
+- więcej sygnałów: obniż `H1_BIAS_MIN_SCORE` do `2`
+- stabilniejszy bias: podnieś `H1_BIAS_PERSISTENCE_BARS` do `3`
+- mniej spóźnionych wejść po impulsie: obniż `H1_BIAS_MAX_DISTANCE_ATR` do `1.8-2.2`
+- większa tolerancja na trend: podnieś `H1_BIAS_MAX_DISTANCE_ATR` do `3.0`
+- tylko dla backtestu `RELAXED`: zostaw live bez zmian, a testowo użyj `BACKTEST_H1_BIAS_PERSISTENCE_BARS=1`
+- miękki wariant `OVEREXTENDED`: ustaw `BACKTEST_H1_SOFT_OVEREXTENDED_ATR=3.0`, aby zakres `2.5-3.0 ATR` nie blokował całkowicie biasu, ale przechodził z lekko obniżonym `confidence`
 
 ### Testowanie większej liczby dni
 
-Nowy parametr `BACKTEST_LOOKBACK_DAYS` pozwala pobrać większą próbkę historyczną bez ręcznego grzebania w kodzie.
+Parametr `BACKTEST_LOOKBACK_DAYS` pozwala pobrać większą próbkę historyczną bez ręcznego grzebania w kodzie.
 
 Przykłady:
 
@@ -177,7 +233,7 @@ BACKTEST_LOOKBACK_DAYS=30
 Jak to działa:
 
 - dla M1 backend pobiera co najmniej `LOOKBACK_DAYS * 24 * 60` świec
-- dla H1 i DXY H1 pobiera odpowiednio większy zakres, z dodatkowym buforem pod EMA 200 i bias H1
+- dla H1 i DXY H1 pobiera odpowiednio większy zakres, z dodatkowym buforem pod EMA200 i bias H1
 - jeśli ustawisz `BACKTEST_LOOKBACK_DAYS=0`, system wróci do klasycznych liczników `SEED_CANDLE_COUNT`, `H1_SEED_CANDLE_COUNT` i `DXY_SEED_H1_COUNT`
 
 W praktyce:
@@ -230,6 +286,11 @@ Najważniejsze kolumny:
 - `reason`
 - `bias_side`
 - `trend_state`
+- `bias_score`
+- `bias_age_bars`
+- `distance_to_ema_atr`
+- `overextended`
+- `soft_overextended`
 - `execution_mode`
 - `session_name`
 - `dxy_bias`
@@ -244,6 +305,8 @@ Najczęstsze wartości `reason`:
 
 - `time_block_monitoring`
 - `h1_bias_not_aligned`
+- `bias_persistence_not_met`
+- `h1_overextended_from_ema`
 - `waiting_for_liquidity_sweep`
 - `waiting_for_m5_reclaim`
 - `trigger_not_confirmed`
@@ -252,6 +315,10 @@ Najczęstsze wartości `reason`:
 - `backtest_cooldown`
 - `backtest_session_filter`
 - `research_signal_excluded`
+- `research_bias_too_fresh`
+- `research_bias_too_old`
+- `research_too_close_to_ema`
+- `research_reference_reentry`
 - `risk_too_wide_for_m5_atr`
 - `risk_too_wide_absolute`
 
@@ -312,7 +379,7 @@ AlphaNode V2 odchodzi od prostych przecięć wskaźników i działa warstwowo: �
 ```mermaid
 flowchart TD
     A["Time-Block Filter"] --> B["DXY Correlation Filter"]
-    B --> C["H1 Bias: EMA200 + Ichimoku Kumo"]
+    B --> C["H1 Bias Score + Persistence + Overextension"]
     C --> D["H1 Liquidity Sweep"]
     D --> E["M5 Trigger: FVG or Engulfing + RSI Reversal"]
     E --> F["Risk Engine: SL under sweep, TP1 1:1.5, TP2 next H1 liquidity"]
@@ -322,6 +389,7 @@ Dlaczego taka kolejność:
 
 - jeśli sesja jest słaba, egzekucja zostaje zablokowana zanim wskaźniki zaczną cokolwiek sugerować
 - jeśli DXY jest wrogie dla złota, long na XAU traci przewagę
+- H1 musi najpierw pokazać zgodny, stabilny kierunek
 - dopiero później system szuka sweepu i triggera M5
 
 ### Psychologia systemu
@@ -382,6 +450,10 @@ Dla XAU:
 - `market_health_components`
 - `bias_side`
 - `trend_state`
+- `bias_score`
+- `bias_age_bars`
+- `distance_to_ema_atr`
+- `overextended`
 - `session_name`
 - `execution_mode`
 - `dxy_bias`

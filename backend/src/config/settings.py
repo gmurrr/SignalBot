@@ -29,6 +29,14 @@ class Settings:
     backtest_require_execution_session: bool
     backtest_lookback_days: int
     backtest_include_research_signals: bool
+    backtest_h1_bias_min_score: int
+    backtest_h1_bias_persistence_bars: int
+    backtest_h1_bias_max_distance_atr: float
+    backtest_h1_soft_overextended_atr: float
+    backtest_research_min_bias_age_bars: int
+    backtest_research_max_bias_age_bars: int
+    backtest_research_min_distance_to_ema_atr: float
+    backtest_research_first_per_reference: bool
     market_data_table: str
     signals_table: str
     signal_window_size: int
@@ -36,6 +44,9 @@ class Settings:
     signal_tp_atr_multiplier: float
     signal_sl_atr_multiplier: float
     signal_max_stop_distance: float
+    h1_bias_min_score: int
+    h1_bias_persistence_bars: int
+    h1_bias_max_distance_atr: float
     pip_size: float
     price_decimals: int
     seed_candle_count: int
@@ -73,6 +84,11 @@ def load_settings() -> Settings:
     if backtest_profile not in {"STRICT", "RELAXED"}:
         raise ValueError("BACKTEST_PROFILE must be either STRICT or RELAXED")
 
+    h1_bias_min_score = int(os.getenv("H1_BIAS_MIN_SCORE", "3"))
+    h1_bias_persistence_bars = int(os.getenv("H1_BIAS_PERSISTENCE_BARS", "2"))
+    h1_bias_max_distance_atr = float(os.getenv("H1_BIAS_MAX_DISTANCE_ATR", "2.5"))
+    relaxed_backtest = app_mode == "BACKTEST" and backtest_profile == "RELAXED"
+
     return Settings(
         supabase_url=_required_env("SUPABASE_URL"),
         supabase_service_role_key=(
@@ -95,7 +111,33 @@ def load_settings() -> Settings:
         backtest_cooldown_minutes=int(os.getenv("BACKTEST_COOLDOWN_MINUTES", "20")),
         backtest_require_execution_session=_bool_env("BACKTEST_REQUIRE_EXECUTION_SESSION", True),
         backtest_lookback_days=int(os.getenv("BACKTEST_LOOKBACK_DAYS", "20")),
-        backtest_include_research_signals=_bool_env("BACKTEST_INCLUDE_RESEARCH_SIGNALS", False),
+        backtest_include_research_signals=_bool_env("BACKTEST_INCLUDE_RESEARCH_SIGNALS", True),
+        backtest_h1_bias_min_score=int(os.getenv("BACKTEST_H1_BIAS_MIN_SCORE", str(h1_bias_min_score))),
+        backtest_h1_bias_persistence_bars=int(
+            os.getenv(
+                "BACKTEST_H1_BIAS_PERSISTENCE_BARS",
+                "1" if relaxed_backtest else str(h1_bias_persistence_bars),
+            )
+        ),
+        backtest_h1_bias_max_distance_atr=float(
+            os.getenv("BACKTEST_H1_BIAS_MAX_DISTANCE_ATR", str(h1_bias_max_distance_atr))
+        ),
+        backtest_h1_soft_overextended_atr=float(
+            os.getenv("BACKTEST_H1_SOFT_OVEREXTENDED_ATR", "3.0" if relaxed_backtest else "0.0")
+        ),
+        backtest_research_min_bias_age_bars=int(
+            os.getenv("BACKTEST_RESEARCH_MIN_BIAS_AGE_BARS", "4" if relaxed_backtest else "0")
+        ),
+        backtest_research_max_bias_age_bars=int(
+            os.getenv("BACKTEST_RESEARCH_MAX_BIAS_AGE_BARS", "6" if relaxed_backtest else "0")
+        ),
+        backtest_research_min_distance_to_ema_atr=float(
+            os.getenv("BACKTEST_RESEARCH_MIN_DISTANCE_TO_EMA_ATR", "1.0" if relaxed_backtest else "0.0")
+        ),
+        backtest_research_first_per_reference=_bool_env(
+            "BACKTEST_RESEARCH_FIRST_PER_REFERENCE",
+            relaxed_backtest,
+        ),
         market_data_table=os.getenv("MARKET_DATA_TABLE", "market_data").strip().strip("\"'"),
         signals_table=os.getenv("SIGNALS_TABLE", "signals").strip().strip("\"'"),
         signal_window_size=int(os.getenv("SIGNAL_WINDOW_SIZE", "360")),
@@ -103,6 +145,9 @@ def load_settings() -> Settings:
         signal_tp_atr_multiplier=float(os.getenv("SIGNAL_TP_ATR_MULTIPLIER", "1.8")),
         signal_sl_atr_multiplier=float(os.getenv("SIGNAL_SL_ATR_MULTIPLIER", "1.1")),
         signal_max_stop_distance=float(os.getenv("SIGNAL_MAX_STOP_DISTANCE", "5.0")),
+        h1_bias_min_score=h1_bias_min_score,
+        h1_bias_persistence_bars=h1_bias_persistence_bars,
+        h1_bias_max_distance_atr=h1_bias_max_distance_atr,
         pip_size=float(os.getenv("PIP_SIZE", "0.01")),
         price_decimals=int(os.getenv("PRICE_DECIMALS", "2")),
         seed_candle_count=int(os.getenv("SEED_CANDLE_COUNT", "400")),

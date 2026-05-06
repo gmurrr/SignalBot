@@ -37,6 +37,10 @@ class RollingSignalEngineMTF:
         dxy_symbol: str = "DXY",
         signal_sl_atr_multiplier: float = 1.1,
         signal_max_stop_distance: float = 5.0,
+        h1_bias_min_score: int = 3,
+        h1_bias_persistence_bars: int = 2,
+        h1_bias_max_distance_atr: float = 2.5,
+        h1_bias_soft_max_distance_atr: float = 0.0,
     ) -> None:
         self._timezone_name = timezone_name
         self._pip_size = pip_size
@@ -44,6 +48,10 @@ class RollingSignalEngineMTF:
         self._dxy_symbol = dxy_symbol
         self._signal_sl_atr_multiplier = signal_sl_atr_multiplier
         self._signal_max_stop_distance = signal_max_stop_distance
+        self._h1_bias_min_score = h1_bias_min_score
+        self._h1_bias_persistence_bars = h1_bias_persistence_bars
+        self._h1_bias_max_distance_atr = h1_bias_max_distance_atr
+        self._h1_bias_soft_max_distance_atr = h1_bias_soft_max_distance_atr
         self._candles_by_timeframe: dict[str, deque[dict[str, Any]]] = {
             "M1": deque(maxlen=window_size),
             "M5": deque(maxlen=max(window_size // 5, 96)),
@@ -101,6 +109,10 @@ class RollingSignalEngineMTF:
             live_price,
             dxy_context,
             session_context,
+            min_score=self._h1_bias_min_score,
+            persistence_bars=self._h1_bias_persistence_bars,
+            max_distance_atr=self._h1_bias_max_distance_atr,
+            soft_max_distance_atr=self._h1_bias_soft_max_distance_atr if relaxed else None,
             ignore_dxy_block=relaxed,
         )
 
@@ -133,14 +145,28 @@ class RollingSignalEngineMTF:
             "session_name": session_context.name,
             "execution_mode": session_context.mode,
             "dxy_bias": dxy_context.bias,
+            "bias_score": bias_context.bias_score,
+            "bias_age_bars": bias_context.bias_age_bars,
+            "distance_to_ema_atr": bias_context.distance_to_ema_atr,
+            "overextended": bias_context.overextended,
+            "soft_overextended": bias_context.soft_overextended,
             "liquidity_cleared": liquidity_cleared,
             "market_health_score": market_health_score,
             "market_health_components": components,
             "reference_liquidity": round(reference_level.price, self._price_decimals) if reference_level else None,
             "indicator_snapshot": {
                 "h1_ema200": round(bias_context.ema200, self._price_decimals),
+                "h1_ema_slope": round(bias_context.ema_slope, 6),
                 "kumo_top": round(bias_context.kumo_top, self._price_decimals),
                 "kumo_bottom": round(bias_context.kumo_bottom, self._price_decimals),
+                "h1_tenkan": round(bias_context.tenkan, self._price_decimals),
+                "h1_kijun": round(bias_context.kijun, self._price_decimals),
+                "h1_atr14": round(bias_context.atr14, self._price_decimals),
+                "h1_bias_score": bias_context.bias_score,
+                "h1_bias_age_bars": bias_context.bias_age_bars,
+                "h1_distance_to_ema_atr": round(bias_context.distance_to_ema_atr, 3),
+                "h1_overextended": bias_context.overextended,
+                "h1_soft_overextended": bias_context.soft_overextended,
                 "dxy_ema200": round(dxy_context.ema200, 4),
                 "dxy_price": round(dxy_context.price, 4),
                 "dxy_ema_slope": round(dxy_context.ema_slope, 6),
@@ -242,12 +268,15 @@ class RollingSignalEngineMTF:
 
         self._last_signal_key = signal_key
         self._sweep_states[direction] = None
+        confidence = float(execution_setup.confidence)
+        if snapshot["soft_overextended"]:
+            confidence = max(0.5, round(confidence - 0.05, 2))
 
         snapshot.update(
             {
                 "signal": execution_setup.signal,
                 "type": execution_setup.type,
-                "confidence": execution_setup.confidence,
+                "confidence": confidence,
                 "reason": execution_setup.reason,
                 "entry_price": execution_setup.entry_price,
                 "sl": execution_setup.sl,
@@ -260,6 +289,7 @@ class RollingSignalEngineMTF:
                 "metadata": {
                     **snapshot["metadata"],
                     **execution_setup.metadata,
+                    "soft_overextended": snapshot["soft_overextended"],
                 },
             }
         )

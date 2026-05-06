@@ -50,6 +50,11 @@ class BacktestDiagnosticRow:
     reason: str
     bias_side: str
     trend_state: str
+    bias_score: int
+    bias_age_bars: int
+    distance_to_ema_atr: float
+    overextended: bool
+    soft_overextended: bool
     execution_mode: str
     session_name: str
     dxy_bias: str
@@ -134,6 +139,10 @@ class BotRunner:
             dxy_symbol=self._settings.dxy_symbol,
             signal_sl_atr_multiplier=self._settings.signal_sl_atr_multiplier,
             signal_max_stop_distance=self._settings.signal_max_stop_distance,
+            h1_bias_min_score=self._settings.h1_bias_min_score,
+            h1_bias_persistence_bars=self._settings.h1_bias_persistence_bars,
+            h1_bias_max_distance_atr=self._settings.h1_bias_max_distance_atr,
+            h1_bias_soft_max_distance_atr=0.0,
         )
 
         last_m1_candle = xau_m1_df.iloc[-1].to_dict()
@@ -279,6 +288,10 @@ class BotRunner:
             dxy_symbol=self._settings.dxy_symbol,
             signal_sl_atr_multiplier=self._settings.signal_sl_atr_multiplier,
             signal_max_stop_distance=self._settings.signal_max_stop_distance,
+            h1_bias_min_score=self._settings.backtest_h1_bias_min_score,
+            h1_bias_persistence_bars=self._settings.backtest_h1_bias_persistence_bars,
+            h1_bias_max_distance_atr=self._settings.backtest_h1_bias_max_distance_atr,
+            h1_bias_soft_max_distance_atr=self._settings.backtest_h1_soft_overextended_atr,
         )
 
         start_index = min(120, len(xau_m1_df) - 2)
@@ -301,6 +314,7 @@ class BotRunner:
         dxy_h1_pointer = len(dxy_h1_seed)
         current_dxy_price = self._latest_close(dxy_h1_seed) or self._latest_close(dxy_h1_df) or 0.0
         cooldown_until: dt.datetime | None = None
+        seen_research_reference_keys: set[str] = set()
 
         for index in range(start_index, len(xau_m1_df) - 1):
             candle = xau_m1_df.iloc[index].to_dict()
@@ -329,7 +343,12 @@ class BotRunner:
                 str(candle["time"]),
                 execution_profile=self._settings.backtest_profile,
             )
-            signal_context = self._apply_backtest_signal_filters(signal_context, current_time, cooldown_until)
+            signal_context = self._apply_backtest_signal_filters(
+                signal_context,
+                current_time,
+                cooldown_until,
+                seen_research_reference_keys,
+            )
             diagnostics.append(self._build_backtest_diagnostic(str(candle["time"]), signal_context))
             if int(signal_context["signal"]) == 0:
                 continue
@@ -455,18 +474,37 @@ class BotRunner:
         signal_context: dict[str, Any],
         current_time: dt.datetime,
         cooldown_until: dt.datetime | None,
+        seen_research_reference_keys: set[str],
     ) -> dict[str, Any]:
         if int(signal_context.get("signal") or 0) == 0:
             return signal_context
 
+        signal_grade = self._build_backtest_signal_grade(signal_context)
+
         if self._settings.backtest_require_execution_session and signal_context.get("execution_mode") != "EXECUTION":
             return self._reject_backtest_signal(signal_context, "backtest_session_filter")
 
-        if (
-            not self._settings.backtest_include_research_signals
-            and self._build_backtest_signal_grade(signal_context) == "RESEARCH_M5"
-        ):
+        if not self._settings.backtest_include_research_signals and signal_grade == "RESEARCH_M5":
             return self._reject_backtest_signal(signal_context, "research_signal_excluded")
+
+        if signal_grade == "RESEARCH_M5":
+            bias_age_bars = int(signal_context.get("bias_age_bars") or 0)
+            if (
+                self._settings.backtest_research_min_bias_age_bars > 0
+                and bias_age_bars < self._settings.backtest_research_min_bias_age_bars
+            ):
+                return self._reject_backtest_signal(signal_context, "research_bias_too_fresh")
+            if (
+                self._settings.backtest_research_max_bias_age_bars > 0
+                and bias_age_bars > self._settings.backtest_research_max_bias_age_bars
+            ):
+                return self._reject_backtest_signal(signal_context, "research_bias_too_old")
+            distance_to_ema_atr = float(signal_context.get("distance_to_ema_atr") or 0.0)
+            if (
+                self._settings.backtest_research_min_distance_to_ema_atr > 0
+                and distance_to_ema_atr < self._settings.backtest_research_min_distance_to_ema_atr
+            ):
+                return self._reject_backtest_signal(signal_context, "research_too_close_to_ema")
 
         confidence = float(signal_context.get("confidence") or 0.0)
         if confidence < self._settings.backtest_min_confidence:
@@ -475,7 +513,28 @@ class BotRunner:
         if cooldown_until is not None and current_time < cooldown_until:
             return self._reject_backtest_signal(signal_context, "backtest_cooldown")
 
+        if signal_grade == "RESEARCH_M5" and self._settings.backtest_research_first_per_reference:
+            reference_key = self._build_backtest_reference_key(signal_context)
+            if reference_key is not None:
+                if reference_key in seen_research_reference_keys:
+                    return self._reject_backtest_signal(signal_context, "research_reference_reentry")
+                seen_research_reference_keys.add(reference_key)
+
         return signal_context
+
+    def _build_backtest_reference_key(self, signal_context: dict[str, Any]) -> str | None:
+        signal_type = str(signal_context.get("type") or "").strip()
+        session_name = str(signal_context.get("session_name") or "").strip()
+        reference_liquidity = signal_context.get("reference_liquidity")
+        metadata = dict(signal_context.get("metadata") or {})
+        session_local_time = str(metadata.get("session_local_time") or "").strip()
+
+        if not signal_type or not session_name or reference_liquidity is None or not session_local_time:
+            return None
+
+        session_date = session_local_time[:10]
+        reference_key = f"{float(reference_liquidity):.{self._settings.price_decimals}f}"
+        return f"{session_date}|{session_name}|{signal_type}|{reference_key}"
 
     @staticmethod
     def _reject_backtest_signal(signal_context: dict[str, Any], reason: str) -> dict[str, Any]:
@@ -624,6 +683,11 @@ class BotRunner:
             "session_name": market_snapshot["session_name"],
             "execution_mode": market_snapshot["execution_mode"],
             "dxy_bias": market_snapshot["dxy_bias"],
+            "bias_score": market_snapshot["bias_score"],
+            "bias_age_bars": market_snapshot["bias_age_bars"],
+            "distance_to_ema_atr": market_snapshot["distance_to_ema_atr"],
+            "overextended": market_snapshot["overextended"],
+            "soft_overextended": market_snapshot["soft_overextended"],
             "liquidity_cleared": market_snapshot["liquidity_cleared"],
             "reference_liquidity": market_snapshot["reference_liquidity"],
             "indicator_snapshot": market_snapshot["indicator_snapshot"],
@@ -745,6 +809,11 @@ class BotRunner:
             reason=str(signal_context.get("reason") or "unknown"),
             bias_side=str(signal_context.get("bias_side") or "UNKNOWN"),
             trend_state=str(signal_context.get("trend_state") or "UNKNOWN"),
+            bias_score=int(signal_context.get("bias_score") or 0),
+            bias_age_bars=int(signal_context.get("bias_age_bars") or 0),
+            distance_to_ema_atr=float(signal_context.get("distance_to_ema_atr") or 0.0),
+            overextended=bool(signal_context.get("overextended") or False),
+            soft_overextended=bool(signal_context.get("soft_overextended") or False),
             execution_mode=str(signal_context.get("execution_mode") or "UNKNOWN"),
             session_name=str(signal_context.get("session_name") or "UNKNOWN"),
             dxy_bias=str(signal_context.get("dxy_bias") or "UNKNOWN"),
@@ -776,6 +845,11 @@ class BotRunner:
                     "reason",
                     "bias_side",
                     "trend_state",
+                    "bias_score",
+                    "bias_age_bars",
+                    "distance_to_ema_atr",
+                    "overextended",
+                    "soft_overextended",
                     "execution_mode",
                     "session_name",
                     "dxy_bias",
@@ -794,6 +868,11 @@ class BotRunner:
                         row.reason,
                         row.bias_side,
                         row.trend_state,
+                        row.bias_score,
+                        row.bias_age_bars,
+                        row.distance_to_ema_atr,
+                        row.overextended,
+                        row.soft_overextended,
                         row.execution_mode,
                         row.session_name,
                         row.dxy_bias,
