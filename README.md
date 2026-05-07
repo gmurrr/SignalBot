@@ -66,6 +66,9 @@ python -m src.main
 - `SEED_CANDLE_COUNT` - liczba świec M1 trzymanych do analizy i agregacji
 - `H1_SEED_CANDLE_COUNT` - historia H1 dla biasu XAU
 - `DXY_SEED_H1_COUNT` - historia H1 dla biasu DXY
+- `SHADOW_PROFILE` - profil silnika dla trybu `SHADOW`, domyślnie `RELAXED`
+- `SHADOW_CSV_PATH` - lokalny raport zamkniętych sygnałów trybu `SHADOW`
+- `SHADOW_DIAGNOSTICS_CSV_PATH` - lokalny raport kandydatów i odrzuceń trybu `SHADOW`
 - `SIGNAL_EXPIRY_MINUTES` - maksymalny czas życia sygnału
 - `TRADING_TIMEZONE` - lokalna strefa sesyjna, domyślnie `Europe/Warsaw`
 - `MARKET_DATA_THROTTLE_SEC` - jak często backend publikuje snapshot rynku do Supabase
@@ -76,10 +79,14 @@ python -m src.main
 - `BACKTEST_H1_BIAS_PERSISTENCE_BARS` - opcjonalny override persistence tylko dla backtestu
 - `BACKTEST_H1_BIAS_MAX_DISTANCE_ATR` - opcjonalny override twardego progu `OVEREXTENDED` tylko dla backtestu
 - `BACKTEST_H1_SOFT_OVEREXTENDED_ATR` - miękki próg `OVEREXTENDED` tylko dla backtestu `RELAXED`
+- `BACKTEST_FROM` / `BACKTEST_TO` - opcjonalny zakres dat backtestu; jeśli ustawisz oba, mają priorytet nad `BACKTEST_LOOKBACK_DAYS`
 - `BACKTEST_RESEARCH_MIN_BIAS_AGE_BARS` - minimalny wiek biasu H1 dopuszczany dla sygnałów `RESEARCH_M5`
 - `BACKTEST_RESEARCH_MAX_BIAS_AGE_BARS` - maksymalny wiek biasu H1 dopuszczany dla sygnałów `RESEARCH_M5`
 - `BACKTEST_RESEARCH_MIN_DISTANCE_TO_EMA_ATR` - minimalny dystans od EMA200 w ATR(H1) dla sygnałów `RESEARCH_M5`
+- `BACKTEST_RESEARCH_FIRST_PER_DAY_SIDE` - przepuszcza tylko pierwszy sygnał `RESEARCH_M5` na dany dzień i kierunek
 - `BACKTEST_RESEARCH_FIRST_PER_REFERENCE` - przepuszcza tylko pierwszy sygnał `RESEARCH_M5` na daną strefę płynności w obrębie tej samej sesji
+- `BACKTEST_RESEARCH_BLOCK_BUY_WITH_BULLISH_DXY` - blokuje `RESEARCH_M5 Buy`, gdy DXY ma bias `BULLISH_DXY`
+- `BACKTEST_RESEARCH_BLOCK_BUY_WITH_UNAVAILABLE_DXY` - blokuje `RESEARCH_M5 Buy`, gdy bias DXY jest niedostępny (`UNAVAILABLE`)
 
 ## Tryb Backtest
 
@@ -101,6 +108,8 @@ BACKTEST_MIN_CONFIDENCE=0.70
 BACKTEST_COOLDOWN_MINUTES=20
 BACKTEST_REQUIRE_EXECUTION_SESSION=true
 BACKTEST_LOOKBACK_DAYS=20
+BACKTEST_FROM=
+BACKTEST_TO=
 BACKTEST_INCLUDE_RESEARCH_SIGNALS=false
 SIGNAL_SL_ATR_MULTIPLIER=1.1
 SIGNAL_MAX_STOP_DISTANCE=5.0
@@ -114,7 +123,10 @@ BACKTEST_H1_SOFT_OVEREXTENDED_ATR=3.0
 BACKTEST_RESEARCH_MIN_BIAS_AGE_BARS=2
 BACKTEST_RESEARCH_MAX_BIAS_AGE_BARS=6
 BACKTEST_RESEARCH_MIN_DISTANCE_TO_EMA_ATR=1.0
+BACKTEST_RESEARCH_FIRST_PER_DAY_SIDE=true
 BACKTEST_RESEARCH_FIRST_PER_REFERENCE=true
+BACKTEST_RESEARCH_BLOCK_BUY_WITH_BULLISH_DXY=true
+BACKTEST_RESEARCH_BLOCK_BUY_WITH_UNAVAILABLE_DXY=true
 SEED_CANDLE_COUNT=400
 H1_SEED_CANDLE_COUNT=260
 DXY_SEED_H1_COUNT=260
@@ -177,7 +189,10 @@ Backtest ma dodatkowe filtry, które nie wpływają na tryb live:
 - `BACKTEST_RESEARCH_MIN_BIAS_AGE_BARS=2` - odrzuca sygnały `RESEARCH_M5`, jeśli bias H1 jest jeszcze zbyt świeży
 - `BACKTEST_RESEARCH_MAX_BIAS_AGE_BARS=6` - odrzuca sygnały `RESEARCH_M5`, jeśli bias H1 jest już zbyt stary
 - `BACKTEST_RESEARCH_MIN_DISTANCE_TO_EMA_ATR=1.0` - odrzuca sygnały `RESEARCH_M5`, jeśli wejście jest zbyt blisko EMA200
+- `BACKTEST_RESEARCH_FIRST_PER_DAY_SIDE=true` - odrzuca kolejne sygnały `RESEARCH_M5` w tym samym dniu i kierunku, żeby ograniczyć overtrading
 - `BACKTEST_RESEARCH_FIRST_PER_REFERENCE=true` - odrzuca kolejne wejścia `RESEARCH_M5` w tę samą strefę `reference_liquidity` w obrębie tej samej sesji
+- `BACKTEST_RESEARCH_BLOCK_BUY_WITH_BULLISH_DXY=true` - odrzuca `RESEARCH_M5 Buy`, jeśli DXY ma przeciwny bias i rośnie przeciwko złotu
+- `BACKTEST_RESEARCH_BLOCK_BUY_WITH_UNAVAILABLE_DXY=true` - odrzuca `RESEARCH_M5 Buy`, jeśli DXY nie było jeszcze dostępne i filtr korelacji nie może zostać uczciwie oceniony
 
 ### H1 Bias Tuning
 
@@ -206,7 +221,10 @@ BACKTEST_H1_SOFT_OVEREXTENDED_ATR=3.0
 BACKTEST_RESEARCH_MIN_BIAS_AGE_BARS=2
 BACKTEST_RESEARCH_MAX_BIAS_AGE_BARS=6
 BACKTEST_RESEARCH_MIN_DISTANCE_TO_EMA_ATR=1.0
+BACKTEST_RESEARCH_FIRST_PER_DAY_SIDE=true
 BACKTEST_RESEARCH_FIRST_PER_REFERENCE=true
+BACKTEST_RESEARCH_BLOCK_BUY_WITH_BULLISH_DXY=true
+BACKTEST_RESEARCH_BLOCK_BUY_WITH_UNAVAILABLE_DXY=true
 ```
 
 Praktyczne strojenie:
@@ -230,17 +248,46 @@ BACKTEST_LOOKBACK_DAYS=10
 BACKTEST_LOOKBACK_DAYS=30
 ```
 
+Albo precyzyjny zakres dat:
+
+```env
+BACKTEST_FROM=2026-04-13
+BACKTEST_TO=2026-04-17
+```
+
+Możesz też podać dokładny czas:
+
+```env
+BACKTEST_FROM=2026-04-13T08:00
+BACKTEST_TO=2026-04-17T18:30
+```
+
 Jak to działa:
 
 - dla M1 backend pobiera co najmniej `LOOKBACK_DAYS * 24 * 60` świec
 - dla H1 i DXY H1 pobiera odpowiednio większy zakres, z dodatkowym buforem pod EMA200 i bias H1
 - jeśli ustawisz `BACKTEST_LOOKBACK_DAYS=0`, system wróci do klasycznych liczników `SEED_CANDLE_COUNT`, `H1_SEED_CANDLE_COUNT` i `DXY_SEED_H1_COUNT`
+- jeśli ustawisz `BACKTEST_FROM` i `BACKTEST_TO`, zakres dat ma priorytet nad `BACKTEST_LOOKBACK_DAYS`
+- dla wartości typu `2026-04-17` system interpretuje datę w `TRADING_TIMEZONE` i włącza cały ten dzień do testu
+- dla wartości z godziną, na przykład `2026-04-17T18:30`, granica końcowa jest traktowana dokładnie do tej minuty
 
 W praktyce:
 
 - `5` dni wystarczy do szybkiej kontroli po zmianie logiki
 - `10-20` dni daje lepszy obraz stabilności
 - `30+` dni ma sens dopiero wtedy, gdy strategia nie rozsypuje się na krótszej próbce
+
+Rekomendowany workflow testów:
+
+- szybki smoke test po zmianie filtrów: `BACKTEST_FROM=2026-04-13`, `BACKTEST_TO=2026-04-17`
+- główne porównanie A/B: `BACKTEST_FROM=2026-04-13`, `BACKTEST_TO=2026-05-06`
+- walidacja zwycięskiego wariantu: `BACKTEST_FROM=2026-03-09`, `BACKTEST_TO=2026-05-06`
+
+Dlaczego takie daty:
+
+- to są zamknięte, pełne okna rynku bez niedokończonego bieżącego dnia
+- obejmują sesje London i NY, na których system faktycznie pracuje
+- zawierają już znane z wcześniejszych prób aktywne fragmenty rynku z `2026-04-13`, `2026-04-27` i `2026-05-06`
 
 ### Raporty końcowe
 
@@ -318,7 +365,10 @@ Najczęstsze wartości `reason`:
 - `research_bias_too_fresh`
 - `research_bias_too_old`
 - `research_too_close_to_ema`
+- `research_day_side_reentry`
 - `research_reference_reentry`
+- `research_dxy_long_blocked`
+- `research_dxy_unavailable_blocked`
 - `risk_too_wide_for_m5_atr`
 - `risk_too_wide_absolute`
 
@@ -340,6 +390,48 @@ Backtest:
 - jeśli wynik jest bardzo słaby na 1-2 dniach, zwiększ `BACKTEST_LOOKBACK_DAYS` do `10` lub `20`
 - jeśli wynik psują pojedyncze próbki badawcze, zostaw `BACKTEST_INCLUDE_RESEARCH_SIGNALS=false`
 - jeśli broker używa innych nazw symboli, ustaw dokładne `MT5_SYMBOL` i `DXY_SYMBOL` zgodnie z Market Watch
+
+## Tryb Shadow
+
+Tryb `SHADOW` uruchamia bota na żywych tickach MT5, ale nie publikuje sygnałów do głównej tabeli `signals`. Zamiast tego:
+
+- nadal odświeża `market_data` w Supabase
+- ocenia sygnały profilem `SHADOW_PROFILE`, domyślnie `RELAXED`
+- przepuszcza kandydaty przez tę samą warstwę filtrów co backtest
+- zapisuje lokalne wyniki do `SHADOW_CSV_PATH`
+- zapisuje lokalną diagnostykę kandydatów do `SHADOW_DIAGNOSTICS_CSV_PATH`
+
+Przykład:
+
+```env
+APP_MODE=SHADOW
+SHADOW_PROFILE=RELAXED
+SHADOW_CSV_PATH=shadow_results.csv
+SHADOW_DIAGNOSTICS_CSV_PATH=shadow_diagnostics.csv
+BACKTEST_MIN_CONFIDENCE=0.70
+BACKTEST_REQUIRE_EXECUTION_SESSION=true
+BACKTEST_RESEARCH_FIRST_PER_DAY_SIDE=true
+BACKTEST_RESEARCH_FIRST_PER_REFERENCE=true
+BACKTEST_RESEARCH_BLOCK_BUY_WITH_BULLISH_DXY=true
+BACKTEST_RESEARCH_BLOCK_BUY_WITH_UNAVAILABLE_DXY=true
+```
+
+Ważne:
+
+- `SHADOW` używa tych samych progów filtrowania co backtest, więc nie trzeba utrzymywać drugiego zestawu parametrów
+- aktywny sygnał `SHADOW` trzymany jest w RAM, więc restart procesu przerywa jego lokalne śledzenie
+- to jest najlepszy etap pośredni przed pełnym live, bo pozwala porównać realny strumień rynku z wynikami backtestu bez wysyłania sygnałów do użytkownika
+
+## 24/7
+
+Jeśli bot stoi tylko na lokalnym komputerze, to `PROD` i `SHADOW` będą działały tylko wtedy, gdy komputer i terminal MT5 są włączone.
+
+Do pracy 24/7 najlepsze opcje są dwie:
+
+- Windows VPS z uruchomionym MT5 i backendem
+- osobna zawsze-włączona maszyna z Windows, na przykład mini PC
+
+MT5 działa najstabilniej właśnie w środowisku Windows, więc to lepszy kierunek niż przenoszenie samego backendu na losowy Linux bez planu pod terminal MT5.
 
 ## Szybki Start Frontend
 
@@ -473,3 +565,31 @@ Dla DXY:
 - backend zapisuje przez klucz service role
 - jeśli broker używa innych nazw symboli, trzeba je wpisać w `backend/.env`
 - widget TradingView działa po stronie klienta i ładuje zewnętrzny skrypt
+
+## Windows VPS Ready
+
+Repo jest już przygotowane pod późniejsze postawienie na Windows VPS:
+
+- przykładowe env:
+  - [backend/.env.example](/C:/Users/gmdam/Documents/GitHub/SignalBot/backend/.env.example)
+  - [frontend/.env.local.example](/C:/Users/gmdam/Documents/GitHub/SignalBot/frontend/.env.local.example)
+- skrypty deploymentowe:
+  - [deploy/windows-vps/bootstrap-vps.ps1](/C:/Users/gmdam/Documents/GitHub/SignalBot/deploy/windows-vps/bootstrap-vps.ps1)
+  - [deploy/windows-vps/start-backend.ps1](/C:/Users/gmdam/Documents/GitHub/SignalBot/deploy/windows-vps/start-backend.ps1)
+  - [deploy/windows-vps/start-frontend.ps1](/C:/Users/gmdam/Documents/GitHub/SignalBot/deploy/windows-vps/start-frontend.ps1)
+  - [deploy/windows-vps/register-startup-tasks.ps1](/C:/Users/gmdam/Documents/GitHub/SignalBot/deploy/windows-vps/register-startup-tasks.ps1)
+  - [deploy/windows-vps/check-runtime.ps1](/C:/Users/gmdam/Documents/GitHub/SignalBot/deploy/windows-vps/check-runtime.ps1)
+- osobna instrukcja:
+  - [deploy/windows-vps/README.md](/C:/Users/gmdam/Documents/GitHub/SignalBot/deploy/windows-vps/README.md)
+
+Nowy tryb `APP_MODE=SHADOW` pozwala odpalić realny monitoring MT5 bez publikowania sygnałów do głównej tabeli `signals`. `SHADOW` i `BACKTEST` korzystają już z tej samej warstwy filtrów, więc porównanie wyników będzie znacznie uczciwsze.
+
+## Następne Etapy
+
+Najbardziej sensowna kolejność prac od tego miejsca:
+
+1. Dokończyć system logowania użytkowników.
+2. Doszlifować frontend i flow produktu.
+3. Postawić Windows VPS i uruchomić `SHADOW`.
+4. Po potwierdzeniu `SHADOW` przełączyć strategię na `PROD`.
+5. Dopiąć płatności, domenę i finalny deployment strony.

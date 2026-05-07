@@ -8,6 +8,7 @@ import time
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Callable
+from zoneinfo import ZoneInfo
 
 import pandas as pd
 
@@ -16,6 +17,7 @@ from src.clients.supabase_client import SupabaseRepository
 from src.config.settings import Settings
 from src.data.aggregators.candle_aggregator import OhlcCandleAggregator
 from src.models.signal import SignalPosition
+from src.services.signal_filters import SignalFilterOptions, SignalFilterPipeline, SignalFilterState
 from src.strategy.signal_engine import RollingSignalEngineMTF
 
 
@@ -78,18 +80,38 @@ class BacktestTradeResult:
     minutes_in_trade: float
 
 
+@dataclass
+class LiveRuntime:
+    engine: RollingSignalEngineMTF
+    m1_aggregator: OhlcCandleAggregator
+    h1_aggregator: OhlcCandleAggregator
+    dxy_h1_aggregator: OhlcCandleAggregator
+
+
+@dataclass
+class ActiveShadowSignal:
+    signal: SignalPosition
+    signal_grade: str
+    max_favorable_pips: float = 0.0
+    max_adverse_pips: float = 0.0
+
+
 class BotRunner:
     def __init__(self, settings: Settings, logger) -> None:
         self._settings = settings
         self._logger = logger
         self._mt5_client = MT5Client(settings)
         self._supabase_repository: SupabaseRepository | None = None
+        self._signal_filter_pipeline = SignalFilterPipeline(settings)
         self._last_supabase_market_warning = 0.0
 
     async def run(self) -> None:
         try:
             if self._settings.app_mode == "BACKTEST":
                 await self._run_backtest()
+                return
+            if self._settings.app_mode == "SHADOW":
+                await self._run_shadow()
                 return
             await self._run_prod()
         finally:
@@ -110,7 +132,228 @@ class BotRunner:
 
         self._mt5_client.initialize()
         self._supabase_repository = SupabaseRepository(self._settings)
+        runtime = self._bootstrap_live_runtime()
 
+        poll_interval = self._settings.mt5_tick_poll_interval_sec
+        symbol = self._settings.mt5_symbol
+        dxy_symbol = self._settings.dxy_symbol
+        last_market_data_update = 0.0
+        active_signal = await asyncio.to_thread(self._supabase_repository.get_latest_active_signal, symbol)
+
+        while True:
+            try:
+                xau_tick = self._mt5_client.get_latest_tick(symbol)
+                dxy_tick = self._mt5_client.get_latest_tick(dxy_symbol)
+                now = time.monotonic()
+
+                finalized_xau_h1 = runtime.h1_aggregator.update_from_tick(xau_tick.timestamp, xau_tick.mid)
+                if finalized_xau_h1 is not None:
+                    runtime.engine.on_new_h1_candle(finalized_xau_h1)
+
+                finalized_dxy_h1 = runtime.dxy_h1_aggregator.update_from_tick(dxy_tick.timestamp, dxy_tick.mid)
+                if finalized_dxy_h1 is not None:
+                    runtime.engine.on_new_dxy_h1_candle(finalized_dxy_h1)
+
+                market_snapshot = runtime.engine.build_market_snapshot(
+                    xau_tick.mid,
+                    dxy_tick.mid,
+                    xau_tick.timestamp,
+                )
+
+                if now - last_market_data_update >= self._settings.market_data_throttle_sec:
+                    await asyncio.to_thread(
+                        self._publish_market_ticks,
+                        xau_tick,
+                        dxy_tick,
+                        market_snapshot,
+                    )
+                    last_market_data_update = now
+
+                if active_signal is not None:
+                    resolution = self._check_signal_resolution(active_signal, xau_tick.mid, xau_tick.timestamp)
+                    if resolution is not None:
+                        await asyncio.to_thread(
+                            self._supabase_repository.update_signal_status,
+                            active_signal.id,
+                            **resolution,
+                        )
+                        self._logger.info(
+                            "Signal %s %s at %.2f (%s, %.1f pips)",
+                            active_signal.id,
+                            resolution["status"],
+                            resolution["exit_price"],
+                            resolution["close_reason"],
+                            resolution["result_pips"],
+                        )
+                        active_signal = None
+
+                finalized_m1 = runtime.m1_aggregator.update_from_tick(xau_tick.timestamp, xau_tick.mid)
+                if finalized_m1 is None:
+                    await asyncio.sleep(poll_interval)
+                    continue
+
+                runtime.engine.on_new_m1_candle(finalized_m1)
+                if active_signal is not None:
+                    await asyncio.sleep(poll_interval)
+                    continue
+
+                signal_context = runtime.engine.evaluate_signal(xau_tick.mid, dxy_tick.mid, xau_tick.timestamp)
+                if int(signal_context["signal"]) == 0:
+                    await asyncio.sleep(poll_interval)
+                    continue
+
+                new_signal = self._build_signal(signal_context, symbol, finalized_m1["time"])
+                active_signal = await asyncio.to_thread(self._supabase_repository.insert_signal, new_signal)
+                self._logger.info(
+                    "AlphaNode V2 %s | entry=%.2f sl=%.2f tp1=%.2f tp2=%s session=%s dxy=%s",
+                    active_signal.type,
+                    active_signal.entry_price,
+                    active_signal.sl,
+                    active_signal.tp,
+                    new_signal.metadata.get("tp2"),
+                    active_signal.session_name,
+                    active_signal.dxy_bias,
+                )
+                await asyncio.sleep(poll_interval)
+
+            except Exception:
+                self._logger.exception("PROD loop error")
+                await asyncio.sleep(2.0)
+
+    async def _run_shadow(self) -> None:
+        self._logger.info(
+            "Starting SHADOW mode | symbol=%s dxy=%s profile=%s",
+            self._settings.mt5_symbol,
+            self._settings.dxy_symbol,
+            self._settings.shadow_profile,
+        )
+
+        self._mt5_client.initialize()
+        self._supabase_repository = SupabaseRepository(self._settings)
+        runtime = self._bootstrap_live_runtime()
+        filter_state = SignalFilterState()
+        filter_options = self._build_runtime_filter_options(include_research_signals=True)
+
+        poll_interval = self._settings.mt5_tick_poll_interval_sec
+        symbol = self._settings.mt5_symbol
+        dxy_symbol = self._settings.dxy_symbol
+        last_market_data_update = 0.0
+        active_shadow_signal: ActiveShadowSignal | None = None
+
+        while True:
+            try:
+                xau_tick = self._mt5_client.get_latest_tick(symbol)
+                dxy_tick = self._mt5_client.get_latest_tick(dxy_symbol)
+                now = time.monotonic()
+
+                finalized_xau_h1 = runtime.h1_aggregator.update_from_tick(xau_tick.timestamp, xau_tick.mid)
+                if finalized_xau_h1 is not None:
+                    runtime.engine.on_new_h1_candle(finalized_xau_h1)
+
+                finalized_dxy_h1 = runtime.dxy_h1_aggregator.update_from_tick(dxy_tick.timestamp, dxy_tick.mid)
+                if finalized_dxy_h1 is not None:
+                    runtime.engine.on_new_dxy_h1_candle(finalized_dxy_h1)
+
+                market_snapshot = runtime.engine.build_market_snapshot(
+                    xau_tick.mid,
+                    dxy_tick.mid,
+                    xau_tick.timestamp,
+                )
+
+                if now - last_market_data_update >= self._settings.market_data_throttle_sec:
+                    await asyncio.to_thread(
+                        self._publish_market_ticks,
+                        xau_tick,
+                        dxy_tick,
+                        market_snapshot,
+                    )
+                    last_market_data_update = now
+
+                if active_shadow_signal is not None:
+                    self._update_shadow_excursions(active_shadow_signal, xau_tick.mid)
+                    resolution = self._check_signal_resolution(
+                        active_shadow_signal.signal,
+                        xau_tick.mid,
+                        xau_tick.timestamp,
+                    )
+                    if resolution is not None:
+                        await asyncio.to_thread(
+                            self._append_shadow_signal_row,
+                            self._build_shadow_signal_row(active_shadow_signal, resolution),
+                        )
+                        self._logger.info(
+                            "SHADOW %s %s at %.2f (%s, %.1f pips)",
+                            active_shadow_signal.signal.type,
+                            resolution["status"],
+                            resolution["exit_price"],
+                            resolution["close_reason"],
+                            resolution["result_pips"],
+                        )
+                        active_shadow_signal = None
+
+                finalized_m1 = runtime.m1_aggregator.update_from_tick(xau_tick.timestamp, xau_tick.mid)
+                if finalized_m1 is None:
+                    await asyncio.sleep(poll_interval)
+                    continue
+
+                runtime.engine.on_new_m1_candle(finalized_m1)
+                if active_shadow_signal is not None:
+                    await asyncio.sleep(poll_interval)
+                    continue
+
+                signal_context = runtime.engine.evaluate_signal(
+                    xau_tick.mid,
+                    dxy_tick.mid,
+                    xau_tick.timestamp,
+                    execution_profile=self._settings.shadow_profile,
+                )
+                if int(signal_context["signal"]) == 0:
+                    await asyncio.sleep(poll_interval)
+                    continue
+
+                current_time = self._parse_iso(str(finalized_m1["time"]))
+                filtered_signal = self._signal_filter_pipeline.apply(
+                    signal_context,
+                    current_time=current_time,
+                    state=filter_state,
+                    options=filter_options,
+                )
+                await asyncio.to_thread(
+                    self._append_shadow_diagnostic_row,
+                    self._build_backtest_diagnostic(finalized_m1["time"], filtered_signal),
+                )
+                if int(filtered_signal["signal"]) == 0:
+                    await asyncio.sleep(poll_interval)
+                    continue
+
+                self._signal_filter_pipeline.register_acceptance(
+                    filtered_signal,
+                    current_time=current_time,
+                    state=filter_state,
+                    options=filter_options,
+                )
+                shadow_signal = self._build_signal(filtered_signal, symbol, finalized_m1["time"])
+                active_shadow_signal = ActiveShadowSignal(
+                    signal=shadow_signal,
+                    signal_grade=self._signal_filter_pipeline.signal_grade(filtered_signal),
+                )
+                self._logger.info(
+                    "SHADOW accepted %s | grade=%s entry=%.2f sl=%.2f tp1=%.2f session=%s dxy=%s",
+                    shadow_signal.type,
+                    active_shadow_signal.signal_grade,
+                    shadow_signal.entry_price,
+                    shadow_signal.sl,
+                    shadow_signal.tp,
+                    shadow_signal.session_name,
+                    shadow_signal.dxy_bias,
+                )
+                await asyncio.sleep(poll_interval)
+
+            except Exception:
+                self._logger.exception("SHADOW loop error")
+                await asyncio.sleep(2.0)
+
+    def _bootstrap_live_runtime(self) -> LiveRuntime:
         xau_m1_df = self._mt5_client.get_recent_candles(
             self._settings.mt5_symbol,
             "M1",
@@ -162,119 +405,58 @@ class BotRunner:
         dxy_h1_aggregator = OhlcCandleAggregator(timeframe_seconds=3600)
         dxy_h1_aggregator.prime_with_existing_candle(last_dxy_h1_candle)
 
-        poll_interval = self._settings.mt5_tick_poll_interval_sec
-        symbol = self._settings.mt5_symbol
-        dxy_symbol = self._settings.dxy_symbol
-        last_market_data_update = 0.0
-        active_signal = await asyncio.to_thread(self._supabase_repository.get_latest_active_signal, symbol)
-
-        while True:
-            try:
-                xau_tick = self._mt5_client.get_latest_tick(symbol)
-                dxy_tick = self._mt5_client.get_latest_tick(dxy_symbol)
-                now = time.monotonic()
-
-                finalized_xau_h1 = h1_aggregator.update_from_tick(xau_tick.timestamp, xau_tick.mid)
-                if finalized_xau_h1 is not None:
-                    engine.on_new_h1_candle(finalized_xau_h1)
-
-                finalized_dxy_h1 = dxy_h1_aggregator.update_from_tick(dxy_tick.timestamp, dxy_tick.mid)
-                if finalized_dxy_h1 is not None:
-                    engine.on_new_dxy_h1_candle(finalized_dxy_h1)
-
-                market_snapshot = engine.build_market_snapshot(
-                    xau_tick.mid,
-                    dxy_tick.mid,
-                    xau_tick.timestamp,
-                )
-
-                if now - last_market_data_update >= self._settings.market_data_throttle_sec:
-                    await asyncio.to_thread(
-                        self._publish_market_ticks,
-                        xau_tick,
-                        dxy_tick,
-                        market_snapshot,
-                    )
-                    last_market_data_update = now
-
-                if active_signal is not None:
-                    resolution = self._check_signal_resolution(active_signal, xau_tick.mid, xau_tick.timestamp)
-                    if resolution is not None:
-                        await asyncio.to_thread(
-                            self._supabase_repository.update_signal_status,
-                            active_signal.id,
-                            **resolution,
-                        )
-                        self._logger.info(
-                            "Signal %s %s at %.2f (%s, %.1f pips)",
-                            active_signal.id,
-                            resolution["status"],
-                            resolution["exit_price"],
-                            resolution["close_reason"],
-                            resolution["result_pips"],
-                        )
-                        active_signal = None
-
-                finalized_m1 = m1_aggregator.update_from_tick(xau_tick.timestamp, xau_tick.mid)
-                if finalized_m1 is None:
-                    await asyncio.sleep(poll_interval)
-                    continue
-
-                engine.on_new_m1_candle(finalized_m1)
-                if active_signal is not None:
-                    await asyncio.sleep(poll_interval)
-                    continue
-
-                signal_context = engine.evaluate_signal(xau_tick.mid, dxy_tick.mid, xau_tick.timestamp)
-                if int(signal_context["signal"]) == 0:
-                    await asyncio.sleep(poll_interval)
-                    continue
-
-                new_signal = self._build_signal(signal_context, symbol, finalized_m1["time"])
-                active_signal = await asyncio.to_thread(self._supabase_repository.insert_signal, new_signal)
-                self._logger.info(
-                    "AlphaNode V2 %s | entry=%.2f sl=%.2f tp1=%.2f tp2=%s session=%s dxy=%s",
-                    active_signal.type,
-                    active_signal.entry_price,
-                    active_signal.sl,
-                    active_signal.tp,
-                    new_signal.metadata.get("tp2"),
-                    active_signal.session_name,
-                    active_signal.dxy_bias,
-                )
-                await asyncio.sleep(poll_interval)
-
-            except Exception:
-                self._logger.exception("PROD loop error")
-                await asyncio.sleep(2.0)
+        return LiveRuntime(
+            engine=engine,
+            m1_aggregator=m1_aggregator,
+            h1_aggregator=h1_aggregator,
+            dxy_h1_aggregator=dxy_h1_aggregator,
+        )
 
     async def _run_backtest(self) -> None:
-        self._logger.info(
-            "Starting BACKTEST mode | symbol=%s dxy=%s profile=%s lookback_days=%d include_research=%s",
-            self._settings.mt5_symbol,
-            self._settings.dxy_symbol,
-            self._settings.backtest_profile,
-            self._settings.backtest_lookback_days,
-            self._settings.backtest_include_research_signals,
-        )
+        backtest_from, backtest_to = self._resolve_backtest_range()
+        if backtest_from is None or backtest_to is None:
+            self._logger.info(
+                "Starting BACKTEST mode | symbol=%s dxy=%s profile=%s lookback_days=%d include_research=%s",
+                self._settings.mt5_symbol,
+                self._settings.dxy_symbol,
+                self._settings.backtest_profile,
+                self._settings.backtest_lookback_days,
+                self._settings.backtest_include_research_signals,
+            )
+        else:
+            self._logger.info(
+                "Starting BACKTEST mode | symbol=%s dxy=%s profile=%s range=%s -> %s include_research=%s",
+                self._settings.mt5_symbol,
+                self._settings.dxy_symbol,
+                self._settings.backtest_profile,
+                backtest_from.isoformat(),
+                backtest_to.isoformat(),
+                self._settings.backtest_include_research_signals,
+            )
         self._mt5_client.initialize()
-        m1_count, h1_count, dxy_h1_count = self._resolve_backtest_history_counts()
-
-        xau_m1_df = self._mt5_client.get_recent_candles(
-            self._settings.mt5_symbol,
-            "M1",
-            m1_count,
-        ).sort_values("time")
-        xau_h1_df = self._mt5_client.get_recent_candles(
-            self._settings.mt5_symbol,
-            "H1",
-            h1_count,
-        ).sort_values("time")
-        dxy_h1_df = self._mt5_client.get_recent_candles(
-            self._settings.dxy_symbol,
-            "H1",
-            dxy_h1_count,
-        ).sort_values("time")
+        if backtest_from is None or backtest_to is None:
+            m1_count, h1_count, dxy_h1_count = self._resolve_backtest_history_counts()
+            xau_m1_df = self._mt5_client.get_recent_candles(
+                self._settings.mt5_symbol,
+                "M1",
+                m1_count,
+            ).sort_values("time")
+            xau_h1_df = self._mt5_client.get_recent_candles(
+                self._settings.mt5_symbol,
+                "H1",
+                h1_count,
+            ).sort_values("time")
+            dxy_h1_df = self._mt5_client.get_recent_candles(
+                self._settings.dxy_symbol,
+                "H1",
+                dxy_h1_count,
+            ).sort_values("time")
+            start_index = min(120, len(xau_m1_df) - 2)
+        else:
+            xau_m1_df, xau_h1_df, dxy_h1_df, start_index = self._load_backtest_history_by_range(
+                backtest_from,
+                backtest_to,
+            )
 
         if len(xau_m1_df) < 120:
             raise RuntimeError("Not enough M1 candles for backtest")
@@ -294,7 +476,6 @@ class BotRunner:
             h1_bias_soft_max_distance_atr=self._settings.backtest_h1_soft_overextended_atr,
         )
 
-        start_index = min(120, len(xau_m1_df) - 2)
         engine.seed_from_m1(xau_m1_df.iloc[:start_index].copy())
 
         first_eval_time = self._parse_iso(str(xau_m1_df.iloc[start_index]["time"]))
@@ -313,8 +494,10 @@ class BotRunner:
         xau_h1_pointer = len(xau_h1_seed)
         dxy_h1_pointer = len(dxy_h1_seed)
         current_dxy_price = self._latest_close(dxy_h1_seed) or self._latest_close(dxy_h1_df) or 0.0
-        cooldown_until: dt.datetime | None = None
-        seen_research_reference_keys: set[str] = set()
+        filter_state = SignalFilterState()
+        filter_options = self._build_runtime_filter_options(
+            include_research_signals=self._settings.backtest_include_research_signals,
+        )
 
         for index in range(start_index, len(xau_m1_df) - 1):
             candle = xau_m1_df.iloc[index].to_dict()
@@ -343,21 +526,25 @@ class BotRunner:
                 str(candle["time"]),
                 execution_profile=self._settings.backtest_profile,
             )
-            signal_context = self._apply_backtest_signal_filters(
+            signal_context = self._signal_filter_pipeline.apply(
                 signal_context,
-                current_time,
-                cooldown_until,
-                seen_research_reference_keys,
+                current_time=current_time,
+                state=filter_state,
+                options=filter_options,
             )
             diagnostics.append(self._build_backtest_diagnostic(str(candle["time"]), signal_context))
             if int(signal_context["signal"]) == 0:
                 continue
 
+            self._signal_filter_pipeline.register_acceptance(
+                signal_context,
+                current_time=current_time,
+                state=filter_state,
+                options=filter_options,
+            )
             simulated_signal = self._build_signal(signal_context, self._settings.mt5_symbol, str(candle["time"]))
             trade_result = self._simulate_backtest_trade(simulated_signal, xau_m1_df, index)
             metadata = dict(signal_context.get("metadata") or {})
-            signal_time = self._parse_iso(str(candle["time"]))
-            cooldown_until = signal_time + dt.timedelta(minutes=self._settings.backtest_cooldown_minutes)
             rows.append(
                 SignalRow(
                     candle_time=str(candle["time"]),
@@ -469,82 +656,13 @@ class BotRunner:
         delta = exit_price - entry_price if signal_type == "Buy" else entry_price - exit_price
         return round(delta / self._settings.pip_size, 1)
 
-    def _apply_backtest_signal_filters(
-        self,
-        signal_context: dict[str, Any],
-        current_time: dt.datetime,
-        cooldown_until: dt.datetime | None,
-        seen_research_reference_keys: set[str],
-    ) -> dict[str, Any]:
-        if int(signal_context.get("signal") or 0) == 0:
-            return signal_context
-
-        signal_grade = self._build_backtest_signal_grade(signal_context)
-
-        if self._settings.backtest_require_execution_session and signal_context.get("execution_mode") != "EXECUTION":
-            return self._reject_backtest_signal(signal_context, "backtest_session_filter")
-
-        if not self._settings.backtest_include_research_signals and signal_grade == "RESEARCH_M5":
-            return self._reject_backtest_signal(signal_context, "research_signal_excluded")
-
-        if signal_grade == "RESEARCH_M5":
-            bias_age_bars = int(signal_context.get("bias_age_bars") or 0)
-            if (
-                self._settings.backtest_research_min_bias_age_bars > 0
-                and bias_age_bars < self._settings.backtest_research_min_bias_age_bars
-            ):
-                return self._reject_backtest_signal(signal_context, "research_bias_too_fresh")
-            if (
-                self._settings.backtest_research_max_bias_age_bars > 0
-                and bias_age_bars > self._settings.backtest_research_max_bias_age_bars
-            ):
-                return self._reject_backtest_signal(signal_context, "research_bias_too_old")
-            distance_to_ema_atr = float(signal_context.get("distance_to_ema_atr") or 0.0)
-            if (
-                self._settings.backtest_research_min_distance_to_ema_atr > 0
-                and distance_to_ema_atr < self._settings.backtest_research_min_distance_to_ema_atr
-            ):
-                return self._reject_backtest_signal(signal_context, "research_too_close_to_ema")
-
-        confidence = float(signal_context.get("confidence") or 0.0)
-        if confidence < self._settings.backtest_min_confidence:
-            return self._reject_backtest_signal(signal_context, "below_confidence_threshold")
-
-        if cooldown_until is not None and current_time < cooldown_until:
-            return self._reject_backtest_signal(signal_context, "backtest_cooldown")
-
-        if signal_grade == "RESEARCH_M5" and self._settings.backtest_research_first_per_reference:
-            reference_key = self._build_backtest_reference_key(signal_context)
-            if reference_key is not None:
-                if reference_key in seen_research_reference_keys:
-                    return self._reject_backtest_signal(signal_context, "research_reference_reentry")
-                seen_research_reference_keys.add(reference_key)
-
-        return signal_context
-
-    def _build_backtest_reference_key(self, signal_context: dict[str, Any]) -> str | None:
-        signal_type = str(signal_context.get("type") or "").strip()
-        session_name = str(signal_context.get("session_name") or "").strip()
-        reference_liquidity = signal_context.get("reference_liquidity")
-        metadata = dict(signal_context.get("metadata") or {})
-        session_local_time = str(metadata.get("session_local_time") or "").strip()
-
-        if not signal_type or not session_name or reference_liquidity is None or not session_local_time:
-            return None
-
-        session_date = session_local_time[:10]
-        reference_key = f"{float(reference_liquidity):.{self._settings.price_decimals}f}"
-        return f"{session_date}|{session_name}|{signal_type}|{reference_key}"
-
-    @staticmethod
-    def _reject_backtest_signal(signal_context: dict[str, Any], reason: str) -> dict[str, Any]:
-        rejected = dict(signal_context)
-        metadata = dict(rejected.get("metadata") or {})
-        metadata["original_reason"] = rejected.get("reason")
-        rejected["metadata"] = metadata
-        rejected["signal"] = 0
-        rejected["reason"] = reason
-        return rejected
+    def _build_runtime_filter_options(self, *, include_research_signals: bool) -> SignalFilterOptions:
+        return SignalFilterOptions(
+            require_execution_session=self._settings.backtest_require_execution_session,
+            include_research_signals=include_research_signals,
+            min_confidence=self._settings.backtest_min_confidence,
+            cooldown_minutes=self._settings.backtest_cooldown_minutes,
+        )
 
     def _simulate_backtest_trade(
         self,
@@ -650,14 +768,58 @@ class BotRunner:
     def _minutes_between(start: dt.datetime, end: dt.datetime) -> float:
         return round(max((end - start).total_seconds() / 60.0, 0.0), 1)
 
-    @staticmethod
-    def _build_backtest_signal_grade(signal_context: dict[str, Any]) -> str:
-        metadata = dict(signal_context.get("metadata") or {})
-        if bool(metadata.get("relaxed_m5_liquidity") or False):
-            return "RESEARCH_M5"
-        if str(metadata.get("execution_profile") or "").upper() == "RELAXED":
-            return "RELAXED"
-        return "STRICT"
+    def _update_shadow_excursions(self, active_shadow_signal: ActiveShadowSignal, market_price: float) -> None:
+        favorable, adverse = self._calculate_excursion_pips(
+            active_shadow_signal.signal.type,
+            active_shadow_signal.signal.entry_price,
+            market_price,
+            market_price,
+        )
+        active_shadow_signal.max_favorable_pips = max(active_shadow_signal.max_favorable_pips, favorable)
+        active_shadow_signal.max_adverse_pips = min(active_shadow_signal.max_adverse_pips, adverse)
+
+    def _build_shadow_signal_row(
+        self,
+        active_shadow_signal: ActiveShadowSignal,
+        resolution: dict[str, Any],
+    ) -> SignalRow:
+        signal = active_shadow_signal.signal
+        closed_at = str(resolution["closed_at"])
+        return SignalRow(
+            candle_time=signal.timestamp,
+            symbol=signal.symbol,
+            type=signal.type,
+            status=str(resolution["status"]),
+            reason=signal.reason,
+            confidence=signal.confidence,
+            signal_grade=active_shadow_signal.signal_grade,
+            entry_price=signal.entry_price,
+            tp=signal.tp,
+            sl=signal.sl,
+            exit_price=float(resolution["exit_price"]),
+            closed_at=closed_at,
+            close_reason=str(resolution["close_reason"]),
+            dxy_bias=signal.dxy_bias,
+            session_name=signal.session_name,
+            liquidity_cleared=signal.liquidity_cleared,
+            relaxed_m5_liquidity=bool(signal.metadata.get("relaxed_m5_liquidity") or False),
+            max_favorable_pips=round(active_shadow_signal.max_favorable_pips, 1),
+            max_adverse_pips=round(active_shadow_signal.max_adverse_pips, 1),
+            minutes_in_trade=self._minutes_between(
+                self._parse_iso(signal.timestamp),
+                self._parse_iso(closed_at),
+            ),
+            result_pips=float(resolution["result_pips"]),
+        )
+
+    def _append_shadow_signal_row(self, row: SignalRow) -> None:
+        self._append_signal_row(self._settings.shadow_csv_path, row)
+
+    def _append_shadow_diagnostic_row(self, row: BacktestDiagnosticRow) -> None:
+        self._append_diagnostic_row(self._settings.shadow_diagnostics_csv_path, row)
+
+    def _build_backtest_signal_grade(self, signal_context: dict[str, Any]) -> str:
+        return self._signal_filter_pipeline.signal_grade(signal_context)
 
     def _resolve_backtest_history_counts(self) -> tuple[int, int, int]:
         if self._settings.backtest_lookback_days <= 0:
@@ -671,6 +833,85 @@ class BotRunner:
         h1_count = max(self._settings.h1_seed_candle_count, (self._settings.backtest_lookback_days * 24) + 260)
         dxy_h1_count = max(self._settings.dxy_seed_h1_count, (self._settings.backtest_lookback_days * 24) + 260)
         return m1_count, h1_count, dxy_h1_count
+
+    def _resolve_backtest_range(self) -> tuple[dt.datetime | None, dt.datetime | None]:
+        start_raw = self._settings.backtest_from
+        end_raw = self._settings.backtest_to
+        if start_raw is None and end_raw is None:
+            return None, None
+        if start_raw is None or end_raw is None:
+            raise ValueError("BACKTEST_FROM and BACKTEST_TO must be provided together")
+
+        start_time = self._parse_backtest_boundary(start_raw, is_end=False)
+        end_time = self._parse_backtest_boundary(end_raw, is_end=True)
+        if end_time <= start_time:
+            raise ValueError("BACKTEST_TO must be later than BACKTEST_FROM")
+        return start_time, end_time
+
+    def _parse_backtest_boundary(self, value: str, *, is_end: bool) -> dt.datetime:
+        normalized = value.strip()
+        timezone = ZoneInfo(self._settings.trading_timezone)
+        if "T" not in normalized and " " not in normalized:
+            local_date = dt.date.fromisoformat(normalized)
+            if is_end:
+                local_date += dt.timedelta(days=1)
+            local_dt = dt.datetime.combine(local_date, dt.time.min, tzinfo=timezone)
+            return local_dt.astimezone(dt.timezone.utc)
+
+        normalized = normalized.replace("Z", "+00:00")
+        parsed = dt.datetime.fromisoformat(normalized)
+        if parsed.tzinfo is None:
+            parsed = parsed.replace(tzinfo=timezone)
+        return parsed.astimezone(dt.timezone.utc)
+
+    def _load_backtest_history_by_range(
+        self,
+        backtest_from: dt.datetime,
+        backtest_to: dt.datetime,
+    ) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, int]:
+        m1_fetch_start = backtest_from - dt.timedelta(
+            minutes=max(self._settings.seed_candle_count, 5 * 24 * 60)
+        )
+        h1_fetch_start = backtest_from - dt.timedelta(
+            hours=max(self._settings.h1_seed_candle_count, 14 * 24)
+        )
+        dxy_h1_fetch_start = backtest_from - dt.timedelta(
+            hours=max(self._settings.dxy_seed_h1_count, 14 * 24)
+        )
+
+        xau_m1_df = self._mt5_client.get_candles_in_range(
+            self._settings.mt5_symbol,
+            "M1",
+            m1_fetch_start,
+            backtest_to,
+        ).sort_values("time").reset_index(drop=True)
+        xau_h1_df = self._mt5_client.get_candles_in_range(
+            self._settings.mt5_symbol,
+            "H1",
+            h1_fetch_start,
+            backtest_to,
+        ).sort_values("time").reset_index(drop=True)
+        dxy_h1_df = self._mt5_client.get_candles_in_range(
+            self._settings.dxy_symbol,
+            "H1",
+            dxy_h1_fetch_start,
+            backtest_to,
+        ).sort_values("time").reset_index(drop=True)
+
+        m1_timestamps = pd.to_datetime(xau_m1_df["time"], utc=True, errors="coerce", format="ISO8601")
+        candidate_indices = xau_m1_df.index[m1_timestamps >= backtest_from].tolist()
+        if not candidate_indices:
+            raise RuntimeError("BACKTEST_FROM is outside the available M1 history returned by MT5")
+
+        start_index = int(candidate_indices[0])
+        if start_index < 120:
+            raise RuntimeError(
+                "Not enough buffered M1 candles before BACKTEST_FROM. Move BACKTEST_FROM later or widen the range."
+            )
+        if start_index >= len(xau_m1_df) - 1:
+            raise RuntimeError("BACKTEST range is too narrow; there are not enough M1 candles to evaluate")
+
+        return xau_m1_df, xau_h1_df, dxy_h1_df, start_index
 
     def _build_xau_market_extra(self, market_snapshot: dict[str, Any]) -> dict[str, Any]:
         return {
@@ -739,10 +980,130 @@ class BotRunner:
             dxy_written,
         )
 
-    def _write_backtest_csv(self, rows: list[SignalRow]) -> None:
-        path = Path(self._settings.backtest_csv_path)
+    @staticmethod
+    def _signal_row_headers() -> list[str]:
+        return [
+            "candle_time",
+            "symbol",
+            "type",
+            "status",
+            "reason",
+            "confidence",
+            "signal_grade",
+            "entry_price",
+            "tp",
+            "sl",
+            "exit_price",
+            "closed_at",
+            "close_reason",
+            "dxy_bias",
+            "session_name",
+            "liquidity_cleared",
+            "relaxed_m5_liquidity",
+            "max_favorable_pips",
+            "max_adverse_pips",
+            "minutes_in_trade",
+            "result_pips",
+        ]
+
+    @staticmethod
+    def _signal_row_values(row: SignalRow) -> list[Any]:
+        return [
+            row.candle_time,
+            row.symbol,
+            row.type,
+            row.status,
+            row.reason,
+            row.confidence,
+            row.signal_grade,
+            row.entry_price,
+            row.tp,
+            row.sl,
+            row.exit_price,
+            row.closed_at,
+            row.close_reason,
+            row.dxy_bias,
+            row.session_name,
+            row.liquidity_cleared,
+            row.relaxed_m5_liquidity,
+            row.max_favorable_pips,
+            row.max_adverse_pips,
+            row.minutes_in_trade,
+            row.result_pips,
+        ]
+
+    @staticmethod
+    def _diagnostic_row_headers() -> list[str]:
+        return [
+            "candle_time",
+            "reason",
+            "bias_side",
+            "trend_state",
+            "bias_score",
+            "bias_age_bars",
+            "distance_to_ema_atr",
+            "overextended",
+            "soft_overextended",
+            "execution_mode",
+            "session_name",
+            "dxy_bias",
+            "liquidity_cleared",
+            "relaxed_m5_liquidity",
+            "confidence",
+            "signal_grade",
+            "reference_liquidity",
+            "market_health_score",
+        ]
+
+    @staticmethod
+    def _diagnostic_row_values(row: BacktestDiagnosticRow) -> list[Any]:
+        return [
+            row.candle_time,
+            row.reason,
+            row.bias_side,
+            row.trend_state,
+            row.bias_score,
+            row.bias_age_bars,
+            row.distance_to_ema_atr,
+            row.overextended,
+            row.soft_overextended,
+            row.execution_mode,
+            row.session_name,
+            row.dxy_bias,
+            row.liquidity_cleared,
+            row.relaxed_m5_liquidity,
+            row.confidence,
+            row.signal_grade,
+            row.reference_liquidity,
+            row.market_health_score,
+        ]
+
+    def _append_signal_row(self, path_value: str, row: SignalRow) -> None:
+        path = self._resolve_output_path(path_value)
+        write_header = not path.exists()
+        with path.open("a", newline="", encoding="utf-8") as handle:
+            writer = csv.writer(handle)
+            if write_header:
+                writer.writerow(self._signal_row_headers())
+            writer.writerow(self._signal_row_values(row))
+
+    def _append_diagnostic_row(self, path_value: str, row: BacktestDiagnosticRow) -> None:
+        path = self._resolve_output_path(path_value)
+        write_header = not path.exists()
+        with path.open("a", newline="", encoding="utf-8") as handle:
+            writer = csv.writer(handle)
+            if write_header:
+                writer.writerow(self._diagnostic_row_headers())
+            writer.writerow(self._diagnostic_row_values(row))
+
+    def _resolve_output_path(self, path_value: str) -> Path:
+        path = Path(path_value)
         if not path.is_absolute():
             path = Path(__file__).resolve().parents[2] / path
+        return path
+
+    def _write_backtest_csv(self, rows: list[SignalRow]) -> None:
+        path = self._resolve_output_path(self._settings.backtest_csv_path)
 
         if not rows:
             self._logger.warning("Backtest produced no signals; CSV will not be created.")
@@ -750,57 +1111,9 @@ class BotRunner:
 
         with path.open("w", newline="", encoding="utf-8") as handle:
             writer = csv.writer(handle)
-            writer.writerow(
-                [
-                    "candle_time",
-                    "symbol",
-                    "type",
-                    "status",
-                    "reason",
-                    "confidence",
-                    "signal_grade",
-                    "entry_price",
-                    "tp",
-                    "sl",
-                    "exit_price",
-                    "closed_at",
-                    "close_reason",
-                    "dxy_bias",
-                    "session_name",
-                    "liquidity_cleared",
-                    "relaxed_m5_liquidity",
-                    "max_favorable_pips",
-                    "max_adverse_pips",
-                    "minutes_in_trade",
-                    "result_pips",
-                ]
-            )
+            writer.writerow(self._signal_row_headers())
             for row in rows:
-                writer.writerow(
-                    [
-                        row.candle_time,
-                        row.symbol,
-                        row.type,
-                        row.status,
-                        row.reason,
-                        row.confidence,
-                        row.signal_grade,
-                        row.entry_price,
-                        row.tp,
-                        row.sl,
-                        row.exit_price,
-                        row.closed_at,
-                        row.close_reason,
-                        row.dxy_bias,
-                        row.session_name,
-                        row.liquidity_cleared,
-                        row.relaxed_m5_liquidity,
-                        row.max_favorable_pips,
-                        row.max_adverse_pips,
-                        row.minutes_in_trade,
-                        row.result_pips,
-                    ]
-                )
+                writer.writerow(self._signal_row_values(row))
 
     def _build_backtest_diagnostic(self, candle_time: str, signal_context: dict[str, Any]) -> BacktestDiagnosticRow:
         metadata = dict(signal_context.get("metadata") or {})
@@ -830,60 +1143,16 @@ class BotRunner:
         )
 
     def _write_backtest_diagnostics_csv(self, rows: list[BacktestDiagnosticRow]) -> None:
-        path = Path(self._settings.backtest_diagnostics_csv_path)
-        if not path.is_absolute():
-            path = Path(__file__).resolve().parents[2] / path
+        path = self._resolve_output_path(self._settings.backtest_diagnostics_csv_path)
 
         if not rows:
             return
 
         with path.open("w", newline="", encoding="utf-8") as handle:
             writer = csv.writer(handle)
-            writer.writerow(
-                [
-                    "candle_time",
-                    "reason",
-                    "bias_side",
-                    "trend_state",
-                    "bias_score",
-                    "bias_age_bars",
-                    "distance_to_ema_atr",
-                    "overextended",
-                    "soft_overextended",
-                    "execution_mode",
-                    "session_name",
-                    "dxy_bias",
-                    "liquidity_cleared",
-                    "relaxed_m5_liquidity",
-                    "confidence",
-                    "signal_grade",
-                    "reference_liquidity",
-                    "market_health_score",
-                ]
-            )
+            writer.writerow(self._diagnostic_row_headers())
             for row in rows:
-                writer.writerow(
-                    [
-                        row.candle_time,
-                        row.reason,
-                        row.bias_side,
-                        row.trend_state,
-                        row.bias_score,
-                        row.bias_age_bars,
-                        row.distance_to_ema_atr,
-                        row.overextended,
-                        row.soft_overextended,
-                        row.execution_mode,
-                        row.session_name,
-                        row.dxy_bias,
-                        row.liquidity_cleared,
-                        row.relaxed_m5_liquidity,
-                        row.confidence,
-                        row.signal_grade,
-                        row.reference_liquidity,
-                        row.market_health_score,
-                    ]
-                )
+                writer.writerow(self._diagnostic_row_values(row))
 
         self._logger.info("BACKTEST diagnostics written: %s", path)
 

@@ -11,3 +11,4 @@ frontend/.env
 frontend/.env.local
 frontend/.next/
 frontend/node_modules/
+deploy/windows-vps/runtime/
