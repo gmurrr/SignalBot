@@ -3,7 +3,7 @@
     "brand": "Zeta Signals",
     "symbol": "XAU / USD",
     "start": "Get Started",
-    "auth": "Login / Sign Up",
+    "auth": "Login",
     "faq": "FAQ",
     "terms": "Terms",
     "contact": "Contact",
@@ -12,7 +12,9 @@
     "howItWorks": "How it works",
     "marketOpen": "MARKET OPEN",
     "marketClosed": "MARKET CLOSED",
-    "languageSwitcher": "Language switcher"
+    "languageSwitcher": "Language switcher",
+    "billing": "Subscription",
+    "signOut": "Sign out"
   },
   "nav": {
     "story": "Story",
@@ -78,8 +80,8 @@
       "When TP, SL or time limit resolves a position, the backend sends a status update to every connected terminal.",
       "The ticker, market badge and signal history are designed to make decisions fast, clear and unambiguous."
     ],
-    "easyCartLabel": "EasyCart zone",
-    "easyCartBody": "This area is prepared for payment integration, access validation and future dashboard gating for premium clients.",
+    "easyCartLabel": "Payment zone",
+    "easyCartBody": "This area is prepared for payment integration, access validation and dashboard gating for premium clients.",
     "chartTitle": "XAU/USD market structure"
   },
   "ticker": {
@@ -137,25 +139,93 @@
   },
   "auth": {
     "clientAccess": "Client access",
-    "easyCartLabel": "EasyCart zone",
-    "easyCartBody": "This block is prepared for your payment wall, package summary or membership validation once EasyCart is connected.",
+    "easyCartLabel": "Payment zone",
+    "easyCartBody": "This block is prepared for your payment wall, package summary or membership validation once a provider is connected.",
     "email": "Email address",
     "password": "Password",
-    "accessCode": "Access code or invite note",
-    "helper": "Magic link, social login and EasyCart entitlement checks can be added here without rebuilding the whole screen.",
+    "confirmPassword": "Repeat password",
+    "helper": "After registration, the account is created in Supabase Auth and premium access is granted by the subscription flow.",
+    "passwordHint": "Password must contain at least 10 characters, with lowercase, uppercase, a number and a special character.",
+    "termsPrefix": "I accept the",
+    "termsLink": "site terms",
+    "termsSuffix": ".",
+    "loading": "Processing...",
+    "signInSuccess": "Signed in. Redirecting to the dashboard.",
+    "signUpSuccess": "The account has been created. If email confirmation is required, check your inbox.",
+    "errorFallback": "The form could not be processed. Try again.",
+    "errors": {
+      "emailRequired": "Enter your email address.",
+      "invalidEmail": "Enter a valid email address.",
+      "passwordRequired": "Enter your password.",
+      "confirmPasswordRequired": "Repeat your password.",
+      "passwordTooShort": "Password must contain at least 10 characters.",
+      "passwordRequirements": "Password must contain at least 10 characters, with lowercase, uppercase, a number and a special character.",
+      "passwordMismatch": "Passwords do not match.",
+      "termsRequired": "To create an account, accept the site terms.",
+      "invalidCredentials": "Invalid email or password.",
+      "emailNotConfirmed": "This email address has not been confirmed yet.",
+      "userAlreadyRegistered": "An account with this email already exists.",
+      "rateLimited": "Too many attempts. Wait a moment and try again."
+    },
     "signIn": {
-      "title": "Login / Sign Up",
-      "subtitle": "Secure access to the private Zeta Signals XAU/USD dashboard, with room for future EasyCart entitlement validation.",
-      "cta": "Enter dashboard",
+      "title": "Login",
+      "subtitle": "Secure access to the private Zeta Signals XAU/USD dashboard, with room for entitlement validation through the selected payment provider.",
+      "cta": "Sign in",
       "footerLabel": "Need a new account?",
-      "footerText": "Request access"
+      "footerText": "Create account"
     },
     "signUp": {
-      "title": "Premium access request",
-      "subtitle": "The registration screen is prepared for paid onboarding, purchase confirmation and invite handling for Zeta Signals.",
-      "cta": "Create request",
-      "footerLabel": "Already have access?",
+      "title": "Create account",
+      "subtitle": "Create a user account, then continue to the subscription panel where premium access is granted by the selected payment provider.",
+      "cta": "Create account",
+      "footerLabel": "Already have an account?",
       "footerText": "Sign in"
+    }
+  },
+  "access": {
+    "label": "Access control",
+    "loadingTitle": "Checking account",
+    "loadingBody": "Verifying your session and subscription status before opening the dashboard.",
+    "errorTitle": "Access check failed",
+    "error": "The account status could not be verified.",
+    "retry": "Try again"
+  },
+  "billing": {
+    "badge": "Premium access",
+    "title": "Subscription and access",
+    "body": "This is the account access center. The billing layer is provider-neutral, so Stripe, Paddle, EasyCart, PayU or another provider can be attached later.",
+    "refresh": "Refresh",
+    "loading": "Loading account data...",
+    "loadError": "Subscription data could not be loaded.",
+    "checkoutError": "Checkout could not be started.",
+    "mockError": "The mock subscription could not be activated.",
+    "checkoutSuccess": "Checkout returned as successful. Access will update after the provider webhook is processed.",
+    "checkoutCancelled": "Checkout was cancelled. Access was not changed.",
+    "mockActivated": "The mock subscription has been activated for 30 days.",
+    "accountLabel": "Account",
+    "emailLabel": "Email",
+    "statusLabel": "Status",
+    "planLabel": "Plan",
+    "providerLabel": "Provider",
+    "periodEndLabel": "Period end",
+    "planEyebrow": "Base plan",
+    "planTitle": "Zeta Signals Premium",
+    "planBody": "Access to the private dashboard, realtime signals and future premium account features. This internal plan code can later be mapped to the product at the chosen payment provider.",
+    "planCodeLabel": "Plan code",
+    "checkoutCta": "Continue to checkout",
+    "mockCta": "Activate test access",
+    "features": [
+      "Private access to the XAU/USD dashboard",
+      "Realtime signals protected by RLS",
+      "Ready contract for billing webhooks"
+    ],
+    "status": {
+      "inactive": "Inactive",
+      "trialing": "Trialing",
+      "active": "Active",
+      "past_due": "Past due",
+      "canceled": "Canceled",
+      "expired": "Expired"
     }
   },
   "footer": {

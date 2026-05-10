@@ -3,7 +3,7 @@
     "brand": "Zeta Signals",
     "symbol": "XAU / USD",
     "start": "Rozpocznij",
-    "auth": "Logowanie / Rejestracja",
+    "auth": "Logowanie",
     "faq": "FAQ",
     "terms": "Regulamin",
     "contact": "Kontakt",
@@ -12,7 +12,9 @@
     "howItWorks": "Jak to działa",
     "marketOpen": "RYNEK OTWARTY",
     "marketClosed": "RYNEK ZAMKNIĘTY",
-    "languageSwitcher": "Przełącznik języka"
+    "languageSwitcher": "Przełącznik języka",
+    "billing": "Subskrypcja",
+    "signOut": "Wyloguj"
   },
   "nav": {
     "story": "Historia",
@@ -78,8 +80,8 @@
       "Gdy TP, SL albo limit czasu rozstrzygnie pozycję, backend wysyła zmianę statusu do każdego połączonego terminala.",
       "Ticker, badge rynku i historia sygnałów zostały zaprojektowane tak, aby decyzje były szybkie, czytelne i jednoznaczne."
     ],
-    "easyCartLabel": "Strefa EasyCart",
-    "easyCartBody": "Miejsce jest przygotowane pod integrację płatności, walidację dostępu i przyszłe blokady dashboardu dla klientów premium.",
+    "easyCartLabel": "Strefa płatności",
+    "easyCartBody": "Miejsce jest przygotowane pod integrację płatności, walidację dostępu i blokadę dashboardu dla klientów premium.",
     "chartTitle": "Struktura rynku XAU/USD"
   },
   "ticker": {
@@ -137,25 +139,93 @@
   },
   "auth": {
     "clientAccess": "Dostęp klienta",
-    "easyCartLabel": "Strefa EasyCart",
-    "easyCartBody": "Ten blok jest przygotowany pod bramkę płatności, podsumowanie pakietu lub walidację członkostwa po podłączeniu EasyCart.",
+    "easyCartLabel": "Strefa płatności",
+    "easyCartBody": "Ten blok jest przygotowany pod bramkę płatności, podsumowanie pakietu lub walidację członkostwa po podłączeniu operatora.",
     "email": "Adres e-mail",
     "password": "Hasło",
-    "accessCode": "Kod dostępu lub notatka zaproszenia",
-    "helper": "Magic link, logowanie społecznościowe i kontrola uprawnień EasyCart mogą zostać dodane tutaj bez przebudowy całego ekranu.",
+    "confirmPassword": "Powtórz hasło",
+    "helper": "Po rejestracji konto powstaje w Supabase Auth, a dostęp premium nadaje subskrypcja w panelu płatności.",
+    "passwordHint": "Hasło musi mieć minimum 10 znaków oraz zawierać małą literę, dużą literę, cyfrę i znak specjalny.",
+    "termsPrefix": "Akceptuję",
+    "termsLink": "regulamin strony",
+    "termsSuffix": ".",
+    "loading": "Przetwarzanie...",
+    "signInSuccess": "Zalogowano. Przenoszę do panelu.",
+    "signUpSuccess": "Konto zostało utworzone. Jeśli projekt wymaga potwierdzenia e-mail, sprawdź skrzynkę.",
+    "errorFallback": "Nie udało się obsłużyć formularza. Spróbuj ponownie.",
+    "errors": {
+      "emailRequired": "Podaj adres e-mail.",
+      "invalidEmail": "Podaj poprawny adres e-mail.",
+      "passwordRequired": "Podaj hasło.",
+      "confirmPasswordRequired": "Powtórz hasło.",
+      "passwordTooShort": "Hasło musi mieć minimum 10 znaków.",
+      "passwordRequirements": "Hasło musi mieć minimum 10 znaków oraz zawierać małą literę, dużą literę, cyfrę i znak specjalny.",
+      "passwordMismatch": "Hasła nie są takie same.",
+      "termsRequired": "Aby założyć konto, zaakceptuj regulamin strony.",
+      "invalidCredentials": "Nieprawidłowy e-mail lub hasło.",
+      "emailNotConfirmed": "Adres e-mail nie został jeszcze potwierdzony.",
+      "userAlreadyRegistered": "Konto z tym adresem e-mail już istnieje.",
+      "rateLimited": "Zbyt wiele prób. Odczekaj chwilę i spróbuj ponownie."
+    },
     "signIn": {
-      "title": "Logowanie / Rejestracja",
-      "subtitle": "Bezpieczny dostęp do prywatnego panelu Zeta Signals dla XAU/USD, z miejscem na przyszłą walidację uprawnień przez EasyCart.",
-      "cta": "Wejdź do panelu",
+      "title": "Logowanie",
+      "subtitle": "Bezpieczny dostęp do prywatnego panelu Zeta Signals dla XAU/USD, z miejscem na walidację uprawnień przez wybranego operatora płatności.",
+      "cta": "Zaloguj się",
       "footerLabel": "Nie masz jeszcze konta?",
-      "footerText": "Poproś o dostęp"
+      "footerText": "Zarejestruj się"
     },
     "signUp": {
-      "title": "Zgłoszenie dostępu premium",
-      "subtitle": "Ekran rejestracji jest przygotowany pod płatny onboarding, potwierdzenie zakupu oraz obsługę zaproszeń do Zeta Signals.",
-      "cta": "Utwórz zgłoszenie",
-      "footerLabel": "Masz już dostęp?",
+      "title": "Rejestracja konta",
+      "subtitle": "Utwórz konto użytkownika, a następnie przejdź do panelu subskrypcji, gdzie dostęp premium będzie nadawany przez wybranego operatora płatności.",
+      "cta": "Załóż konto",
+      "footerLabel": "Masz już konto?",
       "footerText": "Zaloguj się"
+    }
+  },
+  "access": {
+    "label": "Kontrola dostępu",
+    "loadingTitle": "Sprawdzam konto",
+    "loadingBody": "Weryfikuję sesję i status subskrypcji przed otwarciem panelu.",
+    "errorTitle": "Nie udało się sprawdzić dostępu",
+    "error": "Nie udało się sprawdzić statusu konta.",
+    "retry": "Spróbuj ponownie"
+  },
+  "billing": {
+    "badge": "Dostęp premium",
+    "title": "Subskrypcja i dostęp",
+    "body": "To centrum dostępu dla konta użytkownika. Warstwa płatności jest neutralna względem operatora, więc później można podłączyć Stripe, Paddle, EasyCart, PayU albo innego dostawcę.",
+    "refresh": "Odśwież",
+    "loading": "Ładuję dane konta...",
+    "loadError": "Nie udało się pobrać danych subskrypcji.",
+    "checkoutError": "Nie udało się rozpocząć płatności.",
+    "mockError": "Nie udało się aktywować testowej subskrypcji.",
+    "checkoutSuccess": "Płatność wróciła jako zakończona. Status zostanie zaktualizowany po webhooku operatora.",
+    "checkoutCancelled": "Płatność została przerwana. Dostęp nie został zmieniony.",
+    "mockActivated": "Testowa subskrypcja została aktywowana na 30 dni.",
+    "accountLabel": "Konto",
+    "emailLabel": "E-mail",
+    "statusLabel": "Status",
+    "planLabel": "Plan",
+    "providerLabel": "Operator",
+    "periodEndLabel": "Koniec okresu",
+    "planEyebrow": "Plan bazowy",
+    "planTitle": "Zeta Signals Premium",
+    "planBody": "Dostęp do prywatnego dashboardu, sygnałów realtime i przyszłych funkcji konta premium. Ten plan jest kodem wewnętrznym, który później mapujemy na produkt u wybranego operatora płatności.",
+    "planCodeLabel": "Kod planu",
+    "checkoutCta": "Przejdź do płatności",
+    "mockCta": "Aktywuj testowo",
+    "features": [
+      "Prywatny dostęp do dashboardu XAU/USD",
+      "Sygnały realtime zabezpieczone przez RLS",
+      "Gotowy kontrakt pod webhooki płatności"
+    ],
+    "status": {
+      "inactive": "Nieaktywna",
+      "trialing": "Okres próbny",
+      "active": "Aktywna",
+      "past_due": "Płatność zaległa",
+      "canceled": "Anulowana",
+      "expired": "Wygasła"
     }
   },
   "footer": {

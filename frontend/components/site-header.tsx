@@ -1,14 +1,46 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect, useState } from "react";
+import { LogOut } from "lucide-react";
 
 import { LanguageSwitcher } from "@/components/language-switcher";
 import { MarketStatusBadge } from "@/components/market-status-badge";
 import { Button } from "@/components/ui/button";
 import { useI18n } from "@/lib/i18n/provider";
+import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 
 export function SiteHeader() {
   const { dict } = useI18n();
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+    const supabase = getSupabaseBrowserClient();
+
+    void supabase.auth.getSession().then(({ data }) => {
+      setIsAuthenticated(Boolean(data.session));
+    });
+
+    const { data } = supabase.auth.onAuthStateChange((_event, session) => {
+      setIsAuthenticated(Boolean(session));
+    });
+
+    return () => {
+      data.subscription.unsubscribe();
+    };
+  }, []);
+
+  async function handleSignOut() {
+    const supabase = getSupabaseBrowserClient();
+    window.sessionStorage.setItem("zeta-signals-signing-out", "true");
+
+    try {
+      await supabase.auth.signOut();
+    } finally {
+      setIsAuthenticated(false);
+      window.location.assign("/");
+    }
+  }
 
   return (
     <header className="sticky top-0 z-40 border-b border-[#1A1A1A] bg-[rgba(5,5,5,0.86)] backdrop-blur-xl">
@@ -33,9 +65,21 @@ export function SiteHeader() {
         </div>
         <div className="flex shrink-0 items-center gap-3">
           <LanguageSwitcher />
-          <Button asChild variant="ghost" size="sm" className="hidden sm:inline-flex">
-            <Link href="/auth/sign-in">{dict.common.auth}</Link>
-          </Button>
+          {isAuthenticated ? (
+            <>
+              <Button asChild variant="ghost" size="sm" className="hidden sm:inline-flex">
+                <Link href="/billing">{dict.common.billing}</Link>
+              </Button>
+              <Button type="button" variant="ghost" size="sm" onClick={handleSignOut} aria-label={dict.common.signOut}>
+                <LogOut className="h-4 w-4" />
+                <span className="hidden lg:inline">{dict.common.signOut}</span>
+              </Button>
+            </>
+          ) : (
+            <Button asChild variant="ghost" size="sm" className="hidden sm:inline-flex">
+              <Link href="/auth/sign-in">{dict.common.auth}</Link>
+            </Button>
+          )}
           <Button asChild size="sm" className="hidden md:inline-flex">
             <Link href="/dashboard">{dict.common.start}</Link>
           </Button>

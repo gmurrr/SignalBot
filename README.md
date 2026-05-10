@@ -42,6 +42,34 @@ SignalBot/
 3. Backend zapisuje `market_data` i `signals` do Supabase.
 4. Frontend subskrybuje Supabase Realtime i odświeża ticker, karty sygnałów oraz dashboard bez przeładowania.
 
+## Konta, logowanie i subskrypcje
+
+Projekt jest przygotowany pod Supabase Auth oraz neutralną warstwę płatności:
+
+- `auth.users` w Supabase obsługuje logowanie, hasła, sesje i potwierdzenia e-mail.
+- `public.user_accounts` przechowuje dane konta aplikacji, rolę i metadane użytkownika.
+- `public.subscriptions` przechowuje status dostępu, kod planu i identyfikatory operatora płatności.
+- `public.payment_events` zapisuje webhooki i historię synchronizacji płatności.
+- `signals` i `market_data` są czytelne tylko dla zalogowanych kont z aktywną subskrypcją albo rolą administracyjną.
+
+Na start frontend używa provider `mock`, który pozwala aktywować testową subskrypcję z ekranu `/billing`. Gdy wybierzesz operatora płatności, dopisz adapter zgodny z kontraktem w `frontend/lib/billing/provider.ts` albo ustaw standardowy checkout przez `BILLING_CHECKOUT_URL` i webhook `POST /api/billing/webhook/[provider]`.
+
+### Zmienne frontendowe dla kont i płatności
+
+W `frontend/.env.local` ustaw:
+
+```env
+NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
+NEXT_PUBLIC_SITE_URL=http://localhost:3000
+SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
+BILLING_PROVIDER=mock
+BILLING_WEBHOOK_SECRET=
+BILLING_CHECKOUT_URL=
+```
+
+Docelowo `BILLING_PROVIDER` może przyjąć nazwę operatora, np. `stripe`, `paddle`, `payu`, `easycart` albo własną nazwę adaptera. Webhook powinien aktualizować `subscriptions`; frontend nigdy sam nie nadaje produkcyjnego dostępu.
+
 ## Szybki Start Backend
 
 1. Utwórz plik `backend/.env`.

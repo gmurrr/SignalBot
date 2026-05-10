@@ -1,18 +1,118 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { FormEvent, useEffect, useState } from "react";
+import { Loader2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { useI18n } from "@/lib/i18n/provider";
+import { getSupabaseBrowserClient } from "@/lib/supabase/client";
+
+const signUpPasswordMinLength = 10;
 
 export function AuthShell({ mode }: { mode: "signIn" | "signUp" }) {
   const { dict } = useI18n();
+  const router = useRouter();
   const content = dict.auth[mode];
   const isSignup = mode === "signUp";
   const footerHref = isSignup ? "/auth/sign-in" : "/auth/sign-up";
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
+  const [message, setMessage] = useState<string | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    setPassword("");
+    setConfirmPassword("");
+    setAcceptedTerms(false);
+    setMessage(null);
+    setErrorMessage(null);
+  }, [mode]);
+
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setIsSubmitting(true);
+    setMessage(null);
+    setErrorMessage(null);
+
+    const supabase = getSupabaseBrowserClient();
+    const normalizedEmail = email.trim();
+    const validationError = validateAuthForm({
+      acceptedTerms,
+      confirmPassword,
+      email: normalizedEmail,
+      errors: dict.auth.errors,
+      isSignup,
+      password
+    });
+
+    if (validationError) {
+      setErrorMessage(validationError);
+      setIsSubmitting(false);
+      return;
+    }
+
+    try {
+      if (isSignup) {
+        const emailAvailability = await fetch("/api/auth/email-availability", {
+          body: JSON.stringify({ email: normalizedEmail }),
+          headers: {
+            "Content-Type": "application/json"
+          },
+          method: "POST"
+        });
+        const emailAvailabilityPayload = (await emailAvailability.json().catch(() => null)) as { exists?: boolean } | null;
+
+        if (!emailAvailability.ok) {
+          throw new Error("email_availability_check_failed");
+        }
+
+        if (emailAvailabilityPayload?.exists) {
+          setErrorMessage(dict.auth.errors.userAlreadyRegistered);
+          return;
+        }
+
+        const { data, error } = await supabase.auth.signUp({
+          email: normalizedEmail,
+          password
+        });
+
+        if (error) {
+          throw error;
+        }
+
+        setMessage(dict.auth.signUpSuccess);
+        if (data.session) {
+          router.replace("/billing");
+        }
+        return;
+      }
+
+      const { error } = await supabase.auth.signInWithPassword({
+        email: normalizedEmail,
+        password
+      });
+
+      if (error) {
+        throw error;
+      }
+
+      setMessage(dict.auth.signInSuccess);
+      router.replace(getSafeNextPath() ?? "/dashboard");
+      router.refresh();
+    } catch (error) {
+      setErrorMessage(translateAuthError(error, dict.auth.errors, dict.auth.errorFallback));
+    } finally {
+      setIsSubmitting(false);
+    }
+  }
 
   return (
     <main className="flex min-h-screen items-center justify-center px-6 py-16">
@@ -30,12 +130,63 @@ export function AuthShell({ mode }: { mode: "signIn" | "signUp" }) {
         </Card>
 
         <Card className="border-[#1A1A1A] p-8 md:p-10">
-          <div className="space-y-4">
-            <Input placeholder={dict.auth.email} type="email" />
-            <Input placeholder={dict.auth.password} type="password" />
-            {isSignup ? <Input placeholder={dict.auth.accessCode} /> : null}
-            <Button className="w-full">{content.cta}</Button>
-          </div>
+          <form className="space-y-4" onSubmit={handleSubmit} noValidate>
+            <Input
+              aria-required="true"
+              autoComplete="email"
+              name="email"
+              onChange={(event) => setEmail(event.target.value)}
+              placeholder={dict.auth.email}
+              type="email"
+              value={email}
+            />
+            <Input
+              aria-required="true"
+              autoComplete={isSignup ? "new-password" : "current-password"}
+              minLength={isSignup ? signUpPasswordMinLength : undefined}
+              name="password"
+              onChange={(event) => setPassword(event.target.value)}
+              placeholder={dict.auth.password}
+              type="password"
+              value={password}
+            />
+            {isSignup ? (
+              <>
+                <Input
+                  aria-required="true"
+                  autoComplete="new-password"
+                  minLength={signUpPasswordMinLength}
+                  name="confirm_password"
+                  onChange={(event) => setConfirmPassword(event.target.value)}
+                  placeholder={dict.auth.confirmPassword}
+                  type="password"
+                  value={confirmPassword}
+                />
+                <label className="flex cursor-pointer items-start gap-3 rounded-2xl border border-[rgba(212,175,55,0.18)] bg-[rgba(255,255,255,0.02)] p-4 text-sm leading-6 text-muted">
+                  <input
+                    checked={acceptedTerms}
+                    className="mt-1 h-4 w-4 shrink-0 accent-[#D4AF37]"
+                    onChange={(event) => setAcceptedTerms(event.target.checked)}
+                    type="checkbox"
+                  />
+                  <span>
+                    {dict.auth.termsPrefix}{" "}
+                    <Link href="/terms" target="_blank" rel="noreferrer" className="text-brass transition-colors hover:text-[#e6c55a]">
+                      {dict.auth.termsLink}
+                    </Link>
+                    {dict.auth.termsSuffix}
+                  </span>
+                </label>
+              </>
+            ) : null}
+            {isSignup ? <p className="text-xs text-muted">{dict.auth.passwordHint}</p> : null}
+            {message ? <p className="rounded-2xl border border-emerald-400/20 bg-emerald-400/10 p-3 text-sm text-emerald-200">{message}</p> : null}
+            {errorMessage ? <p className="rounded-2xl border border-red-400/20 bg-red-400/10 p-3 text-sm text-red-200">{errorMessage}</p> : null}
+            <Button className="w-full" disabled={isSubmitting}>
+              {isSubmitting ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
+              {isSubmitting ? dict.auth.loading : content.cta}
+            </Button>
+          </form>
           <Separator className="my-8" />
           <div className="space-y-3 text-sm text-muted">
             <p>{dict.auth.helper}</p>
@@ -50,4 +201,129 @@ export function AuthShell({ mode }: { mode: "signIn" | "signUp" }) {
       </div>
     </main>
   );
+}
+
+function validateAuthForm({
+  acceptedTerms,
+  confirmPassword,
+  email,
+  errors,
+  isSignup,
+  password
+}: {
+  acceptedTerms: boolean;
+  confirmPassword: string;
+  email: string;
+  errors: {
+    emailRequired: string;
+    invalidEmail: string;
+    confirmPasswordRequired: string;
+    passwordRequired: string;
+    passwordRequirements: string;
+    passwordMismatch: string;
+    termsRequired: string;
+  };
+  isSignup: boolean;
+  password: string;
+}) {
+  if (!email) {
+    return errors.emailRequired;
+  }
+
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    return errors.invalidEmail;
+  }
+
+  if (!password) {
+    return errors.passwordRequired;
+  }
+
+  if (isSignup && !isStrongPassword(password)) {
+    return errors.passwordRequirements;
+  }
+
+  if (isSignup && password !== confirmPassword) {
+    if (!confirmPassword) {
+      return errors.confirmPasswordRequired;
+    }
+
+    return errors.passwordMismatch;
+  }
+
+  if (isSignup && !acceptedTerms) {
+    return errors.termsRequired;
+  }
+
+  return null;
+}
+
+function translateAuthError(
+  error: unknown,
+  errors: {
+    emailNotConfirmed: string;
+    invalidCredentials: string;
+    invalidEmail: string;
+    passwordTooShort: string;
+    passwordRequirements: string;
+    rateLimited: string;
+    userAlreadyRegistered: string;
+  },
+  fallback: string
+) {
+  if (!(error instanceof Error)) {
+    return fallback;
+  }
+
+  const message = error.message.toLowerCase();
+
+  if (message.includes("invalid login credentials")) {
+    return errors.invalidCredentials;
+  }
+
+  if (message.includes("email not confirmed")) {
+    return errors.emailNotConfirmed;
+  }
+
+  if (message.includes("already registered") || message.includes("already been registered")) {
+    return errors.userAlreadyRegistered;
+  }
+
+  if (message.includes("password should be") || message.includes("weak password")) {
+    return errors.passwordRequirements;
+  }
+
+  if (message.includes("invalid email") || message.includes("validate email")) {
+    return errors.invalidEmail;
+  }
+
+  if (message.includes("rate limit") || message.includes("security purposes")) {
+    return errors.rateLimited;
+  }
+
+  if (message.includes("email_availability_check_failed")) {
+    return fallback;
+  }
+
+  return fallback;
+}
+
+function isStrongPassword(password: string) {
+  return (
+    password.length >= signUpPasswordMinLength &&
+    /[a-z]/.test(password) &&
+    /[A-Z]/.test(password) &&
+    /\d/.test(password) &&
+    /[^A-Za-z0-9]/.test(password)
+  );
+}
+
+function getSafeNextPath() {
+  const params = new URLSearchParams(window.location.search);
+  const nextPath = params.get("next");
+
+  if (!nextPath || !nextPath.startsWith("/") || nextPath.startsWith("//")) {
+    return null;
+  }
+
+  return nextPath;
 }
