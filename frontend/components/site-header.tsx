@@ -7,6 +7,7 @@ import { LogOut } from "lucide-react";
 import { LanguageSwitcher } from "@/components/language-switcher";
 import { MarketStatusBadge } from "@/components/market-status-badge";
 import { Button } from "@/components/ui/button";
+import { markPasswordRecoverySession } from "@/lib/auth/recovery-session";
 import { useI18n } from "@/lib/i18n/provider";
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 
@@ -21,7 +22,11 @@ export function SiteHeader() {
       setIsAuthenticated(Boolean(data.session));
     });
 
-    const { data } = supabase.auth.onAuthStateChange((_event, session) => {
+    const { data } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === "PASSWORD_RECOVERY") {
+        markPasswordRecoverySession();
+      }
+
       setIsAuthenticated(Boolean(session));
     });
 
@@ -81,7 +86,7 @@ export function SiteHeader() {
             </Button>
           )}
           <Button asChild size="sm" className="hidden md:inline-flex">
-            <Link href="/dashboard">{dict.common.start}</Link>
+            <Link href={isAuthenticated ? "/dashboard" : "/auth/sign-up"}>{dict.common.start}</Link>
           </Button>
         </div>
       </div>

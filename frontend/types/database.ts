@@ -2,6 +2,7 @@ export type SignalStatus = "ACTIVE" | "CLOSED" | "EXPIRED";
 export type SignalType = "Buy" | "Sell";
 export type AccountRole = "user" | "admin" | "support";
 export type SubscriptionStatus = "inactive" | "trialing" | "active" | "past_due" | "canceled" | "expired";
+export type AccountSecurityEventType = "password_reset_requested" | "password_updated";
 
 export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[];
 export type JsonRecord = { [key: string]: Json | undefined };
@@ -90,6 +91,16 @@ export interface PaymentEventRow {
   created_at: string;
 }
 
+export interface AccountSecurityEventRow {
+  [key: string]: unknown;
+  id: string;
+  user_id: string | null;
+  email: string;
+  event_type: AccountSecurityEventType;
+  metadata: JsonRecord;
+  created_at: string;
+}
+
 export type Database = {
   public: {
     Tables: {
@@ -162,6 +173,19 @@ export type Database = {
           created_at?: string;
         };
         Update: Partial<Omit<PaymentEventRow, "id" | "provider" | "provider_event_id" | "created_at">>;
+        Relationships: [];
+      };
+      account_security_events: {
+        Row: AccountSecurityEventRow;
+        Insert: {
+          id?: string;
+          user_id?: string | null;
+          email: string;
+          event_type: AccountSecurityEventType;
+          metadata?: JsonRecord;
+          created_at?: string;
+        };
+        Update: Partial<Omit<AccountSecurityEventRow, "id" | "created_at">>;
         Relationships: [];
       };
     };

@@ -10,29 +10,79 @@ export async function ensureUserAccount(user: User) {
   const email = user.email ?? "";
   const metadata = normalizeMetadata(user.user_metadata);
 
-  const { data: account, error: accountError } = await supabase
+  const { data: existingAccount, error: existingAccountError } = await supabase
     .from("user_accounts")
-    .upsert(
-      {
-        id: user.id,
+    .select("*")
+    .eq("id", user.id)
+    .maybeSingle();
+
+  if (existingAccountError) {
+    throw existingAccountError;
+  }
+
+  const account = existingAccount
+    ? await updateExistingAccount({
+        current: existingAccount as UserAccountRow,
         email,
         metadata
-      },
-      { onConflict: "id" }
-    )
-    .select("*")
-    .single();
-
-  if (accountError) {
-    throw accountError;
-  }
+      })
+    : await createUserAccount({
+        email,
+        metadata,
+        userId: user.id
+      });
 
   const subscription = await ensureSubscription(user.id);
 
   return {
-    account: account as UserAccountRow,
+    account,
     subscription
   };
+}
+
+async function createUserAccount({ email, metadata, userId }: { email: string; metadata: JsonRecord; userId: string }) {
+  const supabase = getSupabaseAdminClient();
+  const { data, error } = await supabase
+    .from("user_accounts")
+    .insert({
+      id: userId,
+      email,
+      metadata
+    })
+    .select("*")
+    .single();
+
+  if (error) {
+    throw error;
+  }
+
+  return data as UserAccountRow;
+}
+
+async function updateExistingAccount({ current, email, metadata }: { current: UserAccountRow; email: string; metadata: JsonRecord }) {
+  const supabase = getSupabaseAdminClient();
+  const mergedMetadata = mergeMissingMetadata(current.metadata, metadata);
+  const updatePayload: { email?: string; metadata?: JsonRecord } = {};
+
+  if (email && current.email !== email) {
+    updatePayload.email = email;
+  }
+
+  if (hasNewMetadataKeys(current.metadata, mergedMetadata)) {
+    updatePayload.metadata = mergedMetadata;
+  }
+
+  if (!updatePayload.email && !updatePayload.metadata) {
+    return current;
+  }
+
+  const { data, error } = await supabase.from("user_accounts").update(updatePayload).eq("id", current.id).select("*").single();
+
+  if (error) {
+    throw error;
+  }
+
+  return data as UserAccountRow;
 }
 
 export async function getAccountOverview(user: User): Promise<AccountOverview> {
@@ -85,4 +135,15 @@ function normalizeMetadata(metadata: User["user_metadata"]): JsonRecord {
   }
 
   return metadata as JsonRecord;
+}
+
+function mergeMissingMetadata(current: JsonRecord, incoming: JsonRecord) {
+  return {
+    ...incoming,
+    ...current
+  };
+}
+
+function hasNewMetadataKeys(current: JsonRecord, merged: JsonRecord) {
+  return Object.keys(merged).some((key) => !(key in current));
 }

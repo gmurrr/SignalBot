@@ -9,10 +9,9 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
+import { isStrongPassword, isValidEmail, passwordMinLength } from "@/lib/auth/password-policy";
 import { useI18n } from "@/lib/i18n/provider";
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
-
-const signUpPasswordMinLength = 10;
 
 export function AuthShell({ mode }: { mode: "signIn" | "signUp" }) {
   const { dict } = useI18n();
@@ -143,7 +142,7 @@ export function AuthShell({ mode }: { mode: "signIn" | "signUp" }) {
             <Input
               aria-required="true"
               autoComplete={isSignup ? "new-password" : "current-password"}
-              minLength={isSignup ? signUpPasswordMinLength : undefined}
+              minLength={isSignup ? passwordMinLength : undefined}
               name="password"
               onChange={(event) => setPassword(event.target.value)}
               placeholder={dict.auth.password}
@@ -155,7 +154,7 @@ export function AuthShell({ mode }: { mode: "signIn" | "signUp" }) {
                 <Input
                   aria-required="true"
                   autoComplete="new-password"
-                  minLength={signUpPasswordMinLength}
+                  minLength={passwordMinLength}
                   name="confirm_password"
                   onChange={(event) => setConfirmPassword(event.target.value)}
                   placeholder={dict.auth.confirmPassword}
@@ -190,6 +189,13 @@ export function AuthShell({ mode }: { mode: "signIn" | "signUp" }) {
           <Separator className="my-8" />
           <div className="space-y-3 text-sm text-muted">
             <p>{dict.auth.helper}</p>
+            {!isSignup ? (
+              <p>
+                <Link href="/auth/forgot-password" className="text-brass">
+                  {dict.auth.passwordRecovery.forgotLink}
+                </Link>
+              </p>
+            ) : null}
             <p>
               {content.footerLabel}{" "}
               <Link href={footerHref} className="text-brass">
@@ -230,7 +236,7 @@ function validateAuthForm({
     return errors.emailRequired;
   }
 
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+  if (!isValidEmail(email)) {
     return errors.invalidEmail;
   }
 
@@ -305,16 +311,6 @@ function translateAuthError(
   }
 
   return fallback;
-}
-
-function isStrongPassword(password: string) {
-  return (
-    password.length >= signUpPasswordMinLength &&
-    /[a-z]/.test(password) &&
-    /[A-Z]/.test(password) &&
-    /\d/.test(password) &&
-    /[^A-Za-z0-9]/.test(password)
-  );
 }
 
 function getSafeNextPath() {

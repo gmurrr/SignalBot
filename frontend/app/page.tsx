@@ -32,7 +32,7 @@ export default function HomePage() {
               <p className="mt-8 max-w-2xl text-base leading-8 text-muted md:text-lg">{dict.home.heroBody}</p>
               <div className="mt-10 flex flex-wrap gap-4">
                 <Button asChild size="lg">
-                  <Link href="/dashboard">
+                  <Link href="/auth/sign-up">
                     {dict.common.start}
                     <ArrowRight className="h-4 w-4" />
                   </Link>

@@ -140,15 +140,47 @@
   "auth": {
     "clientAccess": "Client access",
     "easyCartLabel": "Payment zone",
-    "easyCartBody": "This block is prepared for your payment wall, package summary or membership validation once a provider is connected.",
+    "easyCartBody": "Secure and encrypted payments with no obligation. Manage your subscription directly from your dashboard – activate, change plans, or cancel anytime with a single click.",
     "email": "Email address",
     "password": "Password",
     "confirmPassword": "Repeat password",
-    "helper": "After registration, the account is created in Supabase Auth and premium access is granted by the subscription flow.",
+    "helper": "Access to the algorithm is activated automatically after authorizing an active subscription.",
     "passwordHint": "Password must contain at least 10 characters, with lowercase, uppercase, a number and a special character.",
     "termsPrefix": "I accept the",
     "termsLink": "site terms",
     "termsSuffix": ".",
+    "passwordRecovery": {
+      "forgotLink": "Forgot your password?",
+      "backToSignIn": "Back to sign in",
+      "securityLabel": "Email verification",
+      "securityBody": "Password reset is confirmed from the mailbox assigned to the account, and the account profile is not overwritten during recovery.",
+      "newPassword": "New password",
+      "confirmNewPassword": "Repeat new password",
+      "errorFallback": "Password recovery could not be completed. Try again.",
+      "request": {
+        "title": "Password recovery",
+        "subtitle": "Enter the email address assigned to your account. If the account exists, we will send a secure link that allows you to set a new password.",
+        "cta": "Send reset link",
+        "helper": "For security, the message is always the same even if an account for this email does not exist.",
+        "success": "If this email is assigned to an account, a password reset link has been sent."
+      },
+      "reset": {
+        "title": "Set a new password",
+        "subtitle": "Open this page from the link in your email. The link creates a temporary recovery session required to update the password.",
+        "cta": "Save new password",
+        "helper": "After saving the new password, the recovery session is closed and you can sign in again.",
+        "success": "Password changed. You can now sign in with the new password.",
+        "checkingSession": "Checking the recovery link...",
+        "sessionMissing": "This recovery link is missing or has expired. Request a new password reset email.",
+        "requestAgain": "Request a new link"
+      },
+      "callback": {
+        "title": "Verifying link",
+        "body": "Preparing a secure password recovery session.",
+        "error": "This link is invalid. Request a new password reset email.",
+        "expiredError": "This password recovery link has expired or was already used. Request a new password reset email."
+      }
+    },
     "loading": "Processing...",
     "signInSuccess": "Signed in. Redirecting to the dashboard.",
     "signUpSuccess": "The account has been created. If email confirmation is required, check your inbox.",
@@ -169,14 +201,14 @@
     },
     "signIn": {
       "title": "Login",
-      "subtitle": "Secure access to the private Zeta Signals XAU/USD dashboard, with room for entitlement validation through the selected payment provider.",
+      "subtitle": "Access Zeta Signals' private investor dashboard for XAU/USD. Track institutional capital flows and receive precise market notifications in real-time.",
       "cta": "Sign in",
       "footerLabel": "Need a new account?",
       "footerText": "Create account"
     },
     "signUp": {
       "title": "Create account",
-      "subtitle": "Create a user account, then continue to the subscription panel where premium access is granted by the selected payment provider.",
+      "subtitle": "Signing up for a free account is the first step to accessing the Zeta Signals platform. After registering a profile in our system, you will be given the opportunity to subscribe to access analytical tools that monitor the market liquidity structure on the XAU/USD pair.",
       "cta": "Create account",
       "footerLabel": "Already have an account?",
       "footerText": "Sign in"

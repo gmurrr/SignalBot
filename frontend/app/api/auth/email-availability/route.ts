@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 
+import { isValidEmail } from "@/lib/auth/password-policy";
+import { normalizeEmail } from "@/lib/auth/security-events";
 import { getSupabaseAdminClient } from "@/lib/supabase/admin";
 
 export const runtime = "nodejs";
@@ -7,9 +9,9 @@ export const runtime = "nodejs";
 export async function POST(request: Request) {
   try {
     const body = (await request.json().catch(() => null)) as { email?: unknown } | null;
-    const email = typeof body?.email === "string" ? body.email.trim().toLowerCase() : "";
+    const email = typeof body?.email === "string" ? normalizeEmail(body.email) : "";
 
-    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    if (!email || !isValidEmail(email)) {
       return NextResponse.json({ error: "Invalid email." }, { status: 400 });
     }
 

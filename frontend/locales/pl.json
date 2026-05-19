@@ -140,15 +140,47 @@
   "auth": {
     "clientAccess": "Dostęp klienta",
     "easyCartLabel": "Strefa płatności",
-    "easyCartBody": "Ten blok jest przygotowany pod bramkę płatności, podsumowanie pakietu lub walidację członkostwa po podłączeniu operatora.",
+    "easyCartBody": "Bezpieczne i szyfrowane płatności bez zobowiązań. Zarządzaj swoją subskrypcją bezpośrednio z panelu użytkownika — aktywuj, zmieniaj plany lub rezygnuj w dowolnym momencie jednym kliknięciem.",
     "email": "Adres e-mail",
     "password": "Hasło",
     "confirmPassword": "Powtórz hasło",
-    "helper": "Po rejestracji konto powstaje w Supabase Auth, a dostęp premium nadaje subskrypcja w panelu płatności.",
+    "helper": "Dostęp do algorytmu aktywowany jest automatycznie po autoryzacji aktywnej subskrypcji.",
     "passwordHint": "Hasło musi mieć minimum 10 znaków oraz zawierać małą literę, dużą literę, cyfrę i znak specjalny.",
     "termsPrefix": "Akceptuję",
     "termsLink": "regulamin strony",
     "termsSuffix": ".",
+    "passwordRecovery": {
+      "forgotLink": "Nie pamiętasz hasła?",
+      "backToSignIn": "Wróć do logowania",
+      "securityLabel": "Weryfikacja e-mail",
+      "securityBody": "Reset hasła jest potwierdzany ze skrzynki przypisanej do konta, a profil użytkownika nie jest nadpisywany podczas odzyskiwania.",
+      "newPassword": "Nowe hasło",
+      "confirmNewPassword": "Powtórz nowe hasło",
+      "errorFallback": "Nie udało się zakończyć odzyskiwania hasła. Spróbuj ponownie.",
+      "request": {
+        "title": "Odzyskiwanie hasła",
+        "subtitle": "Podaj adres e-mail przypisany do konta. Jeśli konto istnieje, wyślemy bezpieczny link pozwalający ustawić nowe hasło.",
+        "cta": "Wyślij link resetujący",
+        "helper": "Ze względów bezpieczeństwa komunikat jest taki sam także wtedy, gdy konto dla tego e-maila nie istnieje.",
+        "success": "Jeśli ten e-mail jest przypisany do konta, link do resetu hasła został wysłany."
+      },
+      "reset": {
+        "title": "Ustaw nowe hasło",
+        "subtitle": "Otwórz tę stronę z linku w wiadomości e-mail. Link tworzy tymczasową sesję odzyskiwania wymaganą do zmiany hasła.",
+        "cta": "Zapisz nowe hasło",
+        "helper": "Po zapisaniu nowego hasła sesja odzyskiwania zostanie zamknięta i będzie można zalogować się ponownie.",
+        "success": "Hasło zostało zmienione. Możesz zalogować się nowym hasłem.",
+        "checkingSession": "Sprawdzam link odzyskiwania...",
+        "sessionMissing": "Brakuje sesji odzyskiwania albo link wygasł. Poproś o nowy e-mail resetujący hasło.",
+        "requestAgain": "Poproś o nowy link"
+      },
+      "callback": {
+        "title": "Weryfikuję link",
+        "body": "Przygotowuję bezpieczną sesję odzyskiwania hasła.",
+        "error": "Ten link jest niepoprawny. Poproś o nowy e-mail resetujący hasło.",
+        "expiredError": "Ten link do odzyskania hasła wygasł albo został już użyty. Poproś o nowy e-mail resetujący hasło."
+      }
+    },
     "loading": "Przetwarzanie...",
     "signInSuccess": "Zalogowano. Przenoszę do panelu.",
     "signUpSuccess": "Konto zostało utworzone. Jeśli projekt wymaga potwierdzenia e-mail, sprawdź skrzynkę.",
@@ -169,14 +201,14 @@
     },
     "signIn": {
       "title": "Logowanie",
-      "subtitle": "Bezpieczny dostęp do prywatnego panelu Zeta Signals dla XAU/USD, z miejscem na walidację uprawnień przez wybranego operatora płatności.",
+      "subtitle": "Uzyskaj dostęp do prywatnego panelu inwestorskiego Zeta Signals dla XAU/USD. Śledź instytucjonalne przepływy kapitału i odbieraj precyzyjne powiadomienia rynkowe w czasie rzeczywistym.",
       "cta": "Zaloguj się",
       "footerLabel": "Nie masz jeszcze konta?",
       "footerText": "Zarejestruj się"
     },
     "signUp": {
       "title": "Rejestracja konta",
-      "subtitle": "Utwórz konto użytkownika, a następnie przejdź do panelu subskrypcji, gdzie dostęp premium będzie nadawany przez wybranego operatora płatności.",
+      "subtitle": "Założenie darmowego konta to pierwszy krok do uzyskania dostępu do platformy Zeta Signals. Po rejestracji profilu w naszym systemie otrzymasz możliwość wykupienia subskrypcji na dostęp do narzędzi analitycznych, które monitorują strukturę płynności rynkowej na parze XAU/USD.",
       "cta": "Załóż konto",
       "footerLabel": "Masz już konto?",
       "footerText": "Zaloguj się"

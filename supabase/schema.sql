@@ -154,6 +154,22 @@ create unique index if not exists payment_events_provider_event_uniq
 create index if not exists payment_events_user_created_idx
     on public.payment_events (user_id, created_at desc);
 
+create table if not exists public.account_security_events (
+    id uuid primary key default gen_random_uuid(),
+    user_id uuid references public.user_accounts(id) on delete set null,
+    email text not null,
+    event_type text not null
+        check (event_type in ('password_reset_requested', 'password_updated')),
+    metadata jsonb not null default '{}'::jsonb,
+    created_at timestamptz not null default now()
+);
+
+create index if not exists account_security_events_user_created_idx
+    on public.account_security_events (user_id, created_at desc);
+
+create index if not exists account_security_events_email_created_idx
+    on public.account_security_events (lower(email), created_at desc);
+
 create or replace function public.handle_new_auth_user()
 returns trigger
 language plpgsql
@@ -171,7 +187,7 @@ begin
     on conflict (id) do update
     set email = excluded.email,
         full_name = coalesce(public.user_accounts.full_name, excluded.full_name),
-        metadata = public.user_accounts.metadata || excluded.metadata;
+        metadata = excluded.metadata || public.user_accounts.metadata;
 
     insert into public.subscriptions (user_id, status, plan_code)
     values (new.id, 'inactive', 'free')
@@ -244,6 +260,7 @@ alter table public.signals enable row level security;
 alter table public.user_accounts enable row level security;
 alter table public.subscriptions enable row level security;
 alter table public.payment_events enable row level security;
+alter table public.account_security_events enable row level security;
 
 drop policy if exists "public read market_data" on public.market_data;
 drop policy if exists "subscribers read market_data" on public.market_data;
@@ -280,6 +297,13 @@ create policy "accounts read own subscription"
 drop policy if exists "accounts read own payment events" on public.payment_events;
 create policy "accounts read own payment events"
     on public.payment_events
+    for select
+    to authenticated
+    using (user_id = auth.uid() or public.is_account_admin());
+
+drop policy if exists "accounts read own security events" on public.account_security_events;
+create policy "accounts read own security events"
+    on public.account_security_events
     for select
     to authenticated
     using (user_id = auth.uid() or public.is_account_admin());
