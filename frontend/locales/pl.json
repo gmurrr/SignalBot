@@ -152,16 +152,16 @@
     "passwordRecovery": {
       "forgotLink": "Nie pamiętasz hasła?",
       "backToSignIn": "Wróć do logowania",
-      "securityLabel": "Weryfikacja e-mail",
-      "securityBody": "Reset hasła jest potwierdzany ze skrzynki przypisanej do konta, a profil użytkownika nie jest nadpisywany podczas odzyskiwania.",
+      "securityLabel": "Bezpieczeństwo konta",
+      "securityBody": "Dbamy o poufność Twoich danych. Procedura odzyskiwania hasła odbywa się wyłącznie poprzez zweryfikowaną skrzynkę e-mail, co gwarantuje, że dostęp do Twojego profilu pozostaje chroniony przed nieautoryzowanymi próbami zmian.",
       "newPassword": "Nowe hasło",
       "confirmNewPassword": "Powtórz nowe hasło",
       "errorFallback": "Nie udało się zakończyć odzyskiwania hasła. Spróbuj ponownie.",
       "request": {
         "title": "Odzyskiwanie hasła",
-        "subtitle": "Podaj adres e-mail przypisany do konta. Jeśli konto istnieje, wyślemy bezpieczny link pozwalający ustawić nowe hasło.",
+        "subtitle": "Wpisz adres e-mail użyty przy rejestracji w Zeta Signals. Na Twoją skrzynkę wyślemy bezpieczny link, który pozwoli Ci ustanowić nowe hasło do panelu inwestorskiego.",
         "cta": "Wyślij link resetujący",
-        "helper": "Ze względów bezpieczeństwa komunikat jest taki sam także wtedy, gdy konto dla tego e-maila nie istnieje.",
+        "helper": "Dla zachowania najwyższego bezpieczeństwa, komunikat potwierdzający wysłanie wiadomości jest identyczny niezależnie od tego, czy podany adres znajduje się w naszej bazie.",
         "success": "Jeśli ten e-mail jest przypisany do konta, link do resetu hasła został wysłany."
       },
       "reset": {

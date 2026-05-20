@@ -152,16 +152,16 @@
     "passwordRecovery": {
       "forgotLink": "Forgot your password?",
       "backToSignIn": "Back to sign in",
-      "securityLabel": "Email verification",
-      "securityBody": "Password reset is confirmed from the mailbox assigned to the account, and the account profile is not overwritten during recovery.",
+      "securityLabel": "Account security",
+      "securityBody": "We care about the confidentiality of your data. The password recovery procedure is done only through a verified email box, which ensures that access to your profile remains protected from unauthorized change attempts.",
       "newPassword": "New password",
       "confirmNewPassword": "Repeat new password",
       "errorFallback": "Password recovery could not be completed. Try again.",
       "request": {
         "title": "Password recovery",
-        "subtitle": "Enter the email address assigned to your account. If the account exists, we will send a secure link that allows you to set a new password.",
+        "subtitle": "Enter the email address you used to sign up for Zeta Signals. We will send a secure link to your inbox that will allow you to set a new password for the investor panel.",
         "cta": "Send reset link",
-        "helper": "For security, the message is always the same even if an account for this email does not exist.",
+        "helper": "For the highest security, the message confirming the sending of the message is identical regardless of whether the address provided is in our database.",
         "success": "If this email is assigned to an account, a password reset link has been sent."
       },
       "reset": {
