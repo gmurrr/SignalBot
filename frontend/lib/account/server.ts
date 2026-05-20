@@ -90,10 +90,15 @@ export async function getAccountOverview(user: User): Promise<AccountOverview> {
 
   return {
     account,
+    billingPortalUrl: getBillingPortalUrl(),
     subscription,
     hasAccess: hasDashboardAccess(account, subscription),
     provider: process.env.BILLING_PROVIDER || "mock"
   };
+}
+
+function getBillingPortalUrl() {
+  return process.env.NEXT_PUBLIC_LEMON_SQUEEZY_CUSTOMER_PORTAL_URL || process.env.NEXT_PUBLIC_BILLING_PORTAL_URL || null;
 }
 
 async function ensureSubscription(userId: string) {

@@ -18,8 +18,8 @@ const cormorant = Cormorant_Garamond({
 });
 
 export const metadata: Metadata = {
-  title: "Zeta Signals | Precyzyjne Sygnały XAU/USD",
-  description: "Luksusowa platforma sygnałowa XAU/USD z realtime danymi rynkowymi i algorytmiczną kontrolą ryzyka."
+  title: "Zeta Signals | Alerty Analityczne XAU/USD",
+  description: "Oprogramowanie analityczne XAU/USD z danymi realtime i edukacyjno-informacyjnymi Alertami Analitycznymi."
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

@@ -11,14 +11,17 @@ import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { isStrongPassword, isValidEmail, passwordMinLength } from "@/lib/auth/password-policy";
 import { useI18n } from "@/lib/i18n/provider";
+import { getLocalizedLegalLinks } from "@/lib/legal/constants";
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 
 export function AuthShell({ mode }: { mode: "signIn" | "signUp" }) {
-  const { dict } = useI18n();
+  const { dict, locale } = useI18n();
   const router = useRouter();
   const content = dict.auth[mode];
   const isSignup = mode === "signUp";
-  const footerHref = isSignup ? "/auth/sign-in" : "/auth/sign-up";
+  const legalLanguage = locale === "en" ? "EN" : "PL";
+  const legalLinks = getLocalizedLegalLinks(legalLanguage);
+  const footerHref = isSignup ? "/auth/sign-in" : legalLanguage === "EN" ? "/en/auth/sign-up" : "/pl/auth/sign-up";
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -78,17 +81,37 @@ export function AuthShell({ mode }: { mode: "signIn" | "signUp" }) {
           return;
         }
 
-        const { data, error } = await supabase.auth.signUp({
-          email: normalizedEmail,
-          password
+        const signUpResponse = await fetch("/api/auth/sign-up", {
+          body: JSON.stringify({
+            acceptedLegal: acceptedTerms,
+            email: normalizedEmail,
+            language: legalLanguage,
+            password
+          }),
+          headers: {
+            "Content-Type": "application/json"
+          },
+          method: "POST"
         });
+        const signUpPayload = (await signUpResponse.json().catch(() => null)) as SignUpResponse | null;
 
-        if (error) {
-          throw error;
+        if (!signUpResponse.ok) {
+          throw new Error(signUpPayload?.error ?? "sign_up_failed");
+        }
+
+        if (signUpPayload?.session?.access_token && signUpPayload.session.refresh_token) {
+          const { error: sessionError } = await supabase.auth.setSession({
+            access_token: signUpPayload.session.access_token,
+            refresh_token: signUpPayload.session.refresh_token
+          });
+
+          if (sessionError) {
+            throw sessionError;
+          }
         }
 
         setMessage(dict.auth.signUpSuccess);
-        if (data.session) {
+        if (signUpPayload?.session) {
           router.replace("/billing");
         }
         return;
@@ -166,12 +189,17 @@ export function AuthShell({ mode }: { mode: "signIn" | "signUp" }) {
                     checked={acceptedTerms}
                     className="mt-1 h-4 w-4 shrink-0 accent-[#D4AF37]"
                     onChange={(event) => setAcceptedTerms(event.target.checked)}
+                    required
                     type="checkbox"
                   />
                   <span>
                     {dict.auth.termsPrefix}{" "}
-                    <Link href="/terms" target="_blank" rel="noreferrer" className="text-brass transition-colors hover:text-[#e6c55a]">
+                    <Link href={legalLinks.terms} target="_blank" rel="noreferrer" className="text-brass transition-colors hover:text-[#e6c55a]">
                       {dict.auth.termsLink}
+                    </Link>
+                    {` ${dict.auth.termsConnector} `}
+                    <Link href={legalLinks.privacy} target="_blank" rel="noreferrer" className="text-brass transition-colors hover:text-[#e6c55a]">
+                      {dict.auth.privacyLink}
                     </Link>
                     {dict.auth.termsSuffix}
                   </span>
@@ -208,6 +236,14 @@ export function AuthShell({ mode }: { mode: "signIn" | "signUp" }) {
     </main>
   );
 }
+
+type SignUpResponse = {
+  error?: string;
+  session?: {
+    access_token: string;
+    refresh_token: string;
+  } | null;
+};
 
 function validateAuthForm({
   acceptedTerms,

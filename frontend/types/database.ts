@@ -3,6 +3,15 @@ export type SignalType = "Buy" | "Sell";
 export type AccountRole = "user" | "admin" | "support";
 export type SubscriptionStatus = "inactive" | "trialing" | "active" | "past_due" | "canceled" | "expired";
 export type AccountSecurityEventType = "password_reset_requested" | "password_updated";
+export type UserConsentSource = "REGISTER" | "CHECKOUT";
+export type LegalLanguage = "PL" | "EN";
+export type UserConsentType =
+  | "TERMS_ACCEPTANCE"
+  | "PRIVACY_ACCEPTANCE"
+  | "RISK_WARNING_ACCEPTANCE"
+  | "DIGITAL_SERVICE_CONSENT"
+  | "WITHDRAWAL_LOSS_ACKNOWLEDGEMENT"
+  | "SUBSCRIPTION_RENEWAL_ACCEPTANCE";
 
 export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[];
 export type JsonRecord = { [key: string]: Json | undefined };
@@ -101,6 +110,49 @@ export interface AccountSecurityEventRow {
   created_at: string;
 }
 
+export interface UserConsentRow {
+  [key: string]: unknown;
+  id: string;
+  user_id: string | null;
+  email: string;
+  type: UserConsentType;
+  version: string;
+  accepted_at: string;
+  ip_address: string | null;
+  user_agent: string | null;
+  language: LegalLanguage;
+  source: UserConsentSource;
+  metadata: JsonRecord;
+  created_at: string;
+}
+
+export interface CheckoutConsentAuditRow {
+  [key: string]: unknown;
+  id: string;
+  user_id: string;
+  email: string;
+  terms_version: string;
+  terms_accepted_at: string;
+  privacy_version: string;
+  risk_warning_version: string;
+  risk_accepted_at: string;
+  withdrawal_consent_version: string;
+  digital_service_consent_at: string;
+  withdrawal_loss_acknowledged_at: string;
+  subscription_renewal_consent_version: string;
+  subscription_renewal_accepted_at: string;
+  checkout_provider: string;
+  checkout_session_id: string | null;
+  checkout_url: string | null;
+  order_id: string | null;
+  ip_address: string | null;
+  user_agent: string | null;
+  language: LegalLanguage;
+  source: "CHECKOUT";
+  metadata: JsonRecord;
+  created_at: string;
+}
+
 export type Database = {
   public: {
     Tables: {
@@ -186,6 +238,55 @@ export type Database = {
           created_at?: string;
         };
         Update: Partial<Omit<AccountSecurityEventRow, "id" | "created_at">>;
+        Relationships: [];
+      };
+      user_consents: {
+        Row: UserConsentRow;
+        Insert: {
+          id?: string;
+          user_id?: string | null;
+          email: string;
+          type: UserConsentType;
+          version: string;
+          accepted_at: string;
+          ip_address?: string | null;
+          user_agent?: string | null;
+          language?: LegalLanguage;
+          source: UserConsentSource;
+          metadata?: JsonRecord;
+          created_at?: string;
+        };
+        Update: Partial<Omit<UserConsentRow, "id" | "created_at">>;
+        Relationships: [];
+      };
+      checkout_consent_audits: {
+        Row: CheckoutConsentAuditRow;
+        Insert: {
+          id?: string;
+          user_id: string;
+          email: string;
+          terms_version: string;
+          terms_accepted_at: string;
+          privacy_version?: string;
+          risk_warning_version?: string;
+          risk_accepted_at: string;
+          withdrawal_consent_version?: string;
+          digital_service_consent_at: string;
+          withdrawal_loss_acknowledged_at: string;
+          subscription_renewal_consent_version?: string;
+          subscription_renewal_accepted_at: string;
+          checkout_provider: string;
+          checkout_session_id?: string | null;
+          checkout_url?: string | null;
+          order_id?: string | null;
+          ip_address?: string | null;
+          user_agent?: string | null;
+          language?: LegalLanguage;
+          source?: "CHECKOUT";
+          metadata?: JsonRecord;
+          created_at?: string;
+        };
+        Update: Partial<Omit<CheckoutConsentAuditRow, "id" | "user_id" | "created_at">>;
         Relationships: [];
       };
     };

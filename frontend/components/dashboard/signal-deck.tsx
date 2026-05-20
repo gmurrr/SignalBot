@@ -114,6 +114,7 @@ export function SignalDeck() {
           <p className="text-xs uppercase tracking-[0.3em] text-muted">{dict.signals.historyTitle}</p>
           <span className="text-xs uppercase tracking-[0.26em] text-muted">{dict.signals.latestRecords}</span>
         </div>
+        <p className="mb-4 rounded-2xl border border-amber-300/20 bg-amber-300/10 p-4 text-sm leading-7 text-[#f4deb0]">{dict.signals.historyRiskNotice}</p>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-3 lg:grid-cols-5">
           {history.map((signal, index) => (
             <motion.div
@@ -188,6 +189,8 @@ function SignalCard({
           </div>
         ) : null}
       </div>
+
+      {!compact ? <p className="mt-6 text-xs leading-6 text-muted">{labels.analyticalLevelsNote}</p> : null}
 
       <div className={cn("mt-8 grid gap-4 md:grid-cols-4", compact && "mt-5 grid-cols-1 md:grid-cols-1")}>
         <Metric label={labels.entry} value={formatPrice(signal.entry_price)} compact={compact} />

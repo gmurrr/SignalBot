@@ -12,8 +12,10 @@ import { useI18n } from "@/lib/i18n/provider";
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 
 export function SiteHeader() {
-  const { dict } = useI18n();
+  const { dict, locale } = useI18n();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const signUpHref = locale === "en" ? "/en/auth/sign-up" : "/pl/auth/sign-up";
+  const billingHref = locale === "en" ? "/en/billing" : "/pl/billing";
 
   useEffect(() => {
     const supabase = getSupabaseBrowserClient();
@@ -62,6 +64,7 @@ export function SiteHeader() {
         <nav className="hidden items-center gap-8 text-sm text-muted md:flex">
           <Link href="/#story">{dict.nav.story}</Link>
           <Link href="/#process">{dict.nav.process}</Link>
+          <Link href="/cennik">{dict.nav.pricing}</Link>
           <Link href="/#faq">{dict.nav.faq}</Link>
           <Link href="/dashboard">{dict.nav.dashboard}</Link>
         </nav>
@@ -73,7 +76,7 @@ export function SiteHeader() {
           {isAuthenticated ? (
             <>
               <Button asChild variant="ghost" size="sm" className="hidden sm:inline-flex">
-                <Link href="/billing">{dict.common.billing}</Link>
+                <Link href={billingHref}>{dict.common.billing}</Link>
               </Button>
               <Button type="button" variant="ghost" size="sm" onClick={handleSignOut} aria-label={dict.common.signOut}>
                 <LogOut className="h-4 w-4" />
@@ -86,7 +89,7 @@ export function SiteHeader() {
             </Button>
           )}
           <Button asChild size="sm" className="hidden md:inline-flex">
-            <Link href={isAuthenticated ? "/dashboard" : "/auth/sign-up"}>{dict.common.start}</Link>
+            <Link href={isAuthenticated ? "/dashboard" : signUpHref}>{dict.common.start}</Link>
           </Button>
         </div>
       </div>

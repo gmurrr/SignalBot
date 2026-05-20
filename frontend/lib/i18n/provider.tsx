@@ -1,5 +1,6 @@
 "use client";
 
+import { usePathname } from "next/navigation";
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 
 import { defaultLocale, dictionaries, type Dictionary, type Locale } from "@/lib/i18n/dictionaries";
@@ -16,6 +17,7 @@ const storageKey = "zeta-signals-locale";
 
 export function I18nProvider({ children }: { children: React.ReactNode }) {
   const [locale, setLocaleState] = useState<Locale>(defaultLocale);
+  const pathname = usePathname();
 
   useEffect(() => {
     const storedLocale = window.localStorage.getItem(storageKey);
@@ -23,6 +25,17 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
       setLocaleState(storedLocale);
     }
   }, []);
+
+  useEffect(() => {
+    if (pathname.startsWith("/en/")) {
+      setLocaleState("en");
+      return;
+    }
+
+    if (pathname.startsWith("/pl/")) {
+      setLocaleState("pl");
+    }
+  }, [pathname]);
 
   const setLocale = (nextLocale: Locale) => {
     setLocaleState(nextLocale);

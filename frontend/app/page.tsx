@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { ArrowRight, Compass, Scan, Zap } from "lucide-react";
 
+import { RiskDisclaimer } from "@/components/legal/risk-disclaimer";
 import { MarketStatusBadge } from "@/components/market-status-badge";
 import { Reveal } from "@/components/reveal";
 import { SiteHeader } from "@/components/site-header";
@@ -41,6 +42,7 @@ export default function HomePage() {
                   <Link href="/auth/sign-in">{dict.common.auth}</Link>
                 </Button>
               </div>
+              <RiskDisclaimer className="mt-8 max-w-2xl" />
             </div>
           </Reveal>
 
@@ -54,6 +56,7 @@ export default function HomePage() {
               </div>
               <Separator className="my-8" />
               <p className="text-sm leading-7 text-muted">{dict.home.algoBody}</p>
+              <RiskDisclaimer className="mt-6" />
             </Card>
           </Reveal>
         </section>

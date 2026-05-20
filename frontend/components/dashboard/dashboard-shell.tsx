@@ -1,14 +1,18 @@
 "use client";
 
+import Link from "next/link";
+
 import { LiveTicker } from "@/components/dashboard/live-ticker";
 import { SignalDeck } from "@/components/dashboard/signal-deck";
 import { TradingViewWidget } from "@/components/dashboard/tradingview-widget";
 import { MarketStatusBadge } from "@/components/market-status-badge";
 import { Card } from "@/components/ui/card";
 import { useI18n } from "@/lib/i18n/provider";
+import { getLocalizedLegalLinks } from "@/lib/legal/constants";
 
 export function DashboardShell() {
-  const { dict } = useI18n();
+  const { dict, locale } = useI18n();
+  const legalLinks = getLocalizedLegalLinks(locale === "en" ? "EN" : "PL");
 
   return (
     <main className="mx-auto flex w-full max-w-7xl flex-col gap-8 px-6 py-10 lg:px-10">
@@ -21,6 +25,13 @@ export function DashboardShell() {
           <p className="mt-4 max-w-3xl text-sm leading-7 text-muted">{dict.dashboard.body}</p>
         </div>
       </div>
+
+      <aside className="rounded-2xl border border-amber-300/20 bg-amber-300/10 p-5 text-sm leading-7 text-[#f4deb0]">
+        {dict.dashboard.riskBanner}{" "}
+        <Link href={legalLinks.riskWarning} className="text-brass transition-colors hover:text-[#e6c55a]">
+          {dict.common.riskWarning}
+        </Link>
+      </aside>
 
       <LiveTicker />
       <SignalDeck />
