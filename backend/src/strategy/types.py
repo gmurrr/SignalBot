@@ -27,8 +27,17 @@ class BiasContext:
     trend_state: str
     price: float
     ema200: float
+    ema_slope: float
     kumo_top: float
     kumo_bottom: float
+    tenkan: float
+    kijun: float
+    atr14: float
+    bias_score: int
+    bias_age_bars: int
+    distance_to_ema_atr: float
+    overextended: bool
+    soft_overextended: bool
     session_name: str
     reasons: tuple[str, ...] = ()
 

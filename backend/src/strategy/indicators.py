@@ -16,13 +16,25 @@ def safe_float(value: Any, default: float = 0.0) -> float:
     return number
 
 
+def normalize_time_column(series: pd.Series) -> pd.Series:
+    if pd.api.types.is_datetime64_any_dtype(series):
+        return pd.to_datetime(series, utc=True, errors="coerce")
+
+    return pd.to_datetime(
+        series.astype("string"),
+        utc=True,
+        errors="coerce",
+        format="ISO8601",
+    )
+
+
 def prepare_ohlcv(df: pd.DataFrame) -> pd.DataFrame:
     working_df = df.copy()
     for column_name in ["open", "high", "low", "close", "volume"]:
         if column_name in working_df.columns:
             working_df[column_name] = pd.to_numeric(working_df[column_name], errors="coerce").astype(float)
     if "time" in working_df.columns:
-        working_df["time"] = pd.to_datetime(working_df["time"], utc=True, errors="coerce")
+        working_df["time"] = normalize_time_column(working_df["time"])
         working_df = working_df.dropna(subset=["time"]).sort_values("time").reset_index(drop=True)
     return working_df
 
@@ -42,6 +54,28 @@ def append_live_price(df: pd.DataFrame, live_price: float) -> pd.DataFrame:
 def ema(series: pd.Series, period: int) -> pd.Series:
     numeric = pd.to_numeric(series, errors="coerce")
     return numeric.ewm(span=period, adjust=False).mean()
+
+
+def atr(df: pd.DataFrame, period: int = 14) -> pd.Series:
+    working_df = prepare_ohlcv(df)
+    if working_df.empty:
+        return pd.Series(dtype=float)
+
+    high = pd.to_numeric(working_df["high"], errors="coerce")
+    low = pd.to_numeric(working_df["low"], errors="coerce")
+    close = pd.to_numeric(working_df["close"], errors="coerce")
+    previous_close = close.shift(1)
+
+    true_range = pd.concat(
+        [
+            high - low,
+            (high - previous_close).abs(),
+            (low - previous_close).abs(),
+        ],
+        axis=1,
+    ).max(axis=1)
+
+    return true_range.ewm(alpha=1 / period, min_periods=period, adjust=False).mean()
 
 
 def rsi(series: pd.Series, period: int = 14) -> pd.Series:

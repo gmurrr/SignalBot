@@ -1,17 +1,17 @@
 # SignalBot Monorepo
 
-Professional XAU/USD signal platform built as a monorepo:
+Profesjonalna platforma sygnałowa XAU/USD zbudowana jako monorepo:
 
 - `backend/` - Python + MetaTrader5 + `supabase-py`
-- `frontend/` - Next.js App Router + Tailwind CSS + Framer Motion
-- `supabase/` - shared database schema and realtime contract
+- `frontend/` - Next.js App Router + Tailwind CSS + Framer Motion + Shadcn/ui
+- `supabase/` - wspólny schemat bazy i kontrakt Realtime
 
-## Structure
+## Struktura
 
 ```text
 SignalBot/
   backend/
-    .env.example
+    .env
     requirements.txt
     src/
       clients/
@@ -23,10 +23,11 @@ SignalBot/
       utils/
       main.py
   frontend/
-    .env.example
+    .env.local
     app/
     components/
     lib/
+    locales/
     types/
     package.json
   supabase/
@@ -34,47 +35,94 @@ SignalBot/
   README.md
 ```
 
-## Runtime Flow
+## Architektura
 
-1. MT5 streams XAU/USD and DXY prices into the Python process.
-2. Backend keeps rolling market windows in RAM and evaluates AlphaNode V2.
-3. Backend writes market snapshots and signal state to Supabase.
-4. Frontend listens with Supabase Realtime and updates the dashboard instantly.
+1. MetaTrader 5 dostarcza ticki i historię świec dla XAU/USD oraz DXY.
+2. Backend utrzymuje rolling windows w RAM i uruchamia strategię AlphaNode V2.
+3. Backend zapisuje `market_data` i `signals` do Supabase.
+4. Frontend subskrybuje Supabase Realtime i odświeża ticker, karty sygnałów oraz dashboard bez przeładowania.
 
-## Backend Quick Start
+## Konta, logowanie i subskrypcje
 
-1. Copy `backend/.env.example` to `backend/.env`
-2. Fill:
+Projekt jest przygotowany pod Supabase Auth oraz neutralną warstwę płatności:
+
+- `auth.users` w Supabase obsługuje logowanie, hasła, sesje i potwierdzenia e-mail.
+- `public.user_accounts` przechowuje dane konta aplikacji, rolę i metadane użytkownika.
+- `public.subscriptions` przechowuje status dostępu, kod planu i identyfikatory operatora płatności.
+- `public.payment_events` zapisuje webhooki i historię synchronizacji płatności.
+- `signals` i `market_data` są czytelne tylko dla zalogowanych kont z aktywną subskrypcją albo rolą administracyjną.
+
+Na start frontend używa provider `mock`, który pozwala aktywować testową subskrypcję z ekranu `/billing`. Gdy wybierzesz operatora płatności, dopisz adapter zgodny z kontraktem w `frontend/lib/billing/provider.ts` albo ustaw standardowy checkout przez `BILLING_CHECKOUT_URL` i webhook `POST /api/billing/webhook/[provider]`.
+
+### Zmienne frontendowe dla kont i płatności
+
+W `frontend/.env.local` ustaw:
+
+```env
+NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
+NEXT_PUBLIC_SITE_URL=http://localhost:3000
+SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
+BILLING_PROVIDER=mock
+BILLING_WEBHOOK_SECRET=
+BILLING_CHECKOUT_URL=
+```
+
+Docelowo `BILLING_PROVIDER` może przyjąć nazwę operatora, np. `stripe`, `paddle`, `payu`, `easycart` albo własną nazwę adaptera. Webhook powinien aktualizować `subscriptions`; frontend nigdy sam nie nadaje produkcyjnego dostępu.
+
+## Szybki Start Backend
+
+1. Utwórz plik `backend/.env`.
+2. Uzupełnij co najmniej:
    - `SUPABASE_URL`
    - `SUPABASE_SERVICE_ROLE_KEY`
    - `MT5_SYMBOL`
    - `DXY_SYMBOL`
-   - optional MT5 login fields
-3. Run:
+   - opcjonalnie dane logowania MT5
+3. Uruchom:
 
 ```bash
 cd backend
-python -m venv .venv
-.venv\Scripts\activate
+python -m venv venv
+venv\Scripts\activate
 pip install -r requirements.txt
 python -m src.main
 ```
 
-### Important backend variables
+### Najważniejsze zmienne backendu
 
-- `SEED_CANDLE_COUNT` - M1 history used to derive M5 execution windows
-- `H1_SEED_CANDLE_COUNT` - XAU H1 bias history
-- `DXY_SEED_H1_COUNT` - DXY H1 bias history
-- `SIGNAL_EXPIRY_MINUTES` - hard timeout for stale trades
-- `TRADING_TIMEZONE` - local session clock, default `Europe/Warsaw`
+- `SEED_CANDLE_COUNT` - liczba świec M1 trzymanych do analizy i agregacji
+- `H1_SEED_CANDLE_COUNT` - historia H1 dla biasu XAU
+- `DXY_SEED_H1_COUNT` - historia H1 dla biasu DXY
+- `SHADOW_PROFILE` - profil silnika dla trybu `SHADOW`, domyślnie `RELAXED`
+- `SHADOW_CSV_PATH` - lokalny raport zamkniętych sygnałów trybu `SHADOW`
+- `SHADOW_DIAGNOSTICS_CSV_PATH` - lokalny raport kandydatów i odrzuceń trybu `SHADOW`
+- `SIGNAL_EXPIRY_MINUTES` - maksymalny czas życia sygnału
+- `TRADING_TIMEZONE` - lokalna strefa sesyjna, domyślnie `Europe/Warsaw`
+- `MARKET_DATA_THROTTLE_SEC` - jak często backend publikuje snapshot rynku do Supabase
+- `H1_BIAS_MIN_SCORE` - minimalny score H1 wymagany do uznania kierunku
+- `H1_BIAS_PERSISTENCE_BARS` - ile zamkniętych świec H1 musi utrzymać się bias
+- `H1_BIAS_MAX_DISTANCE_ATR` - maksymalny dystans live price od EMA200 w ATR(H1), zanim bias zostanie uznany za zbyt rozciągnięty
+- `BACKTEST_H1_BIAS_MIN_SCORE` - opcjonalny override score H1 tylko dla backtestu
+- `BACKTEST_H1_BIAS_PERSISTENCE_BARS` - opcjonalny override persistence tylko dla backtestu
+- `BACKTEST_H1_BIAS_MAX_DISTANCE_ATR` - opcjonalny override twardego progu `OVEREXTENDED` tylko dla backtestu
+- `BACKTEST_H1_SOFT_OVEREXTENDED_ATR` - miękki próg `OVEREXTENDED` tylko dla backtestu `RELAXED`
+- `BACKTEST_FROM` / `BACKTEST_TO` - opcjonalny zakres dat backtestu; jeśli ustawisz oba, mają priorytet nad `BACKTEST_LOOKBACK_DAYS`
+- `BACKTEST_RESEARCH_MIN_BIAS_AGE_BARS` - minimalny wiek biasu H1 dopuszczany dla sygnałów `RESEARCH_M5`
+- `BACKTEST_RESEARCH_MAX_BIAS_AGE_BARS` - maksymalny wiek biasu H1 dopuszczany dla sygnałów `RESEARCH_M5`
+- `BACKTEST_RESEARCH_MIN_DISTANCE_TO_EMA_ATR` - minimalny dystans od EMA200 w ATR(H1) dla sygnałów `RESEARCH_M5`
+- `BACKTEST_RESEARCH_FIRST_PER_DAY_SIDE` - przepuszcza tylko pierwszy sygnał `RESEARCH_M5` na dany dzień i kierunek
+- `BACKTEST_RESEARCH_FIRST_PER_REFERENCE` - przepuszcza tylko pierwszy sygnał `RESEARCH_M5` na daną strefę płynności w obrębie tej samej sesji
+- `BACKTEST_RESEARCH_BLOCK_BUY_WITH_BULLISH_DXY` - blokuje `RESEARCH_M5 Buy`, gdy DXY ma bias `BULLISH_DXY`
+- `BACKTEST_RESEARCH_BLOCK_BUY_WITH_UNAVAILABLE_DXY` - blokuje `RESEARCH_M5 Buy`, gdy bias DXY jest niedostępny (`UNAVAILABLE`)
 
 ## Tryb Backtest
 
-Tryb `BACKTEST` pozwala uruchomić silnik AlphaNode V2 na historycznych świecach pobranych z MetaTrader 5. Jest to narzędzie diagnostyczne do sprawdzania, czy strategia generuje sygnały w oczekiwanych miejscach rynku, bez publikowania ich do Supabase i bez uruchamiania frontendu.
+Tryb `BACKTEST` uruchamia AlphaNode V2 na historycznych danych z MT5, bez publikowania sygnałów do Supabase i bez udziału frontendu. To narzędzie do strojenia logiki, porównywania filtrów i analizy jakości setupów.
 
 ### Jak uruchomić
 
-W pliku `backend/.env` ustaw:
+W `backend/.env` ustaw:
 
 ```env
 APP_MODE=BACKTEST
@@ -82,81 +130,344 @@ SUPABASE_URL=https://your-project.supabase.co
 MT5_SYMBOL=XAUUSD
 DXY_SYMBOL=DXY
 BACKTEST_CSV_PATH=backtest_results.csv
+BACKTEST_DIAGNOSTICS_CSV_PATH=backtest_diagnostics.csv
+BACKTEST_PROFILE=RELAXED
+BACKTEST_MIN_CONFIDENCE=0.70
+BACKTEST_COOLDOWN_MINUTES=20
+BACKTEST_REQUIRE_EXECUTION_SESSION=true
+BACKTEST_LOOKBACK_DAYS=20
+BACKTEST_FROM=
+BACKTEST_TO=
+BACKTEST_INCLUDE_RESEARCH_SIGNALS=false
+SIGNAL_SL_ATR_MULTIPLIER=1.1
+SIGNAL_MAX_STOP_DISTANCE=5.0
+H1_BIAS_MIN_SCORE=3
+H1_BIAS_PERSISTENCE_BARS=2
+H1_BIAS_MAX_DISTANCE_ATR=2.5
+BACKTEST_H1_BIAS_MIN_SCORE=3
+BACKTEST_H1_BIAS_PERSISTENCE_BARS=1
+BACKTEST_H1_BIAS_MAX_DISTANCE_ATR=2.5
+BACKTEST_H1_SOFT_OVEREXTENDED_ATR=3.0
+BACKTEST_RESEARCH_MIN_BIAS_AGE_BARS=2
+BACKTEST_RESEARCH_MAX_BIAS_AGE_BARS=6
+BACKTEST_RESEARCH_MIN_DISTANCE_TO_EMA_ATR=1.0
+BACKTEST_RESEARCH_FIRST_PER_DAY_SIDE=true
+BACKTEST_RESEARCH_FIRST_PER_REFERENCE=true
+BACKTEST_RESEARCH_BLOCK_BUY_WITH_BULLISH_DXY=true
+BACKTEST_RESEARCH_BLOCK_BUY_WITH_UNAVAILABLE_DXY=true
 SEED_CANDLE_COUNT=400
 H1_SEED_CANDLE_COUNT=260
 DXY_SEED_H1_COUNT=260
 ```
 
-Następnie uruchom backend tak samo jak w trybie produkcyjnym:
+Następnie uruchom:
 
 ```bash
 cd backend
 python -m src.main
 ```
 
-Uwaga: nawet w trybie `BACKTEST` aplikacja nadal inicjalizuje MetaTrader 5, ponieważ dane historyczne są pobierane z terminala MT5. Terminal musi być uruchomiony, zalogowany i musi mieć dostęp do symboli ustawionych w `MT5_SYMBOL` oraz `DXY_SYMBOL`.
+Uwaga:
 
-`SUPABASE_SERVICE_ROLE_KEY` nie jest wymagany do zapisu w trybie `BACKTEST`, ale obecny loader konfiguracji nadal wymaga `SUPABASE_URL`, więc zostaw w `.env` poprawny adres projektu Supabase albo dowolną wartość testową zgodną z formatem URL.
+- nawet w trybie `BACKTEST` aplikacja nadal inicjalizuje MetaTrader 5, bo dane historyczne są pobierane z terminala MT5
+- terminal MT5 musi być uruchomiony, zalogowany i mieć dostęp do symboli ustawionych w `MT5_SYMBOL` oraz `DXY_SYMBOL`
+- `SUPABASE_SERVICE_ROLE_KEY` nie jest wymagany do zapisu w `BACKTEST`, ale `SUPABASE_URL` nadal musi istnieć w konfiguracji
 
 ### Co dokładnie robi backtest
 
 1. Backend startuje w trybie `BACKTEST`, gdy `APP_MODE=BACKTEST`.
-2. `MT5Client` pobiera historyczne świece:
-   - M1 dla XAU/USD z `SEED_CANDLE_COUNT`
-   - H1 dla XAU/USD z `H1_SEED_CANDLE_COUNT`
-   - H1 dla DXY z `DXY_SEED_H1_COUNT`
-3. Silnik `RollingSignalEngineMTF` jest zasiewany początkowym fragmentem danych historycznych.
-4. Backtest przechodzi świeca po świecy po historii M1.
-5. Przy każdej świecy M1 silnik aktualizuje kontekst H1 oraz DXY H1 tylko tymi świecami, które faktycznie byłyby już znane w danym momencie testu.
-6. Silnik wywołuje `evaluate_signal(...)` dokładnie tak jak w trybie live.
-7. Jeśli pojawi się sygnał, backend buduje obiekt sygnału i symuluje wynik na podstawie zamknięcia następnej świecy M1.
-8. Wyniki są zapisywane do pliku CSV, domyślnie `backend/backtest_results.csv`.
-9. Na końcu backend wypisuje w logach raport: liczba sygnałów, winrate, suma pipsów, liczba wygranych i przegranych.
+2. Pobiera historię M1 dla XAU oraz H1 dla XAU i DXY z MT5.
+3. Buduje rolling engine i zasiewa go początkowym fragmentem historii.
+4. Przechodzi świeca po świecy po danych M1.
+5. W każdym kroku aktualizuje tylko te świece H1 i DXY H1, które byłyby już znane w danym momencie testu.
+6. Uruchamia `evaluate_signal(...)` tak samo jak w live, ale z profilem backtestowym.
+7. Zanim sygnał trafi do wyników, przechodzi przez dodatkowe filtry jakościowe backtestu.
+8. Zaakceptowany sygnał jest symulowany świeca po świecy aż do `TP`, `SL` albo `SIGNAL_EXPIRY_MINUTES`.
+9. Jeśli `TP` i `SL` wypadają w tej samej świecy M1, backtest liczy konserwatywnie `SL`.
+10. Wyniki trafiają do `backtest_results.csv`, a pełna diagnostyka do `backtest_diagnostics.csv`.
+11. Na końcu logowany jest raport ogólny oraz raport `tradeable-only`.
+
+### Profile backtestu
+
+Backtest obsługuje dwa profile:
+
+- `BACKTEST_PROFILE=STRICT` - zachowuje się jak tryb live i nie luzuje warunków wejścia
+- `BACKTEST_PROFILE=RELAXED` - profil badawczy, który nadal respektuje strukturę systemu, ale pozwala szybciej zebrać próbki do analizy
+
+W `RELAXED`:
+
+- blok DXY nie wycina sygnałów tak agresywnie jak w live
+- Time-Block nie zatrzymuje całej analizy poza oknami London / NY
+- reclaim po sweepie może potrwać dłużej
+- jeśli pełny sweep H1 nie wystąpi, silnik może użyć badawczego fallbacku mikro-płynności M5
+- trigger M5 nadal jest lżejszy niż w `STRICT`, ale wymaga momentum reclaim oraz dodatkowego potwierdzenia patternem lub RSI
+
+To nadal nie jest profil live. Jego celem jest odkrycie, czy koncepcja reaguje na sensowne fragmenty rynku.
+
+### Filtry jakościowe backtestu
+
+Backtest ma dodatkowe filtry, które nie wpływają na tryb live:
+
+- `BACKTEST_MIN_CONFIDENCE=0.70` - minimalny confidence, aby setup liczył się jako transakcja
+- `BACKTEST_COOLDOWN_MINUTES=20` - blokada kolejnych wejść przez określony czas po zaakceptowanym sygnale
+- `BACKTEST_REQUIRE_EXECUTION_SESSION=true` - wymaga trybu `EXECUTION`, nawet jeśli `RELAXED` nadal analizuje świece poza sesją
+- `BACKTEST_INCLUDE_RESEARCH_SIGNALS=false` - domyślnie nie wlicza do wyniku setupów `RESEARCH_M5`; pozostają one w diagnostyce
+- `SIGNAL_SL_ATR_MULTIPLIER=1.1` - odrzuca setupy, których stop jest za szeroki względem bieżącego ATR M5
+- `SIGNAL_MAX_STOP_DISTANCE=5.0` - dodatkowy twardy limit szerokości stopa w cenie instrumentu
+- `BACKTEST_RESEARCH_MIN_BIAS_AGE_BARS=2` - odrzuca sygnały `RESEARCH_M5`, jeśli bias H1 jest jeszcze zbyt świeży
+- `BACKTEST_RESEARCH_MAX_BIAS_AGE_BARS=6` - odrzuca sygnały `RESEARCH_M5`, jeśli bias H1 jest już zbyt stary
+- `BACKTEST_RESEARCH_MIN_DISTANCE_TO_EMA_ATR=1.0` - odrzuca sygnały `RESEARCH_M5`, jeśli wejście jest zbyt blisko EMA200
+- `BACKTEST_RESEARCH_FIRST_PER_DAY_SIDE=true` - odrzuca kolejne sygnały `RESEARCH_M5` w tym samym dniu i kierunku, żeby ograniczyć overtrading
+- `BACKTEST_RESEARCH_FIRST_PER_REFERENCE=true` - odrzuca kolejne wejścia `RESEARCH_M5` w tę samą strefę `reference_liquidity` w obrębie tej samej sesji
+- `BACKTEST_RESEARCH_BLOCK_BUY_WITH_BULLISH_DXY=true` - odrzuca `RESEARCH_M5 Buy`, jeśli DXY ma przeciwny bias i rośnie przeciwko złotu
+- `BACKTEST_RESEARCH_BLOCK_BUY_WITH_UNAVAILABLE_DXY=true` - odrzuca `RESEARCH_M5 Buy`, jeśli DXY nie było jeszcze dostępne i filtr korelacji nie może zostać uczciwie oceniony
+
+### H1 Bias Tuning
+
+Od tej wersji bias H1 jest stabilizowany zanim M5 dostanie prawo do szukania wejścia:
+
+- bias liczony jest z ostatniej zamkniętej świecy H1, a nie z live ticka "dopinającego" bieżącą godzinę
+- kierunek H1 dostaje score oparty o EMA200, nachylenie EMA, pozycję względem Kumo, relację Tenkan/Kijun oraz prostą strukturę poprzedniej świecy
+- bias musi utrzymać się przez określoną liczbę zamkniętych świec H1
+- jeśli live price jest zbyt daleko od EMA200 względem ATR(H1), system oznacza stan jako `OVEREXTENDED` i blokuje nowy sygnał
+
+Domyślne ustawienia:
+
+```env
+H1_BIAS_MIN_SCORE=3
+H1_BIAS_PERSISTENCE_BARS=2
+H1_BIAS_MAX_DISTANCE_ATR=2.5
+```
+
+Domyślne strojenie backtestu `RELAXED`:
+
+```env
+BACKTEST_H1_BIAS_MIN_SCORE=3
+BACKTEST_H1_BIAS_PERSISTENCE_BARS=1
+BACKTEST_H1_BIAS_MAX_DISTANCE_ATR=2.5
+BACKTEST_H1_SOFT_OVEREXTENDED_ATR=3.0
+BACKTEST_RESEARCH_MIN_BIAS_AGE_BARS=2
+BACKTEST_RESEARCH_MAX_BIAS_AGE_BARS=6
+BACKTEST_RESEARCH_MIN_DISTANCE_TO_EMA_ATR=1.0
+BACKTEST_RESEARCH_FIRST_PER_DAY_SIDE=true
+BACKTEST_RESEARCH_FIRST_PER_REFERENCE=true
+BACKTEST_RESEARCH_BLOCK_BUY_WITH_BULLISH_DXY=true
+BACKTEST_RESEARCH_BLOCK_BUY_WITH_UNAVAILABLE_DXY=true
+```
+
+Praktyczne strojenie:
+
+- więcej sygnałów: obniż `H1_BIAS_MIN_SCORE` do `2`
+- stabilniejszy bias: podnieś `H1_BIAS_PERSISTENCE_BARS` do `3`
+- mniej spóźnionych wejść po impulsie: obniż `H1_BIAS_MAX_DISTANCE_ATR` do `1.8-2.2`
+- większa tolerancja na trend: podnieś `H1_BIAS_MAX_DISTANCE_ATR` do `3.0`
+- tylko dla backtestu `RELAXED`: zostaw live bez zmian, a testowo użyj `BACKTEST_H1_BIAS_PERSISTENCE_BARS=1`
+- miękki wariant `OVEREXTENDED`: ustaw `BACKTEST_H1_SOFT_OVEREXTENDED_ATR=3.0`, aby zakres `2.5-3.0 ATR` nie blokował całkowicie biasu, ale przechodził z lekko obniżonym `confidence`
+
+### Testowanie większej liczby dni
+
+Parametr `BACKTEST_LOOKBACK_DAYS` pozwala pobrać większą próbkę historyczną bez ręcznego grzebania w kodzie.
+
+Przykłady:
+
+```env
+BACKTEST_LOOKBACK_DAYS=5
+BACKTEST_LOOKBACK_DAYS=10
+BACKTEST_LOOKBACK_DAYS=30
+```
+
+Albo precyzyjny zakres dat:
+
+```env
+BACKTEST_FROM=2026-04-13
+BACKTEST_TO=2026-04-17
+```
+
+Możesz też podać dokładny czas:
+
+```env
+BACKTEST_FROM=2026-04-13T08:00
+BACKTEST_TO=2026-04-17T18:30
+```
+
+Jak to działa:
+
+- dla M1 backend pobiera co najmniej `LOOKBACK_DAYS * 24 * 60` świec
+- dla H1 i DXY H1 pobiera odpowiednio większy zakres, z dodatkowym buforem pod EMA200 i bias H1
+- jeśli ustawisz `BACKTEST_LOOKBACK_DAYS=0`, system wróci do klasycznych liczników `SEED_CANDLE_COUNT`, `H1_SEED_CANDLE_COUNT` i `DXY_SEED_H1_COUNT`
+- jeśli ustawisz `BACKTEST_FROM` i `BACKTEST_TO`, zakres dat ma priorytet nad `BACKTEST_LOOKBACK_DAYS`
+- dla wartości typu `2026-04-17` system interpretuje datę w `TRADING_TIMEZONE` i włącza cały ten dzień do testu
+- dla wartości z godziną, na przykład `2026-04-17T18:30`, granica końcowa jest traktowana dokładnie do tej minuty
+
+W praktyce:
+
+- `5` dni wystarczy do szybkiej kontroli po zmianie logiki
+- `10-20` dni daje lepszy obraz stabilności
+- `30+` dni ma sens dopiero wtedy, gdy strategia nie rozsypuje się na krótszej próbce
+
+Rekomendowany workflow testów:
+
+- szybki smoke test po zmianie filtrów: `BACKTEST_FROM=2026-04-13`, `BACKTEST_TO=2026-04-17`
+- główne porównanie A/B: `BACKTEST_FROM=2026-04-13`, `BACKTEST_TO=2026-05-06`
+- walidacja zwycięskiego wariantu: `BACKTEST_FROM=2026-03-09`, `BACKTEST_TO=2026-05-06`
+
+Dlaczego takie daty:
+
+- to są zamknięte, pełne okna rynku bez niedokończonego bieżącego dnia
+- obejmują sesje London i NY, na których system faktycznie pracuje
+- zawierają już znane z wcześniejszych prób aktywne fragmenty rynku z `2026-04-13`, `2026-04-27` i `2026-05-06`
+
+### Raporty końcowe
+
+Backtest loguje dwa poziomy podsumowania:
+
+- `BACKTEST report` - pełny wynik wszystkich zaakceptowanych sygnałów z CSV
+- `BACKTEST tradeable-only report` - wynik tylko sygnałów `STRICT` i `RELAXED`, bez `RESEARCH_M5`
+
+To ważne, bo `RESEARCH_M5` to próbki badawcze. Mogą pomagać stroić strategię, ale nie powinny psuć pierwszej oceny, czy model generuje sensowne setupy transakcyjne.
 
 ### Plik wynikowy CSV
 
-CSV zawiera następujące kolumny:
+`backtest_results.csv` zawiera:
 
-- `candle_time` - czas świecy, na której pojawił się sygnał
-- `symbol` - testowany symbol, np. XAU/USD u danego brokera
-- `type` - kierunek sygnału, `Buy` albo `Sell`
-- `status` - w backteście wpisy są zapisywane jako `CLOSED`
-- `reason` - powód wygenerowania sygnału zwrócony przez strategię
-- `confidence` - ocena pewności setupu
-- `entry_price` - cena wejścia wyliczona przez silnik
-- `exit_price` - cena wyjścia użyta w symulacji
-- `dxy_bias` - kontekst DXY
-- `session_name` - sesja rynkowa, np. London / NY / Monitoring
-- `liquidity_cleared` - czy warunek sweepu płynności został spełniony
-- `result_pips` - wynik w pipsach
+- `candle_time`
+- `symbol`
+- `type`
+- `status`
+- `reason`
+- `confidence`
+- `signal_grade`
+- `entry_price`
+- `tp`
+- `sl`
+- `exit_price`
+- `closed_at`
+- `close_reason`
+- `dxy_bias`
+- `session_name`
+- `liquidity_cleared`
+- `relaxed_m5_liquidity`
+- `max_favorable_pips`
+- `max_adverse_pips`
+- `minutes_in_trade`
+- `result_pips`
+
+### Plik diagnostyczny CSV
+
+`backtest_diagnostics.csv` powstaje nawet wtedy, gdy nie ma żadnego sygnału. To podstawowe źródło prawdy, gdy strategia jest zbyt surowa.
+
+Najważniejsze kolumny:
+
+- `reason`
+- `bias_side`
+- `trend_state`
+- `bias_score`
+- `bias_age_bars`
+- `distance_to_ema_atr`
+- `overextended`
+- `soft_overextended`
+- `execution_mode`
+- `session_name`
+- `dxy_bias`
+- `liquidity_cleared`
+- `relaxed_m5_liquidity`
+- `confidence`
+- `signal_grade`
+- `reference_liquidity`
+- `market_health_score`
+
+Najczęstsze wartości `reason`:
+
+- `time_block_monitoring`
+- `h1_bias_not_aligned`
+- `bias_persistence_not_met`
+- `h1_overextended_from_ema`
+- `waiting_for_liquidity_sweep`
+- `waiting_for_m5_reclaim`
+- `trigger_not_confirmed`
+- `awaiting_new_m5_close`
+- `below_confidence_threshold`
+- `backtest_cooldown`
+- `backtest_session_filter`
+- `research_signal_excluded`
+- `research_bias_too_fresh`
+- `research_bias_too_old`
+- `research_too_close_to_ema`
+- `research_day_side_reentry`
+- `research_reference_reentry`
+- `research_dxy_long_blocked`
+- `research_dxy_unavailable_blocked`
+- `risk_too_wide_for_m5_atr`
+- `risk_too_wide_absolute`
 
 ### Jak interpretować wynik
 
-Backtest w obecnej wersji jest szybkim testem logiki sygnałów, a nie pełnym symulatorem egzekucji brokerskiej. Wynik `result_pips` jest liczony względem następnego zamknięcia M1, więc służy głównie do oceny, czy sygnał pojawia się w sensownym kierunku i kontekście.
+Obecny backtest jest dużo bliższy rzeczywistej pozycji niż prosty test na następnej świecy, ale nadal nie jest pełnym symulatorem brokerskim.
 
-To oznacza, że backtest:
+Backtest:
 
-- pomaga sprawdzić, czy filtry H1, DXY, sesji i sweepu działają razem
-- pozwala szybko zobaczyć liczbę sygnałów oraz ich rozkład
-- tworzy CSV do ręcznej analizy w Excelu, Google Sheets lub Pythonie
-- nie uwzględnia spreadu, prowizji, poślizgu ani realnego wykonania zleceń
-- nie sprawdza intrabar, czy TP/SL zostały trafione wewnątrz kolejnej świecy
-- nie zapisuje sygnałów do Supabase i nie aktualizuje dashboardu
+- symuluje `TP`, `SL` i wygaśnięcie pozycji na świecach M1
+- pokazuje `MFE`, `MAE` i czas utrzymania pozycji
+- pomaga ocenić liczbę sygnałów, ich jakość i rozkład powodów odrzuceń
+- nie uwzględnia spreadu, prowizji, poślizgu ani realnego fill execution
 
 ### Najczęstsze problemy
 
-- `Not enough M1 candles for backtest` oznacza, że MT5 zwrócił mniej niż 120 świec M1. Zwiększ zakres historii w terminalu MT5 lub sprawdź nazwę symbolu.
-- Brak sygnałów nie musi oznaczać błędu. AlphaNode V2 ma restrykcyjne filtry: H1 Bias, DXY, Time-Block, Liquidity Sweep i M5 Trigger.
-- Jeśli broker używa niestandardowych nazw instrumentów, ustaw dokładne wartości `MT5_SYMBOL` i `DXY_SYMBOL` zgodnie z Market Watch w MT5.
-- `BACKTEST_CSV_PATH` może być ścieżką względną lub absolutną. Ścieżka względna jest liczona od katalogu `backend/`.
+- `Not enough M1 candles for backtest` oznacza, że MT5 zwrócił zbyt mało danych
+- brak sygnałów nie musi oznaczać błędu; najpierw sprawdź `backtest_diagnostics.csv`
+- jeśli wynik jest bardzo słaby na 1-2 dniach, zwiększ `BACKTEST_LOOKBACK_DAYS` do `10` lub `20`
+- jeśli wynik psują pojedyncze próbki badawcze, zostaw `BACKTEST_INCLUDE_RESEARCH_SIGNALS=false`
+- jeśli broker używa innych nazw symboli, ustaw dokładne `MT5_SYMBOL` i `DXY_SYMBOL` zgodnie z Market Watch
 
-## Frontend Quick Start
+## Tryb Shadow
 
-1. Copy `frontend/.env.example` to `frontend/.env.local`
-2. Fill:
+Tryb `SHADOW` uruchamia bota na żywych tickach MT5, ale nie publikuje sygnałów do głównej tabeli `signals`. Zamiast tego:
+
+- nadal odświeża `market_data` w Supabase
+- ocenia sygnały profilem `SHADOW_PROFILE`, domyślnie `RELAXED`
+- przepuszcza kandydaty przez tę samą warstwę filtrów co backtest
+- zapisuje lokalne wyniki do `SHADOW_CSV_PATH`
+- zapisuje lokalną diagnostykę kandydatów do `SHADOW_DIAGNOSTICS_CSV_PATH`
+
+Przykład:
+
+```env
+APP_MODE=SHADOW
+SHADOW_PROFILE=RELAXED
+SHADOW_CSV_PATH=shadow_results.csv
+SHADOW_DIAGNOSTICS_CSV_PATH=shadow_diagnostics.csv
+BACKTEST_MIN_CONFIDENCE=0.70
+BACKTEST_REQUIRE_EXECUTION_SESSION=true
+BACKTEST_RESEARCH_FIRST_PER_DAY_SIDE=true
+BACKTEST_RESEARCH_FIRST_PER_REFERENCE=true
+BACKTEST_RESEARCH_BLOCK_BUY_WITH_BULLISH_DXY=true
+BACKTEST_RESEARCH_BLOCK_BUY_WITH_UNAVAILABLE_DXY=true
+```
+
+Ważne:
+
+- `SHADOW` używa tych samych progów filtrowania co backtest, więc nie trzeba utrzymywać drugiego zestawu parametrów
+- aktywny sygnał `SHADOW` trzymany jest w RAM, więc restart procesu przerywa jego lokalne śledzenie
+- to jest najlepszy etap pośredni przed pełnym live, bo pozwala porównać realny strumień rynku z wynikami backtestu bez wysyłania sygnałów do użytkownika
+
+## 24/7
+
+Jeśli bot stoi tylko na lokalnym komputerze, to `PROD` i `SHADOW` będą działały tylko wtedy, gdy komputer i terminal MT5 są włączone.
+
+Do pracy 24/7 najlepsze opcje są dwie:
+
+- Windows VPS z uruchomionym MT5 i backendem
+- osobna zawsze-włączona maszyna z Windows, na przykład mini PC
+
+MT5 działa najstabilniej właśnie w środowisku Windows, więc to lepszy kierunek niż przenoszenie samego backendu na losowy Linux bez planu pod terminal MT5.
+
+## Szybki Start Frontend
+
+1. Utwórz plik `frontend/.env.local`.
+2. Uzupełnij:
    - `NEXT_PUBLIC_SUPABASE_URL`
    - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
-3. Run:
+3. Uruchom:
 
 ```bash
 cd frontend
@@ -168,101 +479,70 @@ Dashboard:
 
 - `http://localhost:3000/dashboard`
 
-## Supabase Setup
+## Supabase
 
-Apply [supabase/schema.sql](C:\Users\gmdam\Documents\GitHub\SignalBot\supabase\schema.sql) in Supabase SQL Editor.
+Uruchom `supabase/schema.sql` w SQL Editorze Supabase.
 
-The schema provides:
+Schemat dostarcza:
 
-- `market_data` with one live row per symbol
-- `signals` with lifecycle states and AlphaNode V2 context fields
-- public read policies for frontend consumption
-- realtime publication for both tables
+- `market_data` z jednym live rekordem na symbol
+- `signals` z pełnym cyklem życia pozycji
+- polityki odczytu dla frontendu
+- Realtime dla `market_data` i `signals`
 
 ## AlphaNode V2 Strategy Handbook
 
-AlphaNode V2 replaces the older indicator-score approach with a hierarchy based on market structure, environment filters and liquidity behavior.
+AlphaNode V2 odchodzi od prostych przecięć wskaźników i działa warstwowo: środowisko rynkowe, bias H1, sweep płynności i trigger M5.
 
-### Decision Hierarchy
+### Hierarchia decyzyjna
 
 ```mermaid
 flowchart TD
     A["Time-Block Filter"] --> B["DXY Correlation Filter"]
-    B --> C["H1 Bias: EMA200 + Ichimoku Kumo"]
+    B --> C["H1 Bias Score + Persistence + Overextension"]
     C --> D["H1 Liquidity Sweep"]
     D --> E["M5 Trigger: FVG or Engulfing + RSI Reversal"]
     E --> F["Risk Engine: SL under sweep, TP1 1:1.5, TP2 next H1 liquidity"]
 ```
 
-Why this order matters:
+Dlaczego taka kolejność:
 
-- If session liquidity is poor, execution is disabled before technical signals are considered.
-- If DXY is hostile for gold longs, the engine blocks long setups even when XAU looks attractive on local indicators.
-- Only after environment conditions are valid does the engine look for liquidity events and M5 triggers.
+- jeśli sesja jest słaba, egzekucja zostaje zablokowana zanim wskaźniki zaczną cokolwiek sugerować
+- jeśli DXY jest wrogie dla złota, long na XAU traci przewagę
+- H1 musi najpierw pokazać zgodny, stabilny kierunek
+- dopiero później system szuka sweepu i triggera M5
 
-### H1 Bias / M5 Execution Architecture
+### Psychologia systemu
 
-Layer 1: H1 Directional Bias
+Strategia opiera się na idei Smart Money Concepts:
 
-- XAU H1 price is evaluated against EMA 200.
-- XAU H1 price must also be positioned above or below the Ichimoku cloud.
-- DXY H1 is evaluated independently and can block long gold setups.
-- Session windows:
-  - `LONDON_OPEN`: 09:00 - 12:00 local trading time
-  - `NY_OPEN_OVERLAP`: 14:30 - 18:30 local trading time
-  - Outside these windows the engine stays in `MONITORING`
+- rynek często najpierw czyści lokalną płynność
+- wejście przed sweepem bywa wejściem prosto w pułapkę
+- najlepsze setupy pojawiają się po manipulacji i reclaimie poziomu
 
-Layer 2: Liquidity Sweep
+System preferuje:
 
-- The engine scans the last 24 H1 candles for swing highs and swing lows.
-- A long setup requires a sweep below the tracked H1 swing low and a reclaim above that level within 3 M5 candles.
-- A short setup mirrors the same logic above H1 swing highs.
+- cierpliwość zamiast częstotliwości
+- wejście po displacement, a nie przed nim
+- potwierdzenie struktury zamiast surowego crossovera wskaźników
 
-Layer 3: M5 Execution Trigger
+### Stack techniczny
 
-- After liquidity is cleared, the engine waits for:
-  - bullish or bearish Fair Value Gap
-  - or bullish / bearish engulfing
-  - plus RSI reversal from exhaustion
-- Stop loss is anchored beyond the candle that performed the sweep.
-- TP1 is fixed at 1:1.5 RR.
-- TP2 is the next H1 liquidity pool and is stored in metadata.
-
-### Psychology of the System
-
-AlphaNode V2 follows the Smart Money Concepts idea that the cleanest move often comes after the market first runs liquidity.
-
-Why the system waits for the sweep:
-
-- Retail traders often place stops around obvious highs and lows.
-- Stronger players can push price through those levels to collect liquidity.
-- Entering before that event often means buying directly into the trap.
-- By waiting for the sweep and then a reclaim, the system looks for confirmation that the manipulation has already happened.
-
-In practice this means AlphaNode V2 prefers:
-
-- patience over frequency
-- execution after displacement, not before
-- structural confirmation over raw indicator crossover events
-
-### Technical Stack
-
-- Python process:
-  - receives live MT5 ticks
-  - maintains M1, M5, H1 and DXY H1 rolling windows in RAM
-  - computes bias, sweep state, trigger and risk parameters
+- Python:
+  - zbiera ticki i historię z MT5
+  - utrzymuje rolling windows w RAM
+  - wylicza bias, sweep, trigger i risk engine
 - MT5:
-  - provides XAU/USD and DXY market data
-  - remains the low-latency source of truth for live prices
+  - jest źródłem prawdy dla cen XAU/USD i DXY
 - Supabase:
-  - stores `market_data` snapshots and `signals`
-  - distributes updates to the frontend through Realtime
+  - przechowuje `market_data` i `signals`
+  - dystrybuuje zmiany do frontendu przez Realtime
 
-## Data Contract
+## Kontrakt Danych
 
 ### `signals`
 
-Core columns:
+Pola bazowe:
 
 - `id`
 - `symbol`
@@ -274,7 +554,7 @@ Core columns:
 - `timestamp`
 - `expires_at`
 
-AlphaNode V2 fields:
+Pola strategii:
 
 - `dxy_bias`
 - `session_name`
@@ -284,32 +564,60 @@ AlphaNode V2 fields:
 
 ### `market_data`
 
-Each row contains a single live snapshot per symbol.
-
-For XAU the `extra` field now carries:
+Dla XAU:
 
 - `market_health_score`
 - `market_health_components`
 - `bias_side`
 - `trend_state`
+- `bias_score`
+- `bias_age_bars`
+- `distance_to_ema_atr`
+- `overextended`
 - `session_name`
 - `execution_mode`
 - `dxy_bias`
 - `liquidity_cleared`
 - `reference_liquidity`
 
-For DXY the `extra` field carries:
+Dla DXY:
 
 - `dxy_bias`
 - `ema200`
 - `ema_slope`
 - `market_health_score`
 
-This allows the frontend to build a Market Health Score panel without recomputing backend logic in the browser.
+## Uwagi
 
-## Notes
+- frontend korzysta tylko z publicznego klucza anon
+- backend zapisuje przez klucz service role
+- jeśli broker używa innych nazw symboli, trzeba je wpisać w `backend/.env`
+- widget TradingView działa po stronie klienta i ładuje zewnętrzny skrypt
 
-- Frontend reads data with the public anon key only.
-- Backend writes with the Supabase service role key.
-- If your broker uses a different DXY symbol name, override `DXY_SYMBOL` in `backend/.env`.
-- TradingView widget is client-side and loads an external script in the frontend.
+## Windows VPS Ready
+
+Repo jest już przygotowane pod późniejsze postawienie na Windows VPS:
+
+- przykładowe env:
+  - [backend/.env.example](/C:/Users/gmdam/Documents/GitHub/SignalBot/backend/.env.example)
+  - [frontend/.env.local.example](/C:/Users/gmdam/Documents/GitHub/SignalBot/frontend/.env.local.example)
+- skrypty deploymentowe:
+  - [deploy/windows-vps/bootstrap-vps.ps1](/C:/Users/gmdam/Documents/GitHub/SignalBot/deploy/windows-vps/bootstrap-vps.ps1)
+  - [deploy/windows-vps/start-backend.ps1](/C:/Users/gmdam/Documents/GitHub/SignalBot/deploy/windows-vps/start-backend.ps1)
+  - [deploy/windows-vps/start-frontend.ps1](/C:/Users/gmdam/Documents/GitHub/SignalBot/deploy/windows-vps/start-frontend.ps1)
+  - [deploy/windows-vps/register-startup-tasks.ps1](/C:/Users/gmdam/Documents/GitHub/SignalBot/deploy/windows-vps/register-startup-tasks.ps1)
+  - [deploy/windows-vps/check-runtime.ps1](/C:/Users/gmdam/Documents/GitHub/SignalBot/deploy/windows-vps/check-runtime.ps1)
+- osobna instrukcja:
+  - [deploy/windows-vps/README.md](/C:/Users/gmdam/Documents/GitHub/SignalBot/deploy/windows-vps/README.md)
+
+Nowy tryb `APP_MODE=SHADOW` pozwala odpalić realny monitoring MT5 bez publikowania sygnałów do głównej tabeli `signals`. `SHADOW` i `BACKTEST` korzystają już z tej samej warstwy filtrów, więc porównanie wyników będzie znacznie uczciwsze.
+
+## Następne Etapy
+
+Najbardziej sensowna kolejność prac od tego miejsca:
+
+1. Dokończyć system logowania użytkowników.
+2. Doszlifować frontend i flow produktu.
+3. Postawić Windows VPS i uruchomić `SHADOW`.
+4. Po potwierdzeniu `SHADOW` przełączyć strategię na `PROD`.
+5. Dopiąć płatności, domenę i finalny deployment strony.

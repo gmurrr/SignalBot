@@ -59,10 +59,35 @@ class MT5Client:
         if rates is None or len(rates) == 0:
             raise RuntimeError(f"MT5 copy_rates_from_pos returned no data for {symbol} ({timeframe})")
 
-        df = pd.DataFrame(rates)
-        df["time"] = df["time"].apply(self._epoch_to_iso)
-        df["volume"] = df["tick_volume"].astype(float)
-        return df[["time", "open", "high", "low", "close", "volume"]].copy()
+        return self._rates_to_dataframe(rates)
+
+    def get_candles_in_range(
+        self,
+        symbol: str,
+        timeframe: str,
+        start_time: dt.datetime,
+        end_time: dt.datetime,
+    ) -> pd.DataFrame:
+        self._ensure_symbol(symbol)
+        start_utc = self._ensure_utc(start_time)
+        end_utc = self._ensure_utc(end_time)
+        if end_utc <= start_utc:
+            raise ValueError("end_time must be greater than start_time")
+
+        rates = mt5.copy_rates_range(symbol, self._timeframe_constant(timeframe), start_utc, end_utc)
+        if rates is None or len(rates) == 0:
+            raise RuntimeError(
+                f"MT5 copy_rates_range returned no data for {symbol} ({timeframe}) between {start_utc.isoformat()} and {end_utc.isoformat()}"
+            )
+
+        df = self._rates_to_dataframe(rates)
+        timestamps = pd.to_datetime(df["time"], utc=True, errors="coerce", format="ISO8601")
+        filtered = df[(timestamps >= start_utc) & (timestamps < end_utc)].copy()
+        if filtered.empty:
+            raise RuntimeError(
+                f"MT5 returned candles for {symbol} ({timeframe}), but none remained after range filtering between {start_utc.isoformat()} and {end_utc.isoformat()}"
+            )
+        return filtered
 
     def get_latest_tick(self, symbol: str) -> Tick:
         self._ensure_symbol(symbol)
@@ -102,6 +127,19 @@ class MT5Client:
             raise RuntimeError(f"MT5 symbol_info returned None for {symbol}")
         if not symbol_info.visible and not mt5.symbol_select(symbol, True):
             raise RuntimeError(f"MT5 could not select symbol {symbol}")
+
+    @staticmethod
+    def _rates_to_dataframe(rates) -> pd.DataFrame:
+        df = pd.DataFrame(rates)
+        df["time"] = df["time"].apply(MT5Client._epoch_to_iso)
+        df["volume"] = df["tick_volume"].astype(float)
+        return df[["time", "open", "high", "low", "close", "volume"]].copy()
+
+    @staticmethod
+    def _ensure_utc(value: dt.datetime) -> dt.datetime:
+        if value.tzinfo is None:
+            return value.replace(tzinfo=dt.timezone.utc)
+        return value.astimezone(dt.timezone.utc)
 
     @staticmethod
     def _epoch_to_iso(epoch_value: int | float) -> str:

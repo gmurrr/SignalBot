@@ -1,7 +1,14 @@
 export type SignalStatus = "ACTIVE" | "CLOSED" | "EXPIRED";
 export type SignalType = "Buy" | "Sell";
+export type AccountRole = "user" | "admin" | "support";
+export type SubscriptionStatus = "inactive" | "trialing" | "active" | "past_due" | "canceled" | "expired";
+export type AccountSecurityEventType = "password_reset_requested" | "password_updated";
+
+export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[];
+export type JsonRecord = { [key: string]: Json | undefined };
 
 export interface MarketDataRow {
+  [key: string]: unknown;
   id: string;
   symbol: string;
   tick_time: string;
@@ -10,11 +17,12 @@ export interface MarketDataRow {
   mid: number;
   source: string;
   timeframe: string;
-  extra: Record<string, unknown>;
+  extra: JsonRecord;
   updated_at: string;
 }
 
 export interface SignalRow {
+  [key: string]: unknown;
   id: string;
   symbol: string;
   type: SignalType;
@@ -36,18 +44,173 @@ export interface SignalRow {
   session_name: string;
   liquidity_cleared: boolean;
   indicator_snapshot: Record<string, number | string | null>;
-  metadata: Record<string, number | string | boolean | null>;
+  metadata: JsonRecord;
+  updated_at: string;
 }
 
-export interface Database {
+export interface UserAccountRow {
+  [key: string]: unknown;
+  id: string;
+  email: string;
+  billing_email: string | null;
+  full_name: string | null;
+  role: AccountRole;
+  metadata: JsonRecord;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface SubscriptionRow {
+  [key: string]: unknown;
+  id: string;
+  user_id: string;
+  status: SubscriptionStatus;
+  plan_code: string;
+  provider: string | null;
+  provider_customer_id: string | null;
+  provider_subscription_id: string | null;
+  current_period_start: string | null;
+  current_period_end: string | null;
+  trial_ends_at: string | null;
+  cancel_at_period_end: boolean;
+  metadata: JsonRecord;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface PaymentEventRow {
+  [key: string]: unknown;
+  id: string;
+  provider: string;
+  provider_event_id: string;
+  event_type: string;
+  user_id: string | null;
+  subscription_id: string | null;
+  payload: JsonRecord;
+  processed_at: string | null;
+  created_at: string;
+}
+
+export interface AccountSecurityEventRow {
+  [key: string]: unknown;
+  id: string;
+  user_id: string | null;
+  email: string;
+  event_type: AccountSecurityEventType;
+  metadata: JsonRecord;
+  created_at: string;
+}
+
+export type Database = {
   public: {
     Tables: {
       market_data: {
         Row: MarketDataRow;
+        Insert: Omit<MarketDataRow, "id" | "updated_at"> & {
+          id?: string;
+          updated_at?: string;
+        };
+        Update: Partial<MarketDataRow>;
+        Relationships: [];
       };
       signals: {
         Row: SignalRow;
+        Insert: Omit<SignalRow, "id" | "timestamp" | "updated_at"> & {
+          id?: string;
+          timestamp?: string;
+          updated_at?: string;
+        };
+        Update: Partial<SignalRow>;
+        Relationships: [];
+      };
+      user_accounts: {
+        Row: UserAccountRow;
+        Insert: {
+          id: string;
+          email: string;
+          billing_email?: string | null;
+          full_name?: string | null;
+          role?: AccountRole;
+          metadata?: JsonRecord;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: Partial<Omit<UserAccountRow, "id" | "created_at">>;
+        Relationships: [];
+      };
+      subscriptions: {
+        Row: SubscriptionRow;
+        Insert: {
+          id?: string;
+          user_id: string;
+          status?: SubscriptionStatus;
+          plan_code?: string;
+          provider?: string | null;
+          provider_customer_id?: string | null;
+          provider_subscription_id?: string | null;
+          current_period_start?: string | null;
+          current_period_end?: string | null;
+          trial_ends_at?: string | null;
+          cancel_at_period_end?: boolean;
+          metadata?: JsonRecord;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: Partial<Omit<SubscriptionRow, "id" | "user_id" | "created_at">>;
+        Relationships: [];
+      };
+      payment_events: {
+        Row: PaymentEventRow;
+        Insert: {
+          id?: string;
+          provider: string;
+          provider_event_id: string;
+          event_type: string;
+          user_id?: string | null;
+          subscription_id?: string | null;
+          payload?: JsonRecord;
+          processed_at?: string | null;
+          created_at?: string;
+        };
+        Update: Partial<Omit<PaymentEventRow, "id" | "provider" | "provider_event_id" | "created_at">>;
+        Relationships: [];
+      };
+      account_security_events: {
+        Row: AccountSecurityEventRow;
+        Insert: {
+          id?: string;
+          user_id?: string | null;
+          email: string;
+          event_type: AccountSecurityEventType;
+          metadata?: JsonRecord;
+          created_at?: string;
+        };
+        Update: Partial<Omit<AccountSecurityEventRow, "id" | "created_at">>;
+        Relationships: [];
       };
     };
+    Functions: {
+      has_active_subscription: {
+        Args: {
+          account_id?: string;
+        };
+        Returns: boolean;
+      };
+      is_account_admin: {
+        Args: {
+          account_id?: string;
+        };
+        Returns: boolean;
+      };
+      user_email_exists: {
+        Args: {
+          check_email: string;
+        };
+        Returns: boolean;
+      };
+    };
+    Views: Record<string, never>;
+    Enums: Record<string, never>;
+    CompositeTypes: Record<string, never>;
   };
-}
+};

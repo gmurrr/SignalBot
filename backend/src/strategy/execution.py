@@ -3,6 +3,7 @@ from __future__ import annotations
 import pandas as pd
 
 from src.strategy.indicators import (
+    atr,
     detect_bearish_engulfing,
     detect_bearish_fvg,
     detect_bullish_engulfing,
@@ -21,28 +22,44 @@ def build_execution_setup(
     tp2_target: float | None,
     pip_size: float,
     price_decimals: int,
-) -> ExecutionSetup | None:
+    signal_sl_atr_multiplier: float,
+    signal_max_stop_distance: float,
+    relaxed: bool = False,
+) -> tuple[ExecutionSetup | None, str]:
     working_df = prepare_ohlcv(m5_df)
     if len(working_df) < 4:
-        return None
+        return None, "waiting_for_m5_history"
 
     working_df["rsi"] = rsi(working_df["close"], 14)
+    working_df["atr"] = atr(working_df, 14)
     latest = working_df.iloc[-1]
     previous = working_df.iloc[-2]
     entry_price = round(safe_float(latest["close"]), price_decimals)
     current_rsi = safe_float(latest["rsi"])
     previous_rsi = safe_float(previous["rsi"])
+    current_atr = max(safe_float(latest["atr"]), pip_size * 2)
+    max_allowed_risk = max(current_atr * signal_sl_atr_multiplier, pip_size * 2)
 
     if direction == "LONG":
         has_pattern = detect_bullish_fvg(working_df) or detect_bullish_engulfing(working_df)
-        rsi_reversal = previous_rsi < 30 and current_rsi > previous_rsi and current_rsi >= 30
+        strict_rsi_reversal = previous_rsi < 30 and current_rsi > previous_rsi and current_rsi >= 30
+        relaxed_rsi_reversal = previous_rsi < 45 and current_rsi > previous_rsi
+        rsi_reversal = relaxed_rsi_reversal if relaxed else strict_rsi_reversal
+        momentum_reclaim = safe_float(latest["close"]) > safe_float(latest["open"]) and safe_float(latest["close"]) > safe_float(previous["high"])
         stop_loss = round(sweep_state.stop_anchor - pip_size, price_decimals)
         risk = entry_price - stop_loss
-        if not has_pattern or not rsi_reversal or risk <= pip_size:
-            return None
+        trigger_confirmed = (momentum_reclaim and (has_pattern or rsi_reversal)) if relaxed else (has_pattern and rsi_reversal)
+        if not trigger_confirmed:
+            return None, "trigger_not_confirmed"
+        if risk <= pip_size:
+            return None, "invalid_risk_window"
+        if signal_max_stop_distance > 0 and risk > signal_max_stop_distance:
+            return None, "risk_too_wide_absolute"
+        if risk > max_allowed_risk:
+            return None, "risk_too_wide_for_m5_atr"
 
         tp1 = round(entry_price + (risk * 1.5), price_decimals)
-        confidence = _build_confidence(has_pattern, rsi_reversal, current_rsi, sweep_state.candles_waited)
+        confidence = _build_confidence(has_pattern, rsi_reversal, momentum_reclaim, current_rsi, sweep_state.candles_waited)
         return ExecutionSetup(
             signal=1,
             type="Buy",
@@ -50,7 +67,7 @@ def build_execution_setup(
             sl=stop_loss,
             tp1=tp1,
             tp2=round(tp2_target, price_decimals) if tp2_target is not None else None,
-            reason="h1_bias_m5_reclaim_long",
+            reason="h1_bias_m5_reclaim_long_relaxed" if relaxed else "h1_bias_m5_reclaim_long",
             confidence=confidence,
             indicator_snapshot={
                 "m5_rsi": round(current_rsi, 2),
@@ -58,23 +75,38 @@ def build_execution_setup(
                 "reclaim_level": round(sweep_state.reference_level, price_decimals),
             },
             metadata={
-                "trigger": "bullish_fvg_or_engulfing_with_rsi_reversal",
+                "trigger": "bullish_fvg_or_engulfing_or_rsi_reversal" if relaxed else "bullish_fvg_or_engulfing_with_rsi_reversal",
+                "backtest_relaxed": relaxed,
+                "momentum_reclaim": momentum_reclaim,
                 "sweep_time": sweep_state.sweep_time,
                 "reclaim_time": sweep_state.reclaim_time,
                 "candles_waited": sweep_state.candles_waited,
+                "m5_atr": round(current_atr, price_decimals),
+                "risk_price": round(risk, price_decimals),
+                "risk_atr_multiple": round(risk / current_atr, 2) if current_atr > 0 else None,
                 "tp2": round(tp2_target, price_decimals) if tp2_target is not None else None,
             },
-        )
+        ), "signal_ready"
 
     has_pattern = detect_bearish_fvg(working_df) or detect_bearish_engulfing(working_df)
-    rsi_reversal = previous_rsi > 70 and current_rsi < previous_rsi and current_rsi <= 70
+    strict_rsi_reversal = previous_rsi > 70 and current_rsi < previous_rsi and current_rsi <= 70
+    relaxed_rsi_reversal = previous_rsi > 55 and current_rsi < previous_rsi
+    rsi_reversal = relaxed_rsi_reversal if relaxed else strict_rsi_reversal
+    momentum_reclaim = safe_float(latest["close"]) < safe_float(latest["open"]) and safe_float(latest["close"]) < safe_float(previous["low"])
     stop_loss = round(sweep_state.stop_anchor + pip_size, price_decimals)
     risk = stop_loss - entry_price
-    if not has_pattern or not rsi_reversal or risk <= pip_size:
-        return None
+    trigger_confirmed = (momentum_reclaim and (has_pattern or rsi_reversal)) if relaxed else (has_pattern and rsi_reversal)
+    if not trigger_confirmed:
+        return None, "trigger_not_confirmed"
+    if risk <= pip_size:
+        return None, "invalid_risk_window"
+    if signal_max_stop_distance > 0 and risk > signal_max_stop_distance:
+        return None, "risk_too_wide_absolute"
+    if risk > max_allowed_risk:
+        return None, "risk_too_wide_for_m5_atr"
 
     tp1 = round(entry_price - (risk * 1.5), price_decimals)
-    confidence = _build_confidence(has_pattern, rsi_reversal, current_rsi, sweep_state.candles_waited)
+    confidence = _build_confidence(has_pattern, rsi_reversal, momentum_reclaim, current_rsi, sweep_state.candles_waited)
     return ExecutionSetup(
         signal=-1,
         type="Sell",
@@ -82,7 +114,7 @@ def build_execution_setup(
         sl=stop_loss,
         tp1=tp1,
         tp2=round(tp2_target, price_decimals) if tp2_target is not None else None,
-        reason="h1_bias_m5_reclaim_short",
+        reason="h1_bias_m5_reclaim_short_relaxed" if relaxed else "h1_bias_m5_reclaim_short",
         confidence=confidence,
         indicator_snapshot={
             "m5_rsi": round(current_rsi, 2),
@@ -90,21 +122,34 @@ def build_execution_setup(
             "reclaim_level": round(sweep_state.reference_level, price_decimals),
         },
         metadata={
-            "trigger": "bearish_fvg_or_engulfing_with_rsi_reversal",
+            "trigger": "bearish_fvg_or_engulfing_or_rsi_reversal" if relaxed else "bearish_fvg_or_engulfing_with_rsi_reversal",
+            "backtest_relaxed": relaxed,
+            "momentum_reclaim": momentum_reclaim,
             "sweep_time": sweep_state.sweep_time,
             "reclaim_time": sweep_state.reclaim_time,
             "candles_waited": sweep_state.candles_waited,
+            "m5_atr": round(current_atr, price_decimals),
+            "risk_price": round(risk, price_decimals),
+            "risk_atr_multiple": round(risk / current_atr, 2) if current_atr > 0 else None,
             "tp2": round(tp2_target, price_decimals) if tp2_target is not None else None,
         },
-    )
+    ), "signal_ready"
 
 
-def _build_confidence(has_pattern: bool, rsi_reversal: bool, current_rsi: float, waited: int) -> float:
+def _build_confidence(
+    has_pattern: bool,
+    rsi_reversal: bool,
+    momentum_reclaim: bool,
+    current_rsi: float,
+    waited: int,
+) -> float:
     confidence = 0.5
     if has_pattern:
         confidence += 0.15
     if rsi_reversal:
         confidence += 0.15
+    if momentum_reclaim:
+        confidence += 0.05
     if 35 <= current_rsi <= 65:
         confidence += 0.05
     if waited <= 2:

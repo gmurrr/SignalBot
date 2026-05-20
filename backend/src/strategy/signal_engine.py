@@ -8,7 +8,12 @@ import pandas as pd
 from src.strategy.bias import determine_session, evaluate_dxy_bias, evaluate_h1_bias
 from src.strategy.execution import build_execution_setup
 from src.strategy.indicators import prepare_ohlcv, safe_float
-from src.strategy.liquidity import advance_sweep_state, find_tp2_target, identify_reference_liquidity
+from src.strategy.liquidity import (
+    advance_sweep_state,
+    build_relaxed_m5_liquidity_state,
+    find_tp2_target,
+    identify_reference_liquidity,
+)
 from src.strategy.types import SweepState
 
 
@@ -30,11 +35,23 @@ class RollingSignalEngineMTF:
         pip_size: float = 0.01,
         price_decimals: int = 2,
         dxy_symbol: str = "DXY",
+        signal_sl_atr_multiplier: float = 1.1,
+        signal_max_stop_distance: float = 5.0,
+        h1_bias_min_score: int = 3,
+        h1_bias_persistence_bars: int = 2,
+        h1_bias_max_distance_atr: float = 2.5,
+        h1_bias_soft_max_distance_atr: float = 0.0,
     ) -> None:
         self._timezone_name = timezone_name
         self._pip_size = pip_size
         self._price_decimals = price_decimals
         self._dxy_symbol = dxy_symbol
+        self._signal_sl_atr_multiplier = signal_sl_atr_multiplier
+        self._signal_max_stop_distance = signal_max_stop_distance
+        self._h1_bias_min_score = h1_bias_min_score
+        self._h1_bias_persistence_bars = h1_bias_persistence_bars
+        self._h1_bias_max_distance_atr = h1_bias_max_distance_atr
+        self._h1_bias_soft_max_distance_atr = h1_bias_soft_max_distance_atr
         self._candles_by_timeframe: dict[str, deque[dict[str, Any]]] = {
             "M1": deque(maxlen=window_size),
             "M5": deque(maxlen=max(window_size // 5, 96)),
@@ -79,17 +96,29 @@ class RollingSignalEngineMTF:
         live_price: float,
         live_dxy_price: float,
         evaluation_time: str,
+        execution_profile: str = "STRICT",
     ) -> dict[str, Any]:
+        relaxed = execution_profile.upper() == "RELAXED"
         h1_df = pd.DataFrame(list(self._candles_by_timeframe["H1"]))
         dxy_h1_df = pd.DataFrame(list(self._candles_by_timeframe["DXY_H1"]))
 
         session_context = determine_session(evaluation_time, self._timezone_name)
         dxy_context = evaluate_dxy_bias(dxy_h1_df, live_dxy_price, self._dxy_symbol)
-        bias_context = evaluate_h1_bias(h1_df, live_price, dxy_context, session_context)
+        bias_context = evaluate_h1_bias(
+            h1_df,
+            live_price,
+            dxy_context,
+            session_context,
+            min_score=self._h1_bias_min_score,
+            persistence_bars=self._h1_bias_persistence_bars,
+            max_distance_atr=self._h1_bias_max_distance_atr,
+            soft_max_distance_atr=self._h1_bias_soft_max_distance_atr if relaxed else None,
+            ignore_dxy_block=relaxed,
+        )
 
         reference_level = None
         if bias_context.side in {"LONG", "SHORT"}:
-            reference_level = identify_reference_liquidity(h1_df, bias_context.side)
+            reference_level = identify_reference_liquidity(h1_df, bias_context.side, live_price)
 
         sweep_state = self._sweep_states.get(bias_context.side) if bias_context.side in {"LONG", "SHORT"} else None
         liquidity_cleared = bool(sweep_state and sweep_state.liquidity_cleared)
@@ -116,14 +145,28 @@ class RollingSignalEngineMTF:
             "session_name": session_context.name,
             "execution_mode": session_context.mode,
             "dxy_bias": dxy_context.bias,
+            "bias_score": bias_context.bias_score,
+            "bias_age_bars": bias_context.bias_age_bars,
+            "distance_to_ema_atr": bias_context.distance_to_ema_atr,
+            "overextended": bias_context.overextended,
+            "soft_overextended": bias_context.soft_overextended,
             "liquidity_cleared": liquidity_cleared,
             "market_health_score": market_health_score,
             "market_health_components": components,
             "reference_liquidity": round(reference_level.price, self._price_decimals) if reference_level else None,
             "indicator_snapshot": {
                 "h1_ema200": round(bias_context.ema200, self._price_decimals),
+                "h1_ema_slope": round(bias_context.ema_slope, 6),
                 "kumo_top": round(bias_context.kumo_top, self._price_decimals),
                 "kumo_bottom": round(bias_context.kumo_bottom, self._price_decimals),
+                "h1_tenkan": round(bias_context.tenkan, self._price_decimals),
+                "h1_kijun": round(bias_context.kijun, self._price_decimals),
+                "h1_atr14": round(bias_context.atr14, self._price_decimals),
+                "h1_bias_score": bias_context.bias_score,
+                "h1_bias_age_bars": bias_context.bias_age_bars,
+                "h1_distance_to_ema_atr": round(bias_context.distance_to_ema_atr, 3),
+                "h1_overextended": bias_context.overextended,
+                "h1_soft_overextended": bias_context.soft_overextended,
                 "dxy_ema200": round(dxy_context.ema200, 4),
                 "dxy_price": round(dxy_context.price, 4),
                 "dxy_ema_slope": round(dxy_context.ema_slope, 6),
@@ -134,6 +177,7 @@ class RollingSignalEngineMTF:
                 "sweep_time": sweep_state.sweep_time if sweep_state else None,
                 "reclaim_time": sweep_state.reclaim_time if sweep_state else None,
                 "dxy_symbol": dxy_context.symbol,
+                "execution_profile": execution_profile.upper(),
             },
         }
 
@@ -142,8 +186,11 @@ class RollingSignalEngineMTF:
         live_price: float,
         live_dxy_price: float,
         evaluation_time: str,
+        execution_profile: str = "STRICT",
     ) -> dict[str, Any]:
-        snapshot = self.build_market_snapshot(live_price, live_dxy_price, evaluation_time)
+        profile = execution_profile.upper()
+        relaxed = profile == "RELAXED"
+        snapshot = self.build_market_snapshot(live_price, live_dxy_price, evaluation_time, execution_profile=profile)
         m5_df = prepare_ohlcv(pd.DataFrame(list(self._candles_by_timeframe["M5"])))
         h1_df = prepare_ohlcv(pd.DataFrame(list(self._candles_by_timeframe["H1"])))
 
@@ -151,7 +198,7 @@ class RollingSignalEngineMTF:
             snapshot["reason"] = "waiting_for_m5_history"
             return snapshot
 
-        if snapshot["execution_mode"] != "EXECUTION":
+        if snapshot["execution_mode"] != "EXECUTION" and not relaxed:
             snapshot["reason"] = "time_block_monitoring"
             return snapshot
 
@@ -168,14 +215,20 @@ class RollingSignalEngineMTF:
         self._last_processed_m5_time = latest_m5_time
 
         direction = str(snapshot["bias_side"])
-        reference_level = identify_reference_liquidity(h1_df, direction)
+        reference_level = identify_reference_liquidity(h1_df, direction, safe_float(latest_m5["close"]))
         updated_state = advance_sweep_state(
             direction,
             reference_level,
             latest_m5,
             self._sweep_states.get(direction),
+            max_reclaim_candles=6 if relaxed else 3,
         )
         self._sweep_states[direction] = updated_state
+        used_relaxed_m5_liquidity = False
+
+        if updated_state is None and relaxed:
+            updated_state = build_relaxed_m5_liquidity_state(direction, m5_df)
+            used_relaxed_m5_liquidity = updated_state is not None
 
         if updated_state is None:
             snapshot["reason"] = "waiting_for_liquidity_sweep"
@@ -186,22 +239,26 @@ class RollingSignalEngineMTF:
         snapshot["reference_liquidity"] = round(updated_state.reference_level, self._price_decimals)
         snapshot["metadata"]["sweep_time"] = updated_state.sweep_time
         snapshot["metadata"]["reclaim_time"] = updated_state.reclaim_time
+        snapshot["metadata"]["relaxed_m5_liquidity"] = used_relaxed_m5_liquidity
 
         if not updated_state.liquidity_cleared:
             snapshot["reason"] = "waiting_for_m5_reclaim"
             return snapshot
 
         tp2_target = find_tp2_target(h1_df, direction, safe_float(latest_m5["close"]))
-        execution_setup = build_execution_setup(
+        execution_setup, execution_reason = build_execution_setup(
             direction,
             m5_df,
             updated_state,
             tp2_target,
             self._pip_size,
             self._price_decimals,
+            self._signal_sl_atr_multiplier,
+            self._signal_max_stop_distance,
+            relaxed=relaxed,
         )
         if execution_setup is None:
-            snapshot["reason"] = "trigger_not_confirmed"
+            snapshot["reason"] = execution_reason
             return snapshot
 
         signal_key = f"{latest_m5_time}:{execution_setup.type}:{execution_setup.reason}"
@@ -211,12 +268,15 @@ class RollingSignalEngineMTF:
 
         self._last_signal_key = signal_key
         self._sweep_states[direction] = None
+        confidence = float(execution_setup.confidence)
+        if snapshot["soft_overextended"]:
+            confidence = max(0.5, round(confidence - 0.05, 2))
 
         snapshot.update(
             {
                 "signal": execution_setup.signal,
                 "type": execution_setup.type,
-                "confidence": execution_setup.confidence,
+                "confidence": confidence,
                 "reason": execution_setup.reason,
                 "entry_price": execution_setup.entry_price,
                 "sl": execution_setup.sl,
@@ -229,6 +289,7 @@ class RollingSignalEngineMTF:
                 "metadata": {
                     **snapshot["metadata"],
                     **execution_setup.metadata,
+                    "soft_overextended": snapshot["soft_overextended"],
                 },
             }
         )

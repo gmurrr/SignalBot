@@ -4,6 +4,7 @@ __pycache__/
 *.pyc
 .env
 logs/
+*.log
 *.csv
 backend/.env
 backend/logs/
@@ -11,3 +12,5 @@ frontend/.env
 frontend/.env.local
 frontend/.next/
 frontend/node_modules/
+*.tsbuildinfo
+deploy/windows-vps/runtime/
