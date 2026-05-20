@@ -189,6 +189,9 @@ create table if not exists public.user_consents (
     user_agent text,
     language text not null default 'PL'
         check (language in ('PL', 'EN')),
+    privacy_policy_version text,
+    privacy_policy_language text
+        check (privacy_policy_language in ('PL', 'EN')),
     source text not null
         check (source in ('REGISTER', 'CHECKOUT')),
     metadata jsonb not null default '{}'::jsonb,
@@ -198,6 +201,13 @@ create table if not exists public.user_consents (
 alter table public.user_consents
     add column if not exists language text not null default 'PL'
         check (language in ('PL', 'EN'));
+
+alter table public.user_consents
+    add column if not exists privacy_policy_version text;
+
+alter table public.user_consents
+    add column if not exists privacy_policy_language text
+        check (privacy_policy_language in ('PL', 'EN'));
 
 create index if not exists user_consents_user_created_idx
     on public.user_consents (user_id, created_at desc);
@@ -212,6 +222,9 @@ create table if not exists public.checkout_consent_audits (
     terms_version text not null,
     terms_accepted_at timestamptz not null,
     privacy_version text not null default '1.0',
+    privacy_policy_version text not null default '1.0',
+    privacy_policy_language text not null default 'PL'
+        check (privacy_policy_language in ('PL', 'EN')),
     risk_warning_version text not null default '1.0',
     risk_accepted_at timestamptz not null,
     withdrawal_consent_version text not null default '1.0',
@@ -239,6 +252,13 @@ alter table public.checkout_consent_audits
 
 alter table public.checkout_consent_audits
     add column if not exists privacy_version text not null default '1.0';
+
+alter table public.checkout_consent_audits
+    add column if not exists privacy_policy_version text not null default '1.0';
+
+alter table public.checkout_consent_audits
+    add column if not exists privacy_policy_language text not null default 'PL'
+        check (privacy_policy_language in ('PL', 'EN'));
 
 alter table public.checkout_consent_audits
     add column if not exists withdrawal_consent_version text not null default '1.0';

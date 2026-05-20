@@ -155,7 +155,7 @@
     "passwordHint": "Password must contain at least 10 characters, with lowercase, uppercase, a number and a special character.",
     "termsPrefix": "I accept the",
     "termsLink": "Terms of Service",
-    "termsConnector": "and",
+    "termsConnector": "and confirm that I have read the",
     "privacyLink": "Privacy Policy",
     "termsSuffix": ".",
     "passwordRecovery": {
@@ -202,7 +202,7 @@
       "passwordTooShort": "Password must contain at least 10 characters.",
       "passwordRequirements": "Password must contain at least 10 characters, with lowercase, uppercase, a number and a special character.",
       "passwordMismatch": "Passwords do not match.",
-      "termsRequired": "To create an account, accept the Terms and Privacy Policy.",
+      "termsRequired": "To create an account, accept the Terms of Service and confirm that you have read the Privacy Policy.",
       "invalidCredentials": "Invalid email or password.",
       "emailNotConfirmed": "This email address has not been confirmed yet.",
       "userAlreadyRegistered": "An account with this email already exists.",

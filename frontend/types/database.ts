@@ -121,6 +121,8 @@ export interface UserConsentRow {
   ip_address: string | null;
   user_agent: string | null;
   language: LegalLanguage;
+  privacy_policy_version: string | null;
+  privacy_policy_language: LegalLanguage | null;
   source: UserConsentSource;
   metadata: JsonRecord;
   created_at: string;
@@ -134,6 +136,8 @@ export interface CheckoutConsentAuditRow {
   terms_version: string;
   terms_accepted_at: string;
   privacy_version: string;
+  privacy_policy_version: string;
+  privacy_policy_language: LegalLanguage;
   risk_warning_version: string;
   risk_accepted_at: string;
   withdrawal_consent_version: string;
@@ -252,6 +256,8 @@ export type Database = {
           ip_address?: string | null;
           user_agent?: string | null;
           language?: LegalLanguage;
+          privacy_policy_version?: string | null;
+          privacy_policy_language?: LegalLanguage | null;
           source: UserConsentSource;
           metadata?: JsonRecord;
           created_at?: string;
@@ -268,6 +274,8 @@ export type Database = {
           terms_version: string;
           terms_accepted_at: string;
           privacy_version?: string;
+          privacy_policy_version?: string;
+          privacy_policy_language?: LegalLanguage;
           risk_warning_version?: string;
           risk_accepted_at: string;
           withdrawal_consent_version?: string;

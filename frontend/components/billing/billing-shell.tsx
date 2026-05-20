@@ -236,6 +236,10 @@ export function BillingShell() {
                 {dict.common.terms}
               </Link>
               {" / "}
+              <Link href={legalLinks.privacy} target="_blank" rel="noreferrer" className="text-brass transition-colors hover:text-[#e6c55a]">
+                {dict.common.privacy}
+              </Link>
+              {" / "}
               <Link href={legalLinks.riskWarning} target="_blank" rel="noreferrer" className="text-brass transition-colors hover:text-[#e6c55a]">
                 {dict.common.riskWarning}
               </Link>

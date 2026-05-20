@@ -39,6 +39,8 @@ export async function POST(request: Request) {
             privacy_accepted: true,
             privacy_accepted_at: acceptedAt,
             privacy_language: language,
+            privacy_policy_language: language,
+            privacy_policy_version: PRIVACY_VERSION,
             privacy_version: PRIVACY_VERSION,
             source: "REGISTER",
             terms_accepted: true,

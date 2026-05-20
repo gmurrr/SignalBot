@@ -50,6 +50,8 @@ export async function recordRegistrationConsents(input: RegistrationConsentInput
       email: input.email,
       ipAddress: input.ipAddress,
       language: input.language,
+      privacyPolicyLanguage: input.language,
+      privacyPolicyVersion: PRIVACY_VERSION,
       source: "REGISTER",
       type: "PRIVACY_ACCEPTANCE",
       userAgent: input.userAgent,
@@ -81,6 +83,8 @@ export async function recordCheckoutConsents(input: CheckoutConsentAuditInput) {
       language: input.language,
       metadata: input.metadata ?? {},
       order_id: input.orderId ?? null,
+      privacy_policy_language: input.language,
+      privacy_policy_version: PRIVACY_VERSION,
       privacy_version: PRIVACY_VERSION,
       risk_accepted_at: acceptedAt,
       risk_warning_version: RISK_WARNING_VERSION,
@@ -177,7 +181,9 @@ function buildConsentRow({
   type,
   userAgent,
   userId,
-  version
+  version,
+  privacyPolicyLanguage,
+  privacyPolicyVersion
 }: {
   acceptedAt: string;
   email: string;
@@ -188,6 +194,8 @@ function buildConsentRow({
   userAgent: string | null;
   userId: string | null;
   version: string;
+  privacyPolicyLanguage?: "PL" | "EN";
+  privacyPolicyVersion?: string;
 }) {
   return {
     accepted_at: acceptedAt,
@@ -196,6 +204,8 @@ function buildConsentRow({
     language,
     source,
     type,
+    privacy_policy_language: privacyPolicyLanguage ?? null,
+    privacy_policy_version: privacyPolicyVersion ?? null,
     user_agent: userAgent,
     user_id: userId,
     version

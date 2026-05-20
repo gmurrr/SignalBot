@@ -1,9 +1,21 @@
 export const TERMS_VERSION = "1.0";
 export const TERMS_EFFECTIVE_DATE = "[data]";
 export const PRIVACY_VERSION = "1.0";
+export const PRIVACY_EFFECTIVE_DATE = "[data]";
+export const PRIVACY_EFFECTIVE_DATE_EN = "[date]";
 export const RISK_WARNING_VERSION = "1.0";
 export const WITHDRAWAL_CONSENT_VERSION = "1.0";
 export const SUBSCRIPTION_RENEWAL_CONSENT_VERSION = "1.0";
+
+export const LEGAL_DOCUMENTS = {
+  effectiveDate: TERMS_EFFECTIVE_DATE,
+  privacyPolicyEffectiveDate: PRIVACY_EFFECTIVE_DATE,
+  privacyPolicyVersion: PRIVACY_VERSION,
+  riskWarningVersion: RISK_WARNING_VERSION,
+  subscriptionRenewalConsentVersion: SUBSCRIPTION_RENEWAL_CONSENT_VERSION,
+  termsVersion: TERMS_VERSION,
+  withdrawalConsentVersion: WITHDRAWAL_CONSENT_VERSION
+} as const;
 
 export const LEGAL_LINKS = {
   contact: "mailto:contact@zetasignals.com",
@@ -17,6 +29,8 @@ export const LEGAL_LINKS = {
   riskWarning: "/pl/ostrzezenie-o-ryzyku",
   subscriptionManagement: "/billing",
   terms: "/pl/regulamin",
+  privacyPdf: "/files/polityka-prywatnosci-zeta-signals-pl.pdf",
+  privacyPdfEn: "/files/privacy-policy-zeta-signals-en.pdf",
   termsPdf: "/files/regulamin-zeta-signals.pdf",
   termsPdfEn: "/files/terms-zeta-signals-en.pdf"
 } as const;
@@ -60,12 +74,14 @@ export function getLocalizedLegalLinks(language: "PL" | "EN") {
   return language === "EN"
     ? {
         privacy: LEGAL_LINKS.enPrivacy,
+        privacyPdf: LEGAL_LINKS.privacyPdfEn,
         riskWarning: LEGAL_LINKS.enRiskWarning,
         terms: LEGAL_LINKS.enTerms,
         termsPdf: LEGAL_LINKS.termsPdfEn
       }
     : {
         privacy: LEGAL_LINKS.plPrivacy,
+        privacyPdf: LEGAL_LINKS.privacyPdf,
         riskWarning: LEGAL_LINKS.plRiskWarning,
         terms: LEGAL_LINKS.plTerms,
         termsPdf: LEGAL_LINKS.termsPdf
