@@ -25,7 +25,7 @@ export default function PolishTermsPage() {
       boxText="Dokument zawiera warunki korzystania z Serwisu, informacje o subskrypcji, ryzyku rynkowym oraz charakterze edukacyjno-informacyjnym usługi."
       downloadLabel="Pobierz regulamin PDF"
       effectiveDateLabel={`Data wejścia w życie: ${TERMS_EFFECTIVE_DATE}`}
-      fileName="regulamin-zeta-signals-tekst.md"
+      fileName="regulamin-zeta-signals-pl-v1-1.md"
       languageLabel="Język: PL"
       pdfHref={LEGAL_LINKS.termsPdf}
       relatedLinks={[

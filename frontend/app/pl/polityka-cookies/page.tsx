@@ -24,7 +24,7 @@ export default function PolishCookiePolicyPage() {
     <CookieDocumentPage
       downloadLabel="Pobierz PDF"
       effectiveDateLabel={`Data wejścia w życie: ${COOKIE_POLICY_EFFECTIVE_DATE}`}
-      fileName="polityka-cookies-zeta-signals-pl.md"
+      fileName="polityka-cookies-zeta-signals-pl-v1-1.md"
       languageLabel="Język: PL"
       links={{
         contact: LEGAL_LINKS.contact,

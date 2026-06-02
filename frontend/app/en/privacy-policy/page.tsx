@@ -24,7 +24,7 @@ export default function EnglishPrivacyPolicyPage() {
     <PrivacyDocumentPage
       downloadLabel="Download Privacy Policy PDF"
       effectiveDateLabel={`Effective date: ${PRIVACY_EFFECTIVE_DATE_EN}`}
-      fileName="privacy-policy-zeta-signals-en.md"
+      fileName="privacy-policy-zeta-signals-en-v1-1.md"
       languageLabel="Language: EN"
       links={{
         contact: LEGAL_LINKS.contact,

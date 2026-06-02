@@ -29,7 +29,7 @@ export default function EnglishTermsPage() {
       boxText="This document contains the terms for using the Service, subscription information, market risk disclosures and the educational-informational nature of the service."
       downloadLabel="Download Terms PDF"
       effectiveDateLabel={`Effective date: ${effectiveDate}`}
-      fileName="terms-zeta-signals-en.md"
+      fileName="terms-zeta-signals-en-v1-1.md"
       languageLabel="Language: EN"
       note={prevailingLanguageNote}
       pdfHref={LEGAL_LINKS.termsPdfEn}
