@@ -28,12 +28,14 @@ export default function PolishPrivacyPolicyPage() {
       languageLabel="Język: PL"
       links={{
         contact: LEGAL_LINKS.contact,
+        cookie: LEGAL_LINKS.plCookie,
         privacyPdf: LEGAL_LINKS.privacyPdf,
         riskWarning: LEGAL_LINKS.plRiskWarning,
         terms: LEGAL_LINKS.plTerms
       }}
       navigationLabels={{
         contact: "Kontakt",
+        cookie: "Polityka cookies",
         riskWarning: "Ostrzeżenie o ryzyku",
         terms: "Regulamin"
       }}

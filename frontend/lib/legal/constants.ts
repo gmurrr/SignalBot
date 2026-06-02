@@ -3,12 +3,17 @@ export const TERMS_EFFECTIVE_DATE = "[data]";
 export const PRIVACY_VERSION = "1.0";
 export const PRIVACY_EFFECTIVE_DATE = "[data]";
 export const PRIVACY_EFFECTIVE_DATE_EN = "[date]";
+export const COOKIE_POLICY_VERSION = "1.0";
+export const COOKIE_POLICY_EFFECTIVE_DATE = "[data]";
+export const COOKIE_POLICY_EFFECTIVE_DATE_EN = "[date]";
 export const RISK_WARNING_VERSION = "1.0";
 export const WITHDRAWAL_CONSENT_VERSION = "1.0";
 export const SUBSCRIPTION_RENEWAL_CONSENT_VERSION = "1.0";
 
 export const LEGAL_DOCUMENTS = {
   effectiveDate: TERMS_EFFECTIVE_DATE,
+  cookiePolicyEffectiveDate: COOKIE_POLICY_EFFECTIVE_DATE,
+  cookiePolicyVersion: COOKIE_POLICY_VERSION,
   privacyPolicyEffectiveDate: PRIVACY_EFFECTIVE_DATE,
   privacyPolicyVersion: PRIVACY_VERSION,
   riskWarningVersion: RISK_WARNING_VERSION,
@@ -18,6 +23,10 @@ export const LEGAL_DOCUMENTS = {
 } as const;
 
 export const LEGAL_LINKS = {
+  cookie: "/pl/polityka-cookies",
+  cookiePdf: "/files/polityka-cookies-zeta-signals-pl.pdf",
+  cookiePdfEn: "/files/cookie-policy-zeta-signals-en.pdf",
+  enCookie: "/en/cookie-policy",
   contact: "mailto:contact@zetasignals.com",
   enPrivacy: "/en/privacy-policy",
   enRiskWarning: "/en/risk-warning",
@@ -25,6 +34,7 @@ export const LEGAL_LINKS = {
   plPrivacy: "/pl/polityka-prywatnosci",
   plRiskWarning: "/pl/ostrzezenie-o-ryzyku",
   plTerms: "/pl/regulamin",
+  plCookie: "/pl/polityka-cookies",
   privacy: "/pl/polityka-prywatnosci",
   riskWarning: "/pl/ostrzezenie-o-ryzyku",
   subscriptionManagement: "/billing",
@@ -74,6 +84,8 @@ export function getLocalizedLegalLinks(language: "PL" | "EN") {
   return language === "EN"
     ? {
         privacy: LEGAL_LINKS.enPrivacy,
+        cookie: LEGAL_LINKS.enCookie,
+        cookiePdf: LEGAL_LINKS.cookiePdfEn,
         privacyPdf: LEGAL_LINKS.privacyPdfEn,
         riskWarning: LEGAL_LINKS.enRiskWarning,
         terms: LEGAL_LINKS.enTerms,
@@ -81,6 +93,8 @@ export function getLocalizedLegalLinks(language: "PL" | "EN") {
       }
     : {
         privacy: LEGAL_LINKS.plPrivacy,
+        cookie: LEGAL_LINKS.plCookie,
+        cookiePdf: LEGAL_LINKS.cookiePdf,
         privacyPdf: LEGAL_LINKS.privacyPdf,
         riskWarning: LEGAL_LINKS.plRiskWarning,
         terms: LEGAL_LINKS.plTerms,

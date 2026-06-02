@@ -3,6 +3,7 @@ import path from "node:path";
 import Link from "next/link";
 import { Download } from "lucide-react";
 
+import { LegalDocumentLinks } from "@/components/legal/legal-document-links";
 import { SiteHeader } from "@/components/site-header";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -14,12 +15,14 @@ type PrivacyDocumentPageProps = {
   languageLabel: string;
   links: {
     contact: string;
+    cookie: string;
     privacyPdf: string;
     riskWarning: string;
     terms: string;
   };
   navigationLabels: {
     contact: string;
+    cookie: string;
     riskWarning: string;
     terms: string;
   };
@@ -88,17 +91,14 @@ export function PrivacyDocumentPage({
             {summary}
           </aside>
 
-          <nav aria-label="Legal document links" className="flex flex-wrap gap-3 text-sm">
-            <Button asChild size="sm" variant="outline">
-              <Link href={links.terms}>{navigationLabels.terms}</Link>
-            </Button>
-            <Button asChild size="sm" variant="outline">
-              <Link href={links.riskWarning}>{navigationLabels.riskWarning}</Link>
-            </Button>
-            <Button asChild size="sm" variant="outline">
-              <Link href={links.contact}>{navigationLabels.contact}</Link>
-            </Button>
-          </nav>
+          <LegalDocumentLinks
+            links={[
+              { href: links.terms, label: navigationLabels.terms },
+              { href: links.cookie, label: navigationLabels.cookie },
+              { href: links.riskWarning, label: navigationLabels.riskWarning },
+              { href: links.contact, label: navigationLabels.contact }
+            ]}
+          />
 
           <nav aria-label="Privacy Policy table of contents" className="grid gap-3 rounded-2xl border border-[#1A1A1A] bg-[rgba(9,9,9,0.72)] p-5 text-sm text-muted sm:grid-cols-2">
             {toc.map((section) => (

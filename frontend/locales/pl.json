@@ -7,6 +7,7 @@
     "faq": "FAQ",
     "terms": "Regulamin",
     "privacy": "Polityka prywatności",
+    "cookiePolicy": "Polityka cookies",
     "riskWarning": "Ostrzeżenie o ryzyku",
     "manageSubscription": "Zarządzaj subskrypcją",
     "contact": "Kontakt",
@@ -257,6 +258,7 @@
     "consentsTitle": "Wymagane zgody przed płatnością",
     "consentsIntro": "Zaznacz wszystkie zgody, aby uruchomić checkout Lemon Squeezy.",
     "consentsRequired": "Zaznacz wszystkie wymagane zgody przed przejściem do płatności.",
+    "paymentCookiesNotice": "Płatność może być obsługiwana przez Lemon Squeezy. Operator płatności może stosować własne cookies lub podobne technologie niezbędne do obsługi transakcji i zapobiegania fraudom.",
     "subscriptionSectionTitle": "Subskrypcja",
     "subscriptionSectionBody": "Subskrypcja odnawia się automatycznie co miesiąc. Anulowanie zatrzymuje kolejne odnowienie, a dostęp pozostaje aktywny do końca opłaconego okresu.",
     "manageSubscription": "Zarządzaj subskrypcją",
@@ -278,7 +280,22 @@
     }
   },
   "legal": {
-    "publicRiskDisclaimer": "Zeta Signals nie jest doradcą inwestycyjnym ani brokerem. Alerty Analityczne mają charakter edukacyjno-informacyjny. Handel Forex/CFD/XAU/USD wiąże się z wysokim ryzykiem utraty kapitału. Wyniki historyczne nie gwarantują przyszłych wyników."
+    "publicRiskDisclaimer": "Zeta Signals nie jest doradcą inwestycyjnym ani brokerem. Alerty Analityczne mają charakter edukacyjno-informacyjny. Handel Forex/CFD/XAU/USD wiąże się z wysokim ryzykiem utraty kapitału. Wyniki historyczne nie gwarantują przyszłych wyników.",
+    "cookieBanner": {
+      "title": "Pliki cookies",
+      "body": "Używamy plików cookies i technologii podobnych niezbędnych do działania serwisu, logowania, bezpieczeństwa oraz obsługi płatności. Opcjonalne cookies analityczne lub marketingowe uruchamiamy wyłącznie po Twojej zgodzie, jeżeli zostaną wdrożone.",
+      "necessaryNotice": "Zablokowanie technologii niezbędnych, w szczególności Supabase Auth i LocalStorage, może uniemożliwić logowanie oraz korzystanie z panelu.",
+      "detailsPrefix": "Szczegóły znajdziesz w",
+      "accept": "Akceptuję",
+      "reject": "Odrzucam",
+      "settings": "Ustawienia",
+      "save": "Zapisz wybór",
+      "necessaryLabel": "Cookies niezbędne",
+      "analyticsLabel": "Cookies analityczne",
+      "marketingLabel": "Cookies marketingowe",
+      "optionalDescription": "Obecnie nie uruchamiamy opcjonalnych narzędzi analitycznych ani marketingowych przed zgodą. Te ustawienia przygotowują zgodny mechanizm na wypadek ich przyszłego wdrożenia.",
+      "changePreferences": "Zmień ustawienia cookies"
+    }
   },
   "footer": {
     "tagline": "Oprogramowanie analityczne dla rynku złota.",

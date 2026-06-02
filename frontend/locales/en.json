@@ -7,6 +7,7 @@
     "faq": "FAQ",
     "terms": "Terms of Service",
     "privacy": "Privacy Policy",
+    "cookiePolicy": "Cookie Policy",
     "riskWarning": "Risk Warning",
     "manageSubscription": "Manage subscription",
     "contact": "Contact",
@@ -257,6 +258,7 @@
     "consentsTitle": "Required consents before checkout",
     "consentsIntro": "Select all consents to start Lemon Squeezy checkout.",
     "consentsRequired": "Select all required consents before continuing to checkout.",
+    "paymentCookiesNotice": "Payment may be handled by Lemon Squeezy. The payment operator may use its own cookies or similar technologies necessary for transaction handling and fraud prevention.",
     "subscriptionSectionTitle": "Subscription",
     "subscriptionSectionBody": "The subscription renews automatically every month. Cancellation stops the next renewal and access remains active until the end of the paid period.",
     "manageSubscription": "Manage subscription",
@@ -278,7 +280,22 @@
     }
   },
   "legal": {
-    "publicRiskDisclaimer": "Zeta Signals is not an investment adviser or broker. Analytical Alerts are educational and informational only. Trading Forex/CFD/XAU/USD involves a high risk of losing capital. Historical results do not guarantee future results."
+    "publicRiskDisclaimer": "Zeta Signals is not an investment adviser or broker. Analytical Alerts are educational and informational only. Trading Forex/CFD/XAU/USD involves a high risk of losing capital. Historical results do not guarantee future results.",
+    "cookieBanner": {
+      "title": "Cookies",
+      "body": "We use cookies and similar technologies necessary for the operation of the service, login, security and payment handling. Optional analytics or marketing cookies are used only with your consent if implemented.",
+      "necessaryNotice": "Blocking necessary technologies, in particular Supabase Auth and LocalStorage, may prevent login and use of the panel.",
+      "detailsPrefix": "Details are available in the",
+      "accept": "Accept",
+      "reject": "Reject",
+      "settings": "Settings",
+      "save": "Save choice",
+      "necessaryLabel": "Necessary cookies",
+      "analyticsLabel": "Analytics cookies",
+      "marketingLabel": "Marketing cookies",
+      "optionalDescription": "We currently do not launch optional analytics or marketing tools before consent. These settings prepare a compliant mechanism if they are implemented later.",
+      "changePreferences": "Change cookie settings"
+    }
   },
   "footer": {
     "tagline": "Analytical software for the gold market.",

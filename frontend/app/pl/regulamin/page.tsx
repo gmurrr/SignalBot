@@ -28,6 +28,12 @@ export default function PolishTermsPage() {
       fileName="regulamin-zeta-signals-tekst.md"
       languageLabel="Język: PL"
       pdfHref={LEGAL_LINKS.termsPdf}
+      relatedLinks={[
+        { href: LEGAL_LINKS.plPrivacy, label: "Polityka prywatności" },
+        { href: LEGAL_LINKS.plCookie, label: "Polityka cookies" },
+        { href: LEGAL_LINKS.plRiskWarning, label: "Ostrzeżenie o ryzyku" },
+        { href: LEGAL_LINKS.contact, label: "Kontakt" }
+      ]}
       title="Regulamin świadczenia usług drogą elektroniczną serwisu Zeta Signals"
       versionLabel={`Wersja: ${TERMS_VERSION}`}
     />

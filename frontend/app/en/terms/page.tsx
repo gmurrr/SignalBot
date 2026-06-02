@@ -33,6 +33,12 @@ export default function EnglishTermsPage() {
       languageLabel="Language: EN"
       note={prevailingLanguageNote}
       pdfHref={LEGAL_LINKS.termsPdfEn}
+      relatedLinks={[
+        { href: LEGAL_LINKS.enPrivacy, label: "Privacy Policy" },
+        { href: LEGAL_LINKS.enCookie, label: "Cookie Policy" },
+        { href: LEGAL_LINKS.enRiskWarning, label: "Risk Warning" },
+        { href: LEGAL_LINKS.contact, label: "Contact" }
+      ]}
       title="Terms of Service for the provision of electronic services of the Zeta Signals service"
       versionLabel={`Version: ${TERMS_VERSION}`}
     />

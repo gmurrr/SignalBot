@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 
+import { LegalDocumentLinks } from "@/components/legal/legal-document-links";
 import { SiteHeader } from "@/components/site-header";
 import { FULL_RISK_WARNING_EN, LEGAL_LINKS, RISK_WARNING_VERSION } from "@/lib/legal/constants";
 
@@ -31,13 +31,14 @@ export default function EnglishRiskWarningPage() {
             <p>{FULL_RISK_WARNING_EN}</p>
           </section>
 
-          <p className="text-sm leading-7 text-muted">
-            Detailed Service rules are described in the{" "}
-            <Link href={LEGAL_LINKS.enTerms} className="text-brass transition-colors hover:text-[#e6c55a]">
-              Terms of Service
-            </Link>
-            .
-          </p>
+          <LegalDocumentLinks
+            links={[
+              { href: LEGAL_LINKS.enTerms, label: "Terms of Service" },
+              { href: LEGAL_LINKS.enPrivacy, label: "Privacy Policy" },
+              { href: LEGAL_LINKS.enCookie, label: "Cookie Policy" },
+              { href: LEGAL_LINKS.contact, label: "Contact" }
+            ]}
+          />
         </article>
       </main>
     </>

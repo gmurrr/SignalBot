@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 
+import { LegalDocumentLinks } from "@/components/legal/legal-document-links";
 import { SiteHeader } from "@/components/site-header";
 import { FULL_RISK_WARNING_PL, LEGAL_LINKS, RISK_WARNING_VERSION } from "@/lib/legal/constants";
 
@@ -31,13 +31,14 @@ export default function PolishRiskWarningPage() {
             <p>{FULL_RISK_WARNING_PL}</p>
           </section>
 
-          <p className="text-sm leading-7 text-muted">
-            Szczegółowe zasady korzystania z Serwisu opisuje{" "}
-            <Link href={LEGAL_LINKS.plTerms} className="text-brass transition-colors hover:text-[#e6c55a]">
-              Regulamin
-            </Link>
-            .
-          </p>
+          <LegalDocumentLinks
+            links={[
+              { href: LEGAL_LINKS.plTerms, label: "Regulamin" },
+              { href: LEGAL_LINKS.plPrivacy, label: "Polityka prywatności" },
+              { href: LEGAL_LINKS.plCookie, label: "Polityka cookies" },
+              { href: LEGAL_LINKS.contact, label: "Kontakt" }
+            ]}
+          />
         </article>
       </main>
     </>

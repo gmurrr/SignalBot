@@ -53,6 +53,7 @@ function getLocalizedLegalPath(pathname: string, locale: "pl" | "en") {
   const plToEn: Record<string, string> = {
     "/pl/auth/sign-up": "/en/auth/sign-up",
     "/pl/billing": "/en/billing",
+    "/pl/polityka-cookies": "/en/cookie-policy",
     "/pl/ostrzezenie-o-ryzyku": "/en/risk-warning",
     "/pl/polityka-prywatnosci": "/en/privacy-policy",
     "/pl/regulamin": "/en/terms"

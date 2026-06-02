@@ -3,6 +3,7 @@ import path from "node:path";
 import Link from "next/link";
 import { Download } from "lucide-react";
 
+import { LegalDocumentLinks, type LegalDocumentLink } from "@/components/legal/legal-document-links";
 import { SiteHeader } from "@/components/site-header";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -15,6 +16,7 @@ type TermsDocumentPageProps = {
   languageLabel: string;
   note?: string;
   pdfHref: string;
+  relatedLinks: LegalDocumentLink[];
   title: string;
   versionLabel: string;
 };
@@ -43,6 +45,7 @@ export function TermsDocumentPage({
   languageLabel,
   note,
   pdfHref,
+  relatedLinks,
   title,
   versionLabel
 }: TermsDocumentPageProps) {
@@ -82,6 +85,8 @@ export function TermsDocumentPage({
           </aside>
 
           {note ? <aside className="rounded-2xl border border-[#1A1A1A] bg-[rgba(255,255,255,0.03)] p-5 text-sm leading-7 text-muted">{note}</aside> : null}
+
+          <LegalDocumentLinks links={relatedLinks} />
 
           <nav aria-label="Terms table of contents" className="grid gap-3 rounded-2xl border border-[#1A1A1A] bg-[rgba(9,9,9,0.72)] p-5 text-sm text-muted sm:grid-cols-2">
             {toc.map((section) => (

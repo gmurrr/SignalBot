@@ -44,6 +44,7 @@ function buildPolishPurchaseConfirmationEmail(input: PurchaseConfirmationEmailIn
       `Regulamin: ${links.terms}`,
       `Regulamin PDF: ${links.termsPdf}`,
       `Polityka prywatności: ${links.privacy}`,
+      `Polityka cookies: ${links.cookie}`,
       `Ostrzeżenie o ryzyku: ${links.riskWarning}`,
       "Potwierdzamy przyjęcie wymaganych zgód checkoutu, w tym zgody na rozpoczęcie świadczenia usługi cyfrowej przed upływem 14 dni oraz przyjęcie do wiadomości utraty prawa odstąpienia w zakresie przewidzianym prawem."
     ].join("\n")
@@ -68,6 +69,7 @@ function buildEnglishPurchaseConfirmationEmail(input: PurchaseConfirmationEmailI
       `Terms of Service: ${links.terms}`,
       `Terms PDF: ${links.termsPdf}`,
       `Privacy Policy: ${links.privacy}`,
+      `Cookie Policy: ${links.cookie}`,
       `Risk Warning: ${links.riskWarning}`,
       "We confirm receipt of the required checkout consents, including consent to immediate provision of the digital service before the expiry of 14 days and acknowledgement of the possible loss of the right of withdrawal to the extent provided by law."
     ].join("\n")
