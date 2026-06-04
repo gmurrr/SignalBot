@@ -54,7 +54,8 @@ export async function POST(request: Request) {
     });
 
     if (error) {
-      throw error;
+      console.error("Sign-up failed:", error.message);
+      return NextResponse.json({ error: "Unable to create account." }, { status: 400 });
     }
 
     const auditMetadata = getRequestAuditMetadata(request);
@@ -82,8 +83,9 @@ export async function POST(request: Request) {
         : null
     });
   } catch (error) {
+    console.error("Sign-up route failed:", error);
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : "Unable to create account." },
+      { error: "Unable to create account." },
       { status: 500 }
     );
   }

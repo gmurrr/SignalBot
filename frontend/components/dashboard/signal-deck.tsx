@@ -6,19 +6,19 @@ import { Clock3, Flag, Sparkles } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
+import { fetchWithSupabaseSession } from "@/lib/auth/api";
+import type { PublicSignalRow } from "@/lib/dashboard/public-data";
 import { formatPrice, formatRelativeTimestamp, formatSignedPips } from "@/lib/format";
 import { useI18n } from "@/lib/i18n/provider";
-import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 import { cn } from "@/lib/utils";
-import type { SignalRow, SignalStatus, SignalType } from "@/types/database";
+import type { SignalStatus, SignalType } from "@/types/database";
 import type { Dictionary, Locale } from "@/lib/i18n/dictionaries";
 
 const symbol = process.env.NEXT_PUBLIC_SIGNAL_SYMBOL ?? "XAUUSD";
-const signalsTable = process.env.NEXT_PUBLIC_SUPABASE_SIGNALS_TABLE ?? "signals";
 
 export function SignalDeck() {
   const { dict, locale } = useI18n();
-  const [signals, setSignals] = useState<SignalRow[]>([]);
+  const [signals, setSignals] = useState<PublicSignalRow[]>([]);
   const [now, setNow] = useState(Date.now());
 
   useEffect(() => {
@@ -27,42 +27,35 @@ export function SignalDeck() {
   }, []);
 
   useEffect(() => {
-    const supabase = getSupabaseBrowserClient();
+    let isMounted = true;
 
-    async function bootstrap() {
-      const { data } = await supabase
-        .from(signalsTable)
-        .select("*")
-        .eq("symbol", symbol)
-        .order("timestamp", { ascending: false })
-        .limit(5);
+    async function loadSignals() {
+      try {
+        const response = await fetchWithSupabaseSession(`/api/dashboard/signals?symbol=${encodeURIComponent(symbol)}`);
+        if (!response.ok) {
+          if (isMounted) {
+            setSignals([]);
+          }
+          return;
+        }
 
-      setSignals(((data as SignalRow[] | null) ?? []).sort(sortSignals));
+        const payload = (await response.json()) as { signals?: PublicSignalRow[] };
+        if (isMounted) {
+          setSignals((payload.signals ?? []).sort(sortSignals));
+        }
+      } catch {
+        if (isMounted) {
+          setSignals([]);
+        }
+      }
     }
 
-    bootstrap();
-
-    const channel = supabase
-      .channel("signals-live")
-      .on(
-        "postgres_changes",
-        { event: "*", schema: "public", table: signalsTable, filter: `symbol=eq.${symbol}` },
-        (payload) => {
-          if (!payload.new) {
-            return;
-          }
-
-          const nextSignal = payload.new as SignalRow;
-          setSignals((current) => {
-            const withoutCurrent = current.filter((item) => item.id !== nextSignal.id);
-            return [nextSignal, ...withoutCurrent].sort(sortSignals).slice(0, 5);
-          });
-        }
-      )
-      .subscribe();
+    void loadSignals();
+    const refreshTimer = window.setInterval(loadSignals, 5000);
 
     return () => {
-      void supabase.removeChannel(channel);
+      isMounted = false;
+      window.clearInterval(refreshTimer);
     };
   }, []);
 
@@ -141,7 +134,7 @@ function SignalCard({
   featured = false,
   compact = false
 }: {
-  signal: SignalRow;
+  signal: PublicSignalRow;
   now: number;
   labels: Dictionary["signals"];
   locale: Locale;
@@ -258,6 +251,6 @@ function translateCloseReason(reason: string | null | undefined, labels: Diction
   return closeReasons[reason.toLowerCase()] ?? reason;
 }
 
-function sortSignals(a: SignalRow, b: SignalRow) {
+function sortSignals(a: PublicSignalRow, b: PublicSignalRow) {
   return new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime();
 }

@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 
 import { ensureUserAccount } from "@/lib/account/server";
 import { activateMockSubscription, recordPaymentEvent } from "@/lib/billing/server";
-import { getConfiguredBillingProviderName } from "@/lib/billing/provider";
+import { getConfiguredBillingProviderName, isMockBillingEnabled } from "@/lib/billing/provider";
 import { recordCheckoutConsents } from "@/lib/legal/consent-audit";
 import { getRequestAuditMetadata } from "@/lib/legal/request";
 import { getUserFromRequest } from "@/lib/supabase/admin";
@@ -10,7 +10,15 @@ import { getUserFromRequest } from "@/lib/supabase/admin";
 export const runtime = "nodejs";
 
 export async function POST(request: Request) {
-  if (getConfiguredBillingProviderName() !== "mock") {
+  if (!isMockBillingEnabled()) {
+    return NextResponse.json({ error: "Mock billing is disabled." }, { status: 404 });
+  }
+
+  try {
+    if (getConfiguredBillingProviderName() !== "mock") {
+      return NextResponse.json({ error: "Mock billing is disabled." }, { status: 404 });
+    }
+  } catch {
     return NextResponse.json({ error: "Mock billing is disabled." }, { status: 404 });
   }
 
@@ -24,6 +32,10 @@ export async function POST(request: Request) {
     const body = await readJsonBody(request);
     const planCode = typeof body.planCode === "string" && body.planCode ? body.planCode : "premium-monthly";
     const language = body.language === "EN" ? "EN" : "PL";
+    if (!isSupportedPlanCode(planCode)) {
+      return NextResponse.json({ error: "Unsupported plan." }, { status: 400 });
+    }
+
     if (!hasRequiredCheckoutConsents(body.consents)) {
       return NextResponse.json({ error: "All checkout consents are required." }, { status: 400 });
     }
@@ -98,4 +110,8 @@ async function readJsonBody(request: Request) {
   } catch {
     return {};
   }
+}
+
+function isSupportedPlanCode(planCode: string) {
+  return planCode === "premium-monthly";
 }

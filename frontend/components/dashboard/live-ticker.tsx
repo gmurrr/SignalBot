@@ -6,24 +6,23 @@ import { ArrowUpRight, Radio } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
+import { fetchWithSupabaseSession } from "@/lib/auth/api";
+import type { PublicMarketDataRow } from "@/lib/dashboard/public-data";
 import { formatPrice, formatRelativeTimestamp } from "@/lib/format";
 import { useI18n } from "@/lib/i18n/provider";
-import { getSupabaseBrowserClient } from "@/lib/supabase/client";
-import type { MarketDataRow } from "@/types/database";
 
 const preferredSymbol = process.env.NEXT_PUBLIC_SIGNAL_SYMBOL ?? "XAUUSD";
-const marketTable = process.env.NEXT_PUBLIC_SUPABASE_MARKET_DATA_TABLE ?? "market_data";
 
 export function LiveTicker() {
   const { dict, locale } = useI18n();
-  const [market, setMarket] = useState<MarketDataRow | null>(null);
+  const [market, setMarket] = useState<PublicMarketDataRow | null>(null);
   const [flash, setFlash] = useState(false);
   const lastMidRef = useRef<number | null>(null);
 
   useEffect(() => {
-    const supabase = getSupabaseBrowserClient();
+    let isMounted = true;
 
-    function applyMarket(nextMarket: MarketDataRow) {
+    function applyMarket(nextMarket: PublicMarketDataRow) {
       if (lastMidRef.current !== null && nextMarket.mid !== lastMidRef.current) {
         setFlash(true);
         window.setTimeout(() => setFlash(false), 420);
@@ -32,48 +31,30 @@ export function LiveTicker() {
       setMarket(nextMarket);
     }
 
-    async function bootstrap() {
-      const { data } = await supabase.from(marketTable).select("*").eq("symbol", preferredSymbol).maybeSingle();
-      if (data) {
-        applyMarket(data as MarketDataRow);
-        return;
-      }
+    async function loadMarket() {
+      try {
+        const response = await fetchWithSupabaseSession(`/api/dashboard/market-data?symbol=${encodeURIComponent(preferredSymbol)}`);
+        if (!response.ok) {
+          return;
+        }
 
-      const { data: fallbackRows } = await supabase
-        .from(marketTable)
-        .select("*")
-        .order("updated_at", { ascending: false })
-        .limit(5);
-
-      const rows = (fallbackRows as MarketDataRow[] | null) ?? [];
-      const fallback = rows.find(isGoldMarketRow);
-      if (fallback) {
-        applyMarket(fallback);
+        const payload = (await response.json()) as { market?: PublicMarketDataRow | null };
+        if (isMounted && payload.market) {
+          applyMarket(payload.market);
+        }
+      } catch {
+        // The surrounding AccessGate handles auth/subscription errors.
       }
     }
 
-    bootstrap();
-
-    const channel = supabase
-      .channel("market-data-live")
-      .on(
-        "postgres_changes",
-        { event: "UPDATE", schema: "public", table: marketTable },
-        (payload) => {
-          if (payload.new) {
-            const nextMarket = payload.new as MarketDataRow;
-            if (nextMarket.symbol === market?.symbol || nextMarket.symbol === preferredSymbol || isGoldMarketRow(nextMarket)) {
-              applyMarket(nextMarket);
-            }
-          }
-        }
-      )
-      .subscribe();
+    void loadMarket();
+    const refreshTimer = window.setInterval(loadMarket, 2500);
 
     return () => {
-      void supabase.removeChannel(channel);
+      isMounted = false;
+      window.clearInterval(refreshTimer);
     };
-  }, [market?.symbol]);
+  }, []);
 
   return (
     <Card className="gold-glow relative overflow-hidden border-[#1A1A1A] bg-[radial-gradient(circle_at_top,rgba(212,175,55,0.15),transparent_55%),rgba(8,8,8,0.92)]">
@@ -121,11 +102,4 @@ export function LiveTicker() {
       </div>
     </Card>
   );
-}
-
-function isGoldMarketRow(row: MarketDataRow) {
-  const normalizedSymbol = row.symbol.toUpperCase();
-  const role = typeof row.extra?.role === "string" ? row.extra.role : "";
-
-  return role === "primary_market" || normalizedSymbol.includes("XAU") || normalizedSymbol.includes("GOLD");
 }

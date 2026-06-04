@@ -63,24 +63,6 @@ export function AuthShell({ mode }: { mode: "signIn" | "signUp" }) {
 
     try {
       if (isSignup) {
-        const emailAvailability = await fetch("/api/auth/email-availability", {
-          body: JSON.stringify({ email: normalizedEmail }),
-          headers: {
-            "Content-Type": "application/json"
-          },
-          method: "POST"
-        });
-        const emailAvailabilityPayload = (await emailAvailability.json().catch(() => null)) as { exists?: boolean } | null;
-
-        if (!emailAvailability.ok) {
-          throw new Error("email_availability_check_failed");
-        }
-
-        if (emailAvailabilityPayload?.exists) {
-          setErrorMessage(dict.auth.errors.userAlreadyRegistered);
-          return;
-        }
-
         const signUpResponse = await fetch("/api/auth/sign-up", {
           body: JSON.stringify({
             acceptedLegal: acceptedTerms,
@@ -324,10 +306,6 @@ function translateAuthError(
 
   if (message.includes("email not confirmed")) {
     return errors.emailNotConfirmed;
-  }
-
-  if (message.includes("already registered") || message.includes("already been registered")) {
-    return errors.userAlreadyRegistered;
   }
 
   if (message.includes("password should be") || message.includes("weak password")) {

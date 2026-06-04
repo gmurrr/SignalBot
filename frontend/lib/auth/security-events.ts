@@ -1,3 +1,5 @@
+import "server-only";
+
 import { getSupabaseAdminClient } from "@/lib/supabase/admin";
 import type { AccountSecurityEventType, JsonRecord, UserAccountRow } from "@/types/database";
 

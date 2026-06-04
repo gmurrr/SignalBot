@@ -1,6 +1,9 @@
+import "server-only";
+
 import type { User } from "@supabase/supabase-js";
 
 import { hasDashboardAccess } from "@/lib/account/subscription";
+import { getConfiguredBillingProviderName } from "@/lib/billing/provider";
 import { getSupabaseAdminClient } from "@/lib/supabase/admin";
 import type { AccountOverview } from "@/lib/account/subscription";
 import type { JsonRecord, SubscriptionRow, UserAccountRow } from "@/types/database";
@@ -93,12 +96,20 @@ export async function getAccountOverview(user: User): Promise<AccountOverview> {
     billingPortalUrl: getBillingPortalUrl(),
     subscription,
     hasAccess: hasDashboardAccess(account, subscription),
-    provider: process.env.BILLING_PROVIDER || "mock"
+    provider: getBillingProviderNameForOverview()
   };
 }
 
 function getBillingPortalUrl() {
   return process.env.NEXT_PUBLIC_LEMON_SQUEEZY_CUSTOMER_PORTAL_URL || process.env.NEXT_PUBLIC_BILLING_PORTAL_URL || null;
+}
+
+function getBillingProviderNameForOverview() {
+  try {
+    return getConfiguredBillingProviderName();
+  } catch {
+    return "unconfigured";
+  }
 }
 
 async function ensureSubscription(userId: string) {

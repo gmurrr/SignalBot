@@ -52,7 +52,7 @@ Projekt jest przygotowany pod Supabase Auth oraz neutralną warstwę płatności
 - `public.payment_events` zapisuje webhooki i historię synchronizacji płatności.
 - `signals` i `market_data` są czytelne tylko dla zalogowanych kont z aktywną subskrypcją albo rolą administracyjną.
 
-Na start frontend używa provider `mock`, który pozwala aktywować testową subskrypcję z ekranu `/billing`. Gdy wybierzesz operatora płatności, dopisz adapter zgodny z kontraktem w `frontend/lib/billing/provider.ts` albo ustaw standardowy checkout przez `BILLING_CHECKOUT_URL` i webhook `POST /api/billing/webhook/[provider]`.
+Do lokalnych testów możesz włączyć provider `mock`, ale runtime produkcyjny blokuje go automatycznie. Na produkcji ustaw rzeczywistego operatora płatności, dopisz adapter zgodny z kontraktem w `frontend/lib/billing/provider.ts` albo ustaw standardowy checkout przez `BILLING_CHECKOUT_URL` i webhook `POST /api/billing/webhook/[provider]`. Webhook zawsze wymaga `BILLING_WEBHOOK_SECRET`.
 
 ### Zmienne frontendowe dla kont i płatności
 
@@ -61,14 +61,18 @@ W `frontend/.env.local` ustaw:
 ```env
 NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
-NEXT_PUBLIC_SITE_URL=http://localhost:3000
+NEXT_PUBLIC_SITE_URL=https://your-domain.example
 SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
-BILLING_PROVIDER=mock
-BILLING_WEBHOOK_SECRET=
-BILLING_CHECKOUT_URL=
+SUPABASE_MARKET_DATA_TABLE=market_data
+SUPABASE_SIGNALS_TABLE=signals
+SIGNAL_SYMBOL=XAUUSD
+ENABLE_MOCK_BILLING=false
+BILLING_PROVIDER=lemon_squeezy
+BILLING_WEBHOOK_SECRET=strong-random-secret
+BILLING_CHECKOUT_URL=https://checkout-provider.example/session
 ```
 
-Docelowo `BILLING_PROVIDER` może przyjąć nazwę operatora, np. `stripe`, `paddle`, `payu`, `easycart` albo własną nazwę adaptera. Webhook powinien aktualizować `subscriptions`; frontend nigdy sam nie nadaje produkcyjnego dostępu.
+`BILLING_PROVIDER` może przyjąć nazwę operatora, np. `stripe`, `paddle`, `payu`, `easycart`, `lemon_squeezy` albo własną nazwę adaptera. Webhook powinien aktualizować `subscriptions`; frontend nigdy sam nie nadaje produkcyjnego dostępu.
 
 ## Szybki Start Backend
 

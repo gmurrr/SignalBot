@@ -19,13 +19,17 @@ export async function POST(request: Request) {
     const body = await readJsonBody(request);
     const planCode = typeof body.planCode === "string" && body.planCode ? body.planCode : "premium-monthly";
     const language = body.language === "EN" ? "EN" : "PL";
+    if (!isSupportedPlanCode(planCode)) {
+      return NextResponse.json({ error: "Unsupported plan." }, { status: 400 });
+    }
+
     if (!hasRequiredCheckoutConsents(body.consents)) {
       return NextResponse.json({ error: "All checkout consents are required." }, { status: 400 });
     }
 
     const { account } = await ensureUserAccount(user);
     const provider = getBillingProvider();
-    const origin = request.headers.get("origin") ?? process.env.NEXT_PUBLIC_SITE_URL ?? new URL(request.url).origin;
+    const origin = getTrustedSiteOrigin(request);
     const result = await provider.createCheckoutSession({
       userId: user.id,
       email: account.billing_email ?? account.email,
@@ -80,4 +84,21 @@ async function readJsonBody(request: Request) {
   } catch {
     return {};
   }
+}
+
+function getTrustedSiteOrigin(request: Request) {
+  const configuredSiteUrl = process.env.NEXT_PUBLIC_SITE_URL;
+  if (configuredSiteUrl) {
+    return new URL(configuredSiteUrl).origin;
+  }
+
+  if (process.env.VERCEL_ENV === "production" || process.env.NODE_ENV === "production") {
+    throw new BillingProviderError("Site URL is not configured.", 500);
+  }
+
+  return new URL(request.url).origin;
+}
+
+function isSupportedPlanCode(planCode: string) {
+  return planCode === "premium-monthly";
 }

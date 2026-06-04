@@ -1,3 +1,5 @@
+import "server-only";
+
 import type { BillingProvider, BillingWebhookEvent, CheckoutSessionInput, CheckoutSessionResult } from "@/lib/billing/types";
 import type { JsonRecord, SubscriptionStatus } from "@/types/database";
 
@@ -12,12 +14,42 @@ export class BillingProviderError extends Error {
   }
 }
 
+export function isProductionRuntime() {
+  return process.env.VERCEL_ENV === "production" || process.env.NODE_ENV === "production";
+}
+
+export function isMockBillingEnabled() {
+  if (isProductionRuntime()) {
+    return false;
+  }
+
+  return readBooleanEnv("ENABLE_MOCK_BILLING", true);
+}
+
 export function getConfiguredBillingProviderName() {
-  return (process.env.BILLING_PROVIDER || "mock").trim().toLowerCase();
+  const providerName = (process.env.BILLING_PROVIDER || "").trim().toLowerCase();
+
+  if (!providerName) {
+    if (isProductionRuntime()) {
+      throw new BillingProviderError("Billing provider is not configured.", 500);
+    }
+
+    return "mock";
+  }
+
+  if (providerName === "mock" && !isMockBillingEnabled()) {
+    throw new BillingProviderError("Mock billing is disabled.", isProductionRuntime() ? 500 : 404);
+  }
+
+  return providerName;
 }
 
 export function getBillingProvider(providerName = getConfiguredBillingProviderName()): BillingProvider {
   if (providerName === "mock") {
+    if (!isMockBillingEnabled()) {
+      throw new BillingProviderError("Mock billing is disabled.", isProductionRuntime() ? 500 : 404);
+    }
+
     return new MockBillingProvider();
   }
 
@@ -155,7 +187,7 @@ class StandardBillingProvider implements BillingProvider {
 function assertWebhookSecret(request: Request) {
   const expectedSecret = process.env.BILLING_WEBHOOK_SECRET;
   if (!expectedSecret) {
-    return;
+    throw new BillingProviderError("Billing webhook secret is not configured.", 500);
   }
 
   const actualSecret = request.headers.get("x-billing-webhook-secret");
@@ -191,6 +223,15 @@ function isRecord(value: unknown): value is JsonRecord {
 
 function readString(value: unknown) {
   return typeof value === "string" && value.length > 0 ? value : null;
+}
+
+function readBooleanEnv(name: string, defaultValue: boolean) {
+  const value = process.env[name]?.trim().toLowerCase();
+  if (!value) {
+    return defaultValue;
+  }
+
+  return ["1", "true", "yes", "y", "on"].includes(value);
 }
 
 function readSubscriptionStatus(value: unknown): SubscriptionStatus | null {
