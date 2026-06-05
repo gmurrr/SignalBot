@@ -2,6 +2,7 @@ import type { SubscriptionRow, UserAccountRow } from "@/types/database";
 
 export type AccountOverview = {
   account: UserAccountRow | null;
+  billingPortalUrl: string | null;
   subscription: SubscriptionRow | null;
   hasAccess: boolean;
   provider: string;

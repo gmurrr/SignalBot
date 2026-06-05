@@ -1,3 +1,5 @@
+import "server-only";
+
 import { getSupabaseAdminClient } from "@/lib/supabase/admin";
 import type { BillingWebhookEvent, SubscriptionUpdate } from "@/lib/billing/types";
 import type { JsonRecord, PaymentEventRow, SubscriptionRow } from "@/types/database";

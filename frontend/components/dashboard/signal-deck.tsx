@@ -1,73 +1,32 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Clock3, Flag, Sparkles } from "lucide-react";
 
+import { useDashboardData } from "@/components/dashboard/dashboard-data-provider";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
+import type { PublicSignalRow } from "@/lib/dashboard/public-data";
 import { formatPrice, formatRelativeTimestamp, formatSignedPips } from "@/lib/format";
 import { useI18n } from "@/lib/i18n/provider";
-import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 import { cn } from "@/lib/utils";
-import type { SignalRow, SignalStatus, SignalType } from "@/types/database";
+import type { SignalStatus, SignalType } from "@/types/database";
 import type { Dictionary, Locale } from "@/lib/i18n/dictionaries";
-
-const symbol = process.env.NEXT_PUBLIC_SIGNAL_SYMBOL ?? "XAUUSD";
-const signalsTable = process.env.NEXT_PUBLIC_SUPABASE_SIGNALS_TABLE ?? "signals";
 
 export function SignalDeck() {
   const { dict, locale } = useI18n();
-  const [signals, setSignals] = useState<SignalRow[]>([]);
+  const { signals } = useDashboardData();
   const [now, setNow] = useState(Date.now());
+  const sortedSignals = useMemo(() => [...signals].sort(sortSignals), [signals]);
 
   useEffect(() => {
     const timer = window.setInterval(() => setNow(Date.now()), 1000);
     return () => window.clearInterval(timer);
   }, []);
 
-  useEffect(() => {
-    const supabase = getSupabaseBrowserClient();
-
-    async function bootstrap() {
-      const { data } = await supabase
-        .from(signalsTable)
-        .select("*")
-        .eq("symbol", symbol)
-        .order("timestamp", { ascending: false })
-        .limit(5);
-
-      setSignals(((data as SignalRow[] | null) ?? []).sort(sortSignals));
-    }
-
-    bootstrap();
-
-    const channel = supabase
-      .channel("signals-live")
-      .on(
-        "postgres_changes",
-        { event: "*", schema: "public", table: signalsTable, filter: `symbol=eq.${symbol}` },
-        (payload) => {
-          if (!payload.new) {
-            return;
-          }
-
-          const nextSignal = payload.new as SignalRow;
-          setSignals((current) => {
-            const withoutCurrent = current.filter((item) => item.id !== nextSignal.id);
-            return [nextSignal, ...withoutCurrent].sort(sortSignals).slice(0, 5);
-          });
-        }
-      )
-      .subscribe();
-
-    return () => {
-      void supabase.removeChannel(channel);
-    };
-  }, []);
-
-  const activeSignal = signals.find((signal) => signal.status === "ACTIVE") ?? null;
-  const history = signals.filter((signal) => signal.id !== activeSignal?.id).slice(0, 5);
+  const activeSignal = sortedSignals.find((signal) => signal.status === "ACTIVE") ?? null;
+  const history = sortedSignals.filter((signal) => signal.id !== activeSignal?.id).slice(0, 5);
 
   return (
     <div className="flex flex-col gap-8">
@@ -114,6 +73,7 @@ export function SignalDeck() {
           <p className="text-xs uppercase tracking-[0.3em] text-muted">{dict.signals.historyTitle}</p>
           <span className="text-xs uppercase tracking-[0.26em] text-muted">{dict.signals.latestRecords}</span>
         </div>
+        <p className="mb-4 rounded-2xl border border-amber-300/20 bg-amber-300/10 p-4 text-sm leading-7 text-[#f4deb0]">{dict.signals.historyRiskNotice}</p>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-3 lg:grid-cols-5">
           {history.map((signal, index) => (
             <motion.div
@@ -140,7 +100,7 @@ function SignalCard({
   featured = false,
   compact = false
 }: {
-  signal: SignalRow;
+  signal: PublicSignalRow;
   now: number;
   labels: Dictionary["signals"];
   locale: Locale;
@@ -188,6 +148,8 @@ function SignalCard({
           </div>
         ) : null}
       </div>
+
+      {!compact ? <p className="mt-6 text-xs leading-6 text-muted">{labels.analyticalLevelsNote}</p> : null}
 
       <div className={cn("mt-8 grid gap-4 md:grid-cols-4", compact && "mt-5 grid-cols-1 md:grid-cols-1")}>
         <Metric label={labels.entry} value={formatPrice(signal.entry_price)} compact={compact} />
@@ -255,6 +217,6 @@ function translateCloseReason(reason: string | null | undefined, labels: Diction
   return closeReasons[reason.toLowerCase()] ?? reason;
 }
 
-function sortSignals(a: SignalRow, b: SignalRow) {
+function sortSignals(a: PublicSignalRow, b: PublicSignalRow) {
   return new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime();
 }

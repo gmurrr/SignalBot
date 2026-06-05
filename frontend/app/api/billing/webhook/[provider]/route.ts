@@ -1,15 +1,21 @@
 import { NextResponse } from "next/server";
 
-import { BillingProviderError, getBillingProvider } from "@/lib/billing/provider";
+import { BillingProviderError, getBillingProvider, getConfiguredBillingProviderName } from "@/lib/billing/provider";
 import { applySubscriptionUpdate, recordPaymentEvent } from "@/lib/billing/server";
 
 export const runtime = "nodejs";
 
 export async function POST(request: Request, context: { params: Promise<{ provider: string }> }) {
-  const { provider } = await context.params;
-
   try {
-    const billingProvider = getBillingProvider(provider.toLowerCase());
+    const { provider } = await context.params;
+    const requestedProvider = provider.toLowerCase();
+    const configuredProvider = getConfiguredBillingProviderName();
+
+    if (requestedProvider !== configuredProvider) {
+      return NextResponse.json({ error: "Unknown billing provider." }, { status: 404 });
+    }
+
+    const billingProvider = getBillingProvider(configuredProvider);
     const rawBody = await request.text();
     const event = await billingProvider.parseWebhook(request, rawBody);
     const subscription = event.subscriptionUpdate ? await applySubscriptionUpdate(event.subscriptionUpdate) : null;

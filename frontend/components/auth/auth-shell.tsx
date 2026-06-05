@@ -11,14 +11,17 @@ import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { isStrongPassword, isValidEmail, passwordMinLength } from "@/lib/auth/password-policy";
 import { useI18n } from "@/lib/i18n/provider";
+import { getLocalizedLegalLinks } from "@/lib/legal/constants";
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 
 export function AuthShell({ mode }: { mode: "signIn" | "signUp" }) {
-  const { dict } = useI18n();
+  const { dict, locale } = useI18n();
   const router = useRouter();
   const content = dict.auth[mode];
   const isSignup = mode === "signUp";
-  const footerHref = isSignup ? "/auth/sign-in" : "/auth/sign-up";
+  const legalLanguage = locale === "en" ? "EN" : "PL";
+  const legalLinks = getLocalizedLegalLinks(legalLanguage);
+  const footerHref = isSignup ? "/auth/sign-in" : legalLanguage === "EN" ? "/en/auth/sign-up" : "/pl/auth/sign-up";
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -60,35 +63,37 @@ export function AuthShell({ mode }: { mode: "signIn" | "signUp" }) {
 
     try {
       if (isSignup) {
-        const emailAvailability = await fetch("/api/auth/email-availability", {
-          body: JSON.stringify({ email: normalizedEmail }),
+        const signUpResponse = await fetch("/api/auth/sign-up", {
+          body: JSON.stringify({
+            acceptedLegal: acceptedTerms,
+            email: normalizedEmail,
+            language: legalLanguage,
+            password
+          }),
           headers: {
             "Content-Type": "application/json"
           },
           method: "POST"
         });
-        const emailAvailabilityPayload = (await emailAvailability.json().catch(() => null)) as { exists?: boolean } | null;
+        const signUpPayload = (await signUpResponse.json().catch(() => null)) as SignUpResponse | null;
 
-        if (!emailAvailability.ok) {
-          throw new Error("email_availability_check_failed");
+        if (!signUpResponse.ok) {
+          throw new Error(signUpPayload?.error ?? "sign_up_failed");
         }
 
-        if (emailAvailabilityPayload?.exists) {
-          setErrorMessage(dict.auth.errors.userAlreadyRegistered);
-          return;
-        }
+        if (signUpPayload?.session?.access_token && signUpPayload.session.refresh_token) {
+          const { error: sessionError } = await supabase.auth.setSession({
+            access_token: signUpPayload.session.access_token,
+            refresh_token: signUpPayload.session.refresh_token
+          });
 
-        const { data, error } = await supabase.auth.signUp({
-          email: normalizedEmail,
-          password
-        });
-
-        if (error) {
-          throw error;
+          if (sessionError) {
+            throw sessionError;
+          }
         }
 
         setMessage(dict.auth.signUpSuccess);
-        if (data.session) {
+        if (signUpPayload?.session) {
           router.replace("/billing");
         }
         return;
@@ -166,12 +171,17 @@ export function AuthShell({ mode }: { mode: "signIn" | "signUp" }) {
                     checked={acceptedTerms}
                     className="mt-1 h-4 w-4 shrink-0 accent-[#D4AF37]"
                     onChange={(event) => setAcceptedTerms(event.target.checked)}
+                    required
                     type="checkbox"
                   />
                   <span>
                     {dict.auth.termsPrefix}{" "}
-                    <Link href="/terms" target="_blank" rel="noreferrer" className="text-brass transition-colors hover:text-[#e6c55a]">
+                    <Link href={legalLinks.terms} target="_blank" rel="noreferrer" className="text-brass transition-colors hover:text-[#e6c55a]">
                       {dict.auth.termsLink}
+                    </Link>
+                    {` ${dict.auth.termsConnector} `}
+                    <Link href={legalLinks.privacy} target="_blank" rel="noreferrer" className="text-brass transition-colors hover:text-[#e6c55a]">
+                      {dict.auth.privacyLink}
                     </Link>
                     {dict.auth.termsSuffix}
                   </span>
@@ -208,6 +218,14 @@ export function AuthShell({ mode }: { mode: "signIn" | "signUp" }) {
     </main>
   );
 }
+
+type SignUpResponse = {
+  error?: string;
+  session?: {
+    access_token: string;
+    refresh_token: string;
+  } | null;
+};
 
 function validateAuthForm({
   acceptedTerms,
@@ -288,10 +306,6 @@ function translateAuthError(
 
   if (message.includes("email not confirmed")) {
     return errors.emailNotConfirmed;
-  }
-
-  if (message.includes("already registered") || message.includes("already been registered")) {
-    return errors.userAlreadyRegistered;
   }
 
   if (message.includes("password should be") || message.includes("weak password")) {

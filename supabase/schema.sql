@@ -170,6 +170,109 @@ create index if not exists account_security_events_user_created_idx
 create index if not exists account_security_events_email_created_idx
     on public.account_security_events (lower(email), created_at desc);
 
+create table if not exists public.user_consents (
+    id uuid primary key default gen_random_uuid(),
+    user_id uuid references public.user_accounts(id) on delete set null,
+    email text not null,
+    type text not null
+        check (type in (
+            'TERMS_ACCEPTANCE',
+            'PRIVACY_ACCEPTANCE',
+            'RISK_WARNING_ACCEPTANCE',
+            'DIGITAL_SERVICE_CONSENT',
+            'WITHDRAWAL_LOSS_ACKNOWLEDGEMENT',
+            'SUBSCRIPTION_RENEWAL_ACCEPTANCE'
+        )),
+    version text not null,
+    accepted_at timestamptz not null,
+    ip_address text,
+    user_agent text,
+    language text not null default 'PL'
+        check (language in ('PL', 'EN')),
+    privacy_policy_version text,
+    privacy_policy_language text
+        check (privacy_policy_language in ('PL', 'EN')),
+    source text not null
+        check (source in ('REGISTER', 'CHECKOUT')),
+    metadata jsonb not null default '{}'::jsonb,
+    created_at timestamptz not null default now()
+);
+
+alter table public.user_consents
+    add column if not exists language text not null default 'PL'
+        check (language in ('PL', 'EN'));
+
+alter table public.user_consents
+    add column if not exists privacy_policy_version text;
+
+alter table public.user_consents
+    add column if not exists privacy_policy_language text
+        check (privacy_policy_language in ('PL', 'EN'));
+
+create index if not exists user_consents_user_created_idx
+    on public.user_consents (user_id, created_at desc);
+
+create index if not exists user_consents_email_created_idx
+    on public.user_consents (lower(email), created_at desc);
+
+create table if not exists public.checkout_consent_audits (
+    id uuid primary key default gen_random_uuid(),
+    user_id uuid not null references public.user_accounts(id) on delete cascade,
+    email text not null,
+    terms_version text not null,
+    terms_accepted_at timestamptz not null,
+    privacy_version text not null default '1.0',
+    privacy_policy_version text not null default '1.0',
+    privacy_policy_language text not null default 'PL'
+        check (privacy_policy_language in ('PL', 'EN')),
+    risk_warning_version text not null default '1.0',
+    risk_accepted_at timestamptz not null,
+    withdrawal_consent_version text not null default '1.0',
+    digital_service_consent_at timestamptz not null,
+    withdrawal_loss_acknowledged_at timestamptz not null,
+    subscription_renewal_consent_version text not null default '1.0',
+    subscription_renewal_accepted_at timestamptz not null,
+    checkout_provider text not null,
+    checkout_session_id text,
+    checkout_url text,
+    order_id text,
+    ip_address text,
+    user_agent text,
+    language text not null default 'PL'
+        check (language in ('PL', 'EN')),
+    source text not null default 'CHECKOUT'
+        check (source = 'CHECKOUT'),
+    metadata jsonb not null default '{}'::jsonb,
+    created_at timestamptz not null default now()
+);
+
+alter table public.checkout_consent_audits
+    add column if not exists language text not null default 'PL'
+        check (language in ('PL', 'EN'));
+
+alter table public.checkout_consent_audits
+    add column if not exists privacy_version text not null default '1.0';
+
+alter table public.checkout_consent_audits
+    add column if not exists privacy_policy_version text not null default '1.0';
+
+alter table public.checkout_consent_audits
+    add column if not exists privacy_policy_language text not null default 'PL'
+        check (privacy_policy_language in ('PL', 'EN'));
+
+alter table public.checkout_consent_audits
+    add column if not exists withdrawal_consent_version text not null default '1.0';
+
+alter table public.checkout_consent_audits
+    add column if not exists subscription_renewal_consent_version text not null default '1.0';
+
+create index if not exists checkout_consent_audits_user_created_idx
+    on public.checkout_consent_audits (user_id, created_at desc);
+
+create index if not exists checkout_consent_audits_provider_session_idx
+    on public.checkout_consent_audits (checkout_provider, checkout_session_id)
+    where checkout_session_id is not null;
+
 create or replace function public.handle_new_auth_user()
 returns trigger
 language plpgsql
@@ -261,6 +364,8 @@ alter table public.user_accounts enable row level security;
 alter table public.subscriptions enable row level security;
 alter table public.payment_events enable row level security;
 alter table public.account_security_events enable row level security;
+alter table public.user_consents enable row level security;
+alter table public.checkout_consent_audits enable row level security;
 
 drop policy if exists "public read market_data" on public.market_data;
 drop policy if exists "subscribers read market_data" on public.market_data;
@@ -304,6 +409,20 @@ create policy "accounts read own payment events"
 drop policy if exists "accounts read own security events" on public.account_security_events;
 create policy "accounts read own security events"
     on public.account_security_events
+    for select
+    to authenticated
+    using (user_id = auth.uid() or public.is_account_admin());
+
+drop policy if exists "accounts read own consents" on public.user_consents;
+create policy "accounts read own consents"
+    on public.user_consents
+    for select
+    to authenticated
+    using (user_id = auth.uid() or public.is_account_admin());
+
+drop policy if exists "accounts read own checkout consent audits" on public.checkout_consent_audits;
+create policy "accounts read own checkout consent audits"
+    on public.checkout_consent_audits
     for select
     to authenticated
     using (user_id = auth.uid() or public.is_account_admin());

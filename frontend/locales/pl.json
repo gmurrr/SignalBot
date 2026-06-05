@@ -6,6 +6,10 @@
     "auth": "Logowanie",
     "faq": "FAQ",
     "terms": "Regulamin",
+    "privacy": "Polityka prywatności",
+    "cookiePolicy": "Polityka cookies",
+    "riskWarning": "Ostrzeżenie o ryzyku",
+    "manageSubscription": "Zarządzaj subskrypcją",
     "contact": "Kontakt",
     "dashboard": "Panel",
     "history": "Historia",
@@ -19,14 +23,15 @@
   "nav": {
     "story": "Historia",
     "process": "Jak to działa",
+    "pricing": "Cennik",
     "faq": "FAQ",
     "dashboard": "Panel"
   },
   "home": {
-    "heroTitle": "Zeta Signals dla XAU/USD z algorytmiczną precyzją.",
-    "heroBody": "Platforma sygnałowa dla rynku złota, oparta na H1 Bias, DXY, liquidity sweep i egzekucji M5. Wszystko zaprojektowane tak, aby aktywny sygnał nigdy nie był mylony z pozycją historyczną.",
+    "heroTitle": "Alerty Analityczne XAU/USD w Realtime Cockpit.",
+    "heroBody": "Oprogramowanie analityczne dla rynku złota, oparte na H1 Bias, DXY, liquidity sweep i analizie M5. Wszystko zaprojektowane tak, aby aktywny Alert Analityczny nigdy nie był mylony z historią alertów.",
     "algoLabel": "Opis algorytmu",
-    "algoBody": "Wielowarstwowa konfluencja danych ogranicza szum rynkowy i błędy decyzyjne. System dopuszcza wyłącznie setupy, które przechodzą przez filtry środowiska, płynności i potwierdzenia na M5.",
+    "algoBody": "Wielowarstwowa konfluencja danych ogranicza szum rynkowy i porządkuje kontekst techniczny. System prezentuje wyłącznie Alerty Analityczne, które przechodzą przez filtry środowiska, płynności i potwierdzenia na M5.",
     "stats": [
       { "label": "Trend i Bias", "value": "EMA 200 + Ichimoku + DXY" },
       { "label": "Timing", "value": "Londyn + Nowy Jork" },
@@ -39,11 +44,11 @@
       "Zeta Signals powstało z potrzeby uporządkowania decyzji na rynku złota. Zamiast reagować na każdy ruch świecy, system buduje kontekst z wyższych interwałów, filtruje szum i dopuszcza tylko te setupy, które mają sens w strukturze rynku oraz w oknach wysokiej płynności."
     ],
     "processLabel": "Jak to działa?",
-    "processTitle": "Trzy warstwy, jedna decyzja",
+    "processTitle": "Trzy warstwy analizy technicznej",
     "steps": [
       {
         "title": "Warstwa 1: H1 Bias",
-        "body": "Fundamentem każdego sygnału jest analiza trendu na interwale H1. Silnik sprawdza położenie ceny względem EMA 200 oraz Chmury Ichimoku. Dodatkowym filtrem bezpieczeństwa jest analiza indeksu DXY, która blokuje ryzykowne setupy. Całość działa wyłącznie w oknach płynności: Londyn (09:00-12:00) oraz Nowy Jork (14:30-18:30)."
+        "body": "Fundamentem każdego Alertu Analitycznego jest analiza trendu na interwale H1. Silnik sprawdza położenie ceny względem EMA 200 oraz Chmury Ichimoku. Dodatkowym filtrem bezpieczeństwa jest analiza indeksu DXY, która blokuje ryzykowne setupy. Całość działa wyłącznie w oknach płynności: Londyn (09:00-12:00) oraz Nowy Jork (14:30-18:30)."
       },
       {
         "title": "Warstwa 2: Liquidity Sweep",
@@ -51,38 +56,39 @@
       },
       {
         "title": "Warstwa 3: M5 Trigger",
-        "body": "Finalny sygnał pojawia się po potwierdzeniu impetu przez Fair Value Gap albo formację Engulfing, wspartą odwróceniem RSI. Stop Loss jest kotwiczony za świecą czyszczącą płynność, a cele bazują na RR oraz kolejnych poziomach H1."
+        "body": "Finalny Alert Analityczny pojawia się po potwierdzeniu impetu przez Fair Value Gap albo formację Engulfing, wspartą odwróceniem RSI. Poziomy techniczne SL i TP są wyznaczane przez algorytm jako dane analityczne, a nie instrukcja zawarcia transakcji."
       }
     ],
     "faqTitle": "Praktyczne odpowiedzi",
     "faq": [
       {
-        "q": "Dlaczego nie ma sygnałów co kilka minut?",
-        "a": "Stawiamy na jakość, nie ilość. System generuje sygnał tylko wtedy, gdy zgadzają się warunki H1, korelacja DXY, okno płynności i trigger M5."
+        "q": "Dlaczego nie ma Alertów Analitycznych co kilka minut?",
+        "a": "System generuje Alert Analityczny tylko wtedy, gdy zgadzają się warunki H1, korelacja DXY, okno płynności i trigger M5."
       },
       {
         "q": "Czy muszę mieć konto u konkretnego brokera?",
-        "a": "Nie. Sygnały bazują na XAU/USD i mogą być używane u dowolnego brokera oferującego złoto, choć najlepsze efekty daje niskie opóźnienie oraz stabilny spread."
+        "a": "Nie. Alerty Analityczne bazują na danych XAU/USD i mogą być odczytywane niezależnie od brokera oferującego złoto, z uwzględnieniem różnic w opóźnieniu oraz spreadzie."
       },
       {
         "q": "W jakich godzinach system jest aktywny?",
-        "a": "Egzekucja sygnałów działa głównie podczas sesji londyńskiej i nowojorskiej. Poza tymi blokami system przechodzi w tryb monitoringu."
+        "a": "Algorytm analizuje rynek głównie podczas sesji londyńskiej i nowojorskiej. Poza tymi blokami system przechodzi w tryb monitoringu."
       }
     ]
   },
   "dashboard": {
     "title": "Zeta Signals - panel XAU/USD",
-    "body": "Rynek złota to środowisko o wyjątkowej płynności i ponadprzeciętnej zmienności. Panel pokazuje cenę, status rynku oraz sygnały w czasie rzeczywistym, bez przeładowywania strony.",
+    "body": "Rynek złota to środowisko o wyjątkowej płynności i ponadprzeciętnej zmienności. Panel pokazuje cenę, status rynku oraz Alerty Analityczne w czasie rzeczywistym, bez przeładowywania strony.",
     "notesLabel": "Uwagi twórcy",
-    "notesTitle": "Monitoring i ochrona sygnałów",
+    "notesTitle": "Monitoring Alertów Analitycznych",
     "notes": [
-      "Tylko jeden aktywny sygnał jest dostępny w danym momencie, więc przestarzałe wpisy nigdy nie pozostają podświetlone.",
-      "Gdy TP, SL albo limit czasu rozstrzygnie pozycję, backend wysyła zmianę statusu do każdego połączonego terminala.",
-      "Ticker, badge rynku i historia sygnałów zostały zaprojektowane tak, aby decyzje były szybkie, czytelne i jednoznaczne."
+      "Tylko jeden aktywny Alert Analityczny jest dostępny w danym momencie, więc przestarzałe wpisy nigdy nie pozostają podświetlone.",
+      "Gdy techniczny TP, techniczny SL albo limit czasu rozstrzygnie alert, backend wysyła zmianę statusu do każdego połączonego terminala.",
+      "Ticker, badge rynku i historia Alertów Analitycznych zostały zaprojektowane tak, aby dane były czytelne i jednoznaczne."
     ],
     "easyCartLabel": "Strefa płatności",
     "easyCartBody": "Miejsce jest przygotowane pod integrację płatności, walidację dostępu i blokadę dashboardu dla klientów premium.",
-    "chartTitle": "Struktura rynku XAU/USD"
+    "chartTitle": "Struktura rynku XAU/USD",
+    "riskBanner": "Alerty Analityczne mają charakter wyłącznie edukacyjno-informacyjny. Nie stanowią doradztwa inwestycyjnego, rekomendacji finansowej ani gwarancji zysku. Decyzje tradingowe podejmujesz samodzielnie i na własne ryzyko."
   },
   "ticker": {
     "livePrice": "CENA NA ŻYWO",
@@ -92,39 +98,41 @@
     "updated": "Aktualizacja"
   },
   "signals": {
-    "currentLabel": "Aktualny sygnał",
-    "terminalTitle": "Terminal sygnałowy",
-    "activeBadge": "Sygnał aktywny",
+    "currentLabel": "Aktualny Alert Analityczny",
+    "terminalTitle": "Realtime Cockpit",
+    "activeBadge": "Alert aktywny",
     "waitingBadge": "Oczekiwanie na setup",
     "emptyTitle": "Brak otwartej pozycji",
     "emptyBody": "Algorytm czeka na właściwy układ rynkowy.",
-    "emptyDescription": "Gdy pojawi się nowy sygnał dla XAU/USD, karta wjedzie z efektem złotej poświaty, a poprzednie pozycje automatycznie trafią do historii.",
-    "historyTitle": "Historia Sygnałów",
+    "emptyDescription": "Gdy pojawi się nowy Alert Analityczny dla XAU/USD, karta wjedzie z efektem złotej poświaty, a poprzednie alerty automatycznie trafią do historii.",
+    "historyTitle": "Historia Alertów Analitycznych",
+    "historyRiskNotice": "Historia Alertów Analitycznych obejmuje również alerty stratne. Wyniki historyczne nie gwarantują przyszłych wyników.",
     "latestRecords": "Ostatnie 5 rekordów",
-    "executionOpen": "Okno egzekucji otwarte",
-    "positionClosed": "Pozycja zamknięta",
-    "activeDescription": "Setup jest monitorowany w czasie rzeczywistym. TP, SL oraz wygaśnięcie sygnału są pilnowane przez backend.",
+    "executionOpen": "Alert Analityczny aktywny",
+    "positionClosed": "Alert zakończony",
+    "activeDescription": "Setup jest monitorowany w czasie rzeczywistym. Poziomy techniczne TP, SL oraz wygaśnięcie alertu są pilnowane przez backend.",
     "closedDescriptionPrefix": "Zamknięto przez",
     "closedDescriptionSuffix": "z wynikiem",
     "generated": "Wygenerowano",
-    "confidence": "Pewność",
-    "entry": "Cena Wejścia",
-    "tp": "Cel / Take Profit",
-    "sl": "Stop Loss",
+    "confidence": "Wskaźnik algorytmu",
+    "entry": "Poziom techniczny wejścia",
+    "tp": "Poziom techniczny TP",
+    "sl": "Poziom techniczny SL",
+    "analyticalLevelsNote": "Poziomy wejścia, TP i SL są danymi analitycznymi/technicznymi algorytmu, a nie instrukcją zawarcia transakcji.",
     "liveResult": "Wynik bieżący",
     "finalResult": "Wynik końcowy",
     "monitoringActive": "Monitoring aktywny",
     "monitoringStopped": "Monitoring zatrzymany",
     "expires": "Wygasa",
-    "expired": "Sygnał wygasł",
+    "expired": "Alert wygasł",
     "status": {
       "ACTIVE": "Aktywny",
       "CLOSED": "Zamknięty",
       "EXPIRED": "Wygasły"
     },
     "type": {
-      "Buy": "Kupno",
-      "Sell": "Sprzedaż"
+      "Buy": "Scenariusz wzrostowy",
+      "Sell": "Scenariusz spadkowy"
     },
     "closeReasons": {
       "fallback": "aktualizację systemu",
@@ -140,14 +148,16 @@
   "auth": {
     "clientAccess": "Dostęp klienta",
     "easyCartLabel": "Strefa płatności",
-    "easyCartBody": "Bezpieczne i szyfrowane płatności bez zobowiązań. Zarządzaj swoją subskrypcją bezpośrednio z panelu użytkownika — aktywuj, zmieniaj plany lub rezygnuj w dowolnym momencie jednym kliknięciem.",
+    "easyCartBody": "Bezpieczne płatności subskrypcyjne obsługiwane przez zewnętrznego Operatora Płatności. Dostęp do funkcji płatnych jest aktywowany po potwierdzeniu subskrypcji.",
     "email": "Adres e-mail",
     "password": "Hasło",
     "confirmPassword": "Powtórz hasło",
     "helper": "Dostęp do algorytmu aktywowany jest automatycznie po autoryzacji aktywnej subskrypcji.",
     "passwordHint": "Hasło musi mieć minimum 10 znaków oraz zawierać małą literę, dużą literę, cyfrę i znak specjalny.",
     "termsPrefix": "Akceptuję",
-    "termsLink": "regulamin strony",
+    "termsLink": "Regulamin",
+    "termsConnector": "oraz potwierdzam zapoznanie się z",
+    "privacyLink": "Polityką Prywatności",
     "termsSuffix": ".",
     "passwordRecovery": {
       "forgotLink": "Nie pamiętasz hasła?",
@@ -159,7 +169,7 @@
       "errorFallback": "Nie udało się zakończyć odzyskiwania hasła. Spróbuj ponownie.",
       "request": {
         "title": "Odzyskiwanie hasła",
-        "subtitle": "Wpisz adres e-mail użyty przy rejestracji w Zeta Signals. Na Twoją skrzynkę wyślemy bezpieczny link, który pozwoli Ci ustanowić nowe hasło do panelu inwestorskiego.",
+        "subtitle": "Wpisz adres e-mail użyty przy rejestracji w Zeta Signals. Na Twoją skrzynkę wyślemy bezpieczny link, który pozwoli Ci ustanowić nowe hasło do panelu analitycznego.",
         "cta": "Wyślij link resetujący",
         "helper": "Dla zachowania najwyższego bezpieczeństwa, komunikat potwierdzający wysłanie wiadomości jest identyczny niezależnie od tego, czy podany adres znajduje się w naszej bazie.",
         "success": "Jeśli ten e-mail jest przypisany do konta, link do resetu hasła został wysłany."
@@ -193,7 +203,7 @@
       "passwordTooShort": "Hasło musi mieć minimum 10 znaków.",
       "passwordRequirements": "Hasło musi mieć minimum 10 znaków oraz zawierać małą literę, dużą literę, cyfrę i znak specjalny.",
       "passwordMismatch": "Hasła nie są takie same.",
-      "termsRequired": "Aby założyć konto, zaakceptuj regulamin strony.",
+      "termsRequired": "Aby założyć konto, zaakceptuj Regulamin oraz potwierdź zapoznanie się z Polityką Prywatności.",
       "invalidCredentials": "Nieprawidłowy e-mail lub hasło.",
       "emailNotConfirmed": "Adres e-mail nie został jeszcze potwierdzony.",
       "userAlreadyRegistered": "Konto z tym adresem e-mail już istnieje.",
@@ -201,14 +211,14 @@
     },
     "signIn": {
       "title": "Logowanie",
-      "subtitle": "Uzyskaj dostęp do prywatnego panelu inwestorskiego Zeta Signals dla XAU/USD. Śledź instytucjonalne przepływy kapitału i odbieraj precyzyjne powiadomienia rynkowe w czasie rzeczywistym.",
+      "subtitle": "Uzyskaj dostęp do prywatnego panelu analitycznego Zeta Signals dla XAU/USD. Śledź dane rynkowe i odbieraj Alerty Analityczne w czasie rzeczywistym.",
       "cta": "Zaloguj się",
       "footerLabel": "Nie masz jeszcze konta?",
       "footerText": "Zarejestruj się"
     },
     "signUp": {
       "title": "Rejestracja konta",
-      "subtitle": "Założenie darmowego konta to pierwszy krok do uzyskania dostępu do platformy Zeta Signals. Po rejestracji profilu w naszym systemie otrzymasz możliwość wykupienia subskrypcji na dostęp do narzędzi analitycznych, które monitorują strukturę płynności rynkowej na parze XAU/USD.",
+      "subtitle": "Założenie darmowego konta to pierwszy krok do uzyskania dostępu do Zeta Signals. Po rejestracji profilu otrzymasz możliwość wykupienia subskrypcji na oprogramowanie analityczne monitorujące strukturę płynności rynkowej na parze XAU/USD.",
       "cta": "Załóż konto",
       "footerLabel": "Masz już konto?",
       "footerText": "Zaloguj się"
@@ -225,7 +235,7 @@
   "billing": {
     "badge": "Dostęp premium",
     "title": "Subskrypcja i dostęp",
-    "body": "To centrum dostępu dla konta użytkownika. Warstwa płatności jest neutralna względem operatora, więc później można podłączyć Stripe, Paddle, EasyCart, PayU albo innego dostawcę.",
+    "body": "To centrum dostępu dla konta użytkownika. Płatność jest miesięczną subskrypcją odnawianą automatycznie i obsługiwaną przez Lemon Squeezy albo skonfigurowanego Operatora Płatności.",
     "refresh": "Odśwież",
     "loading": "Ładuję dane konta...",
     "loadError": "Nie udało się pobrać danych subskrypcji.",
@@ -242,13 +252,22 @@
     "periodEndLabel": "Koniec okresu",
     "planEyebrow": "Plan bazowy",
     "planTitle": "Zeta Signals Premium",
-    "planBody": "Dostęp do prywatnego dashboardu, sygnałów realtime i przyszłych funkcji konta premium. Ten plan jest kodem wewnętrznym, który później mapujemy na produkt u wybranego operatora płatności.",
+    "planBody": "Dostęp do Realtime Cockpit, Alertów Analitycznych i funkcji konta premium. Ten plan jest kodem wewnętrznym mapowanym na produkt u Operatora Płatności.",
     "planCodeLabel": "Kod planu",
     "checkoutCta": "Przejdź do płatności",
+    "consentsTitle": "Wymagane zgody przed płatnością",
+    "consentsIntro": "Zaznacz wszystkie zgody, aby uruchomić checkout Lemon Squeezy.",
+    "consentsRequired": "Zaznacz wszystkie wymagane zgody przed przejściem do płatności.",
+    "paymentCookiesNotice": "Płatność może być obsługiwana przez Lemon Squeezy. Operator płatności może stosować własne cookies lub podobne technologie niezbędne do obsługi transakcji i zapobiegania fraudom.",
+    "subscriptionSectionTitle": "Subskrypcja",
+    "subscriptionSectionBody": "Subskrypcja odnawia się automatycznie co miesiąc. Anulowanie zatrzymuje kolejne odnowienie, a dostęp pozostaje aktywny do końca opłaconego okresu.",
+    "manageSubscription": "Zarządzaj subskrypcją",
+    "portalUnavailable": "Portal zarządzania Lemon Squeezy nie jest jeszcze skonfigurowany. W sprawie anulowania skontaktuj się przez e-mail.",
+    "renewalNotice": "Subskrypcja odnawia się automatycznie co miesiąc. Możesz ją anulować w dowolnym momencie, zachowując dostęp do końca opłaconego okresu.",
     "mockCta": "Aktywuj testowo",
     "features": [
       "Prywatny dostęp do dashboardu XAU/USD",
-      "Sygnały realtime zabezpieczone przez RLS",
+      "Alerty Analityczne realtime zabezpieczone przez RLS",
       "Gotowy kontrakt pod webhooki płatności"
     ],
     "status": {
@@ -260,10 +279,28 @@
       "expired": "Wygasła"
     }
   },
+  "legal": {
+    "publicRiskDisclaimer": "Zeta Signals nie jest doradcą inwestycyjnym ani brokerem. Alerty Analityczne mają charakter edukacyjno-informacyjny. Handel Forex/CFD/XAU/USD wiąże się z wysokim ryzykiem utraty kapitału. Wyniki historyczne nie gwarantują przyszłych wyników.",
+    "cookieBanner": {
+      "title": "Pliki cookies",
+      "body": "Używamy plików cookies i technologii podobnych niezbędnych do działania serwisu, logowania, bezpieczeństwa oraz obsługi płatności. Opcjonalne cookies analityczne lub marketingowe uruchamiamy wyłącznie po Twojej zgodzie, jeżeli zostaną wdrożone.",
+      "necessaryNotice": "Zablokowanie technologii niezbędnych, w szczególności Supabase Auth i LocalStorage, może uniemożliwić logowanie oraz korzystanie z panelu.",
+      "detailsPrefix": "Szczegóły znajdziesz w",
+      "accept": "Akceptuję",
+      "reject": "Odrzucam",
+      "settings": "Ustawienia",
+      "save": "Zapisz wybór",
+      "necessaryLabel": "Cookies niezbędne",
+      "analyticsLabel": "Cookies analityczne",
+      "marketingLabel": "Cookies marketingowe",
+      "optionalDescription": "Obecnie nie uruchamiamy opcjonalnych narzędzi analitycznych ani marketingowych przed zgodą. Te ustawienia przygotowują zgodny mechanizm na wypadek ich przyszłego wdrożenia.",
+      "changePreferences": "Zmień ustawienia cookies"
+    }
+  },
   "footer": {
-    "tagline": "Profesjonalny terminal sygnałowy dla rynku złota.",
+    "tagline": "Oprogramowanie analityczne dla rynku złota.",
     "linksLabel": "Nawigacja",
-    "riskWarning": "Ostrzeżenie o ryzyku: Handel na rynku XAU/USD wiąże się z wysokim ryzykiem straty. Zeta Signals dostarcza sygnały o charakterze informacyjnym. Korzystasz z nich na własną odpowiedzialność."
+    "riskWarning": "Ostrzeżenie o ryzyku: Handel Forex/CFD/XAU/USD wiąże się z wysokim ryzykiem utraty kapitału. Zeta Signals dostarcza Alerty Analityczne o charakterze edukacyjno-informacyjnym, nie usługę doradczą."
   },
   "terms": {
     "eyebrow": "Dokumenty prawne",
@@ -276,7 +313,7 @@
         "title": "Regulamin Usługi",
         "body": [
           "LOREM IPSUM: W tym miejscu należy opisać zasady korzystania z platformy Zeta Signals, zakres usługi, wymagania techniczne, sposób uzyskania dostępu oraz zasady odpowiedzialności użytkownika.",
-          "LOREM IPSUM: Należy wskazać, że sygnały mają charakter informacyjny i edukacyjny, nie stanowią indywidualnej rekomendacji inwestycyjnej oraz nie gwarantują osiągnięcia zysku.",
+          "LOREM IPSUM: Należy wskazać, że Alerty Analityczne mają charakter informacyjny i edukacyjny oraz nie są indywidualnie dopasowaną usługą doradczą.",
           "LOREM IPSUM: W tej sekcji można dodać warunki zawieszenia dostępu, procedury reklamacyjne, informacje o płatnościach oraz zasady zakończenia korzystania z usługi."
         ]
       },

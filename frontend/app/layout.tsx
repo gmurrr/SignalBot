@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Cormorant_Garamond, Inter } from "next/font/google";
 
 import { Footer } from "@/components/footer";
+import { CookieConsentBanner } from "@/components/legal/cookie-consent-banner";
 import { I18nProvider } from "@/lib/i18n/provider";
 
 import "./globals.css";
@@ -18,8 +19,8 @@ const cormorant = Cormorant_Garamond({
 });
 
 export const metadata: Metadata = {
-  title: "Zeta Signals | Precyzyjne Sygnały XAU/USD",
-  description: "Luksusowa platforma sygnałowa XAU/USD z realtime danymi rynkowymi i algorytmiczną kontrolą ryzyka."
+  title: "Zeta Signals | Alerty Analityczne XAU/USD",
+  description: "Oprogramowanie analityczne XAU/USD z danymi realtime i edukacyjno-informacyjnymi Alertami Analitycznymi."
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -29,6 +30,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <I18nProvider>
           {children}
           <Footer />
+          <CookieConsentBanner />
         </I18nProvider>
       </body>
     </html>

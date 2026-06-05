@@ -1,12 +1,15 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { usePathname, useRouter } from "next/navigation";
 
 import { useI18n } from "@/lib/i18n/provider";
 import { cn } from "@/lib/utils";
 
 export function LanguageSwitcher({ className }: { className?: string }) {
   const { dict, locale, setLocale } = useI18n();
+  const pathname = usePathname();
+  const router = useRouter();
 
   return (
     <div
@@ -22,7 +25,13 @@ export function LanguageSwitcher({ className }: { className?: string }) {
           <button
             key={option}
             type="button"
-            onClick={() => setLocale(option)}
+            onClick={() => {
+              setLocale(option);
+              const localizedPath = getLocalizedLegalPath(pathname, option);
+              if (localizedPath && localizedPath !== pathname) {
+                router.push(localizedPath);
+              }
+            }}
             className={cn("relative rounded-full px-3 py-1.5 transition-colors", isActive ? "text-[#050505]" : "hover:text-brass")}
           >
             {isActive ? (
@@ -38,4 +47,22 @@ export function LanguageSwitcher({ className }: { className?: string }) {
       })}
     </div>
   );
+}
+
+function getLocalizedLegalPath(pathname: string, locale: "pl" | "en") {
+  const plToEn: Record<string, string> = {
+    "/pl/auth/sign-up": "/en/auth/sign-up",
+    "/pl/billing": "/en/billing",
+    "/pl/polityka-cookies": "/en/cookie-policy",
+    "/pl/ostrzezenie-o-ryzyku": "/en/risk-warning",
+    "/pl/polityka-prywatnosci": "/en/privacy-policy",
+    "/pl/regulamin": "/en/terms"
+  };
+  const enToPl = Object.fromEntries(Object.entries(plToEn).map(([plPath, enPath]) => [enPath, plPath]));
+
+  if (locale === "en") {
+    return plToEn[pathname] ?? null;
+  }
+
+  return enToPl[pathname] ?? null;
 }
