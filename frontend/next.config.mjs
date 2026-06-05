@@ -17,7 +17,8 @@ const connectSources = [
   "https://*.supabase.co",
   "wss://*.supabase.co",
   "https://*.tradingview.com",
-  "wss://*.tradingview.com"
+  "wss://*.tradingview.com",
+  "https://va.vercel-scripts.com"
 ];
 
 if (!isProduction) {
@@ -30,7 +31,7 @@ const cspDirectives = [
   "object-src 'none'",
   "frame-ancestors 'none'",
   "form-action 'self'",
-  "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://s3.tradingview.com https://*.tradingview.com",
+  "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://s3.tradingview.com https://*.tradingview.com https://va.vercel-scripts.com",
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data: blob: https://*.tradingview.com https://s3.tradingview.com",
   "font-src 'self' data:",

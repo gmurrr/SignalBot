@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Cormorant_Garamond, Inter } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
 
 import { Footer } from "@/components/footer";
 import { CookieConsentBanner } from "@/components/legal/cookie-consent-banner";
@@ -32,6 +33,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <Footer />
           <CookieConsentBanner />
         </I18nProvider>
+        <Analytics />
       </body>
     </html>
   );
