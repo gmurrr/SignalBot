@@ -5,6 +5,8 @@ import { NextResponse } from "next/server";
 import { getAccountOverview } from "@/lib/account/server";
 import { getUserFromRequest } from "@/lib/supabase/admin";
 
+const defaultDashboardSymbols = ["XAUUSD", "GOLD"];
+
 export async function requireDashboardAccess(request: Request) {
   const user = await getUserFromRequest(request);
 
@@ -27,15 +29,30 @@ export async function requireDashboardAccess(request: Request) {
   } as const;
 }
 
-export function getSafeSymbol() {
-  const candidate = process.env.SIGNAL_SYMBOL || process.env.NEXT_PUBLIC_SIGNAL_SYMBOL || "XAUUSD";
-  const normalized = candidate.trim().toUpperCase();
+export function getSafeSymbols() {
+  const candidates = [
+    process.env.SIGNAL_SYMBOLS,
+    process.env.SIGNAL_SYMBOL,
+    process.env.NEXT_PUBLIC_SIGNAL_SYMBOL,
+    defaultDashboardSymbols.join(",")
+  ];
 
-  if (!/^[A-Z0-9._:-]{2,32}$/.test(normalized)) {
-    return "XAUUSD";
+  return Array.from(
+    new Set(
+      candidates.flatMap(parseSymbolList).filter((symbol) => /^[A-Z0-9._:-]{2,32}$/.test(symbol))
+    )
+  );
+}
+
+function parseSymbolList(value: string | undefined) {
+  if (!value) {
+    return [];
   }
 
-  return normalized;
+  return value
+    .split(",")
+    .map((symbol) => symbol.trim().toUpperCase())
+    .filter(Boolean);
 }
 
 export function getSafeTableName(envName: string, fallback: string) {

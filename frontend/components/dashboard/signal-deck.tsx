@@ -1,12 +1,12 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Clock3, Flag, Sparkles } from "lucide-react";
 
+import { useDashboardData } from "@/components/dashboard/dashboard-data-provider";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
-import { fetchWithSupabaseSession } from "@/lib/auth/api";
 import type { PublicSignalRow } from "@/lib/dashboard/public-data";
 import { formatPrice, formatRelativeTimestamp, formatSignedPips } from "@/lib/format";
 import { useI18n } from "@/lib/i18n/provider";
@@ -14,53 +14,19 @@ import { cn } from "@/lib/utils";
 import type { SignalStatus, SignalType } from "@/types/database";
 import type { Dictionary, Locale } from "@/lib/i18n/dictionaries";
 
-const symbol = process.env.NEXT_PUBLIC_SIGNAL_SYMBOL ?? "XAUUSD";
-
 export function SignalDeck() {
   const { dict, locale } = useI18n();
-  const [signals, setSignals] = useState<PublicSignalRow[]>([]);
+  const { signals } = useDashboardData();
   const [now, setNow] = useState(Date.now());
+  const sortedSignals = useMemo(() => [...signals].sort(sortSignals), [signals]);
 
   useEffect(() => {
     const timer = window.setInterval(() => setNow(Date.now()), 1000);
     return () => window.clearInterval(timer);
   }, []);
 
-  useEffect(() => {
-    let isMounted = true;
-
-    async function loadSignals() {
-      try {
-        const response = await fetchWithSupabaseSession(`/api/dashboard/signals?symbol=${encodeURIComponent(symbol)}`);
-        if (!response.ok) {
-          if (isMounted) {
-            setSignals([]);
-          }
-          return;
-        }
-
-        const payload = (await response.json()) as { signals?: PublicSignalRow[] };
-        if (isMounted) {
-          setSignals((payload.signals ?? []).sort(sortSignals));
-        }
-      } catch {
-        if (isMounted) {
-          setSignals([]);
-        }
-      }
-    }
-
-    void loadSignals();
-    const refreshTimer = window.setInterval(loadSignals, 5000);
-
-    return () => {
-      isMounted = false;
-      window.clearInterval(refreshTimer);
-    };
-  }, []);
-
-  const activeSignal = signals.find((signal) => signal.status === "ACTIVE") ?? null;
-  const history = signals.filter((signal) => signal.id !== activeSignal?.id).slice(0, 5);
+  const activeSignal = sortedSignals.find((signal) => signal.status === "ACTIVE") ?? null;
+  const history = sortedSignals.filter((signal) => signal.id !== activeSignal?.id).slice(0, 5);
 
   return (
     <div className="flex flex-col gap-8">

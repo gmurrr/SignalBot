@@ -6,8 +6,7 @@ import { ArrowUpRight, Radio } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
-import { fetchWithSupabaseSession } from "@/lib/auth/api";
-import type { PublicMarketDataRow } from "@/lib/dashboard/public-data";
+import { useDashboardData } from "@/components/dashboard/dashboard-data-provider";
 import { formatPrice, formatRelativeTimestamp } from "@/lib/format";
 import { useI18n } from "@/lib/i18n/provider";
 
@@ -15,46 +14,23 @@ const preferredSymbol = process.env.NEXT_PUBLIC_SIGNAL_SYMBOL ?? "XAUUSD";
 
 export function LiveTicker() {
   const { dict, locale } = useI18n();
-  const [market, setMarket] = useState<PublicMarketDataRow | null>(null);
+  const { market } = useDashboardData();
   const [flash, setFlash] = useState(false);
   const lastMidRef = useRef<number | null>(null);
 
   useEffect(() => {
-    let isMounted = true;
-
-    function applyMarket(nextMarket: PublicMarketDataRow) {
-      if (lastMidRef.current !== null && nextMarket.mid !== lastMidRef.current) {
-        setFlash(true);
-        window.setTimeout(() => setFlash(false), 420);
-      }
-      lastMidRef.current = nextMarket.mid;
-      setMarket(nextMarket);
+    if (!market) {
+      return;
     }
 
-    async function loadMarket() {
-      try {
-        const response = await fetchWithSupabaseSession(`/api/dashboard/market-data?symbol=${encodeURIComponent(preferredSymbol)}`);
-        if (!response.ok) {
-          return;
-        }
-
-        const payload = (await response.json()) as { market?: PublicMarketDataRow | null };
-        if (isMounted && payload.market) {
-          applyMarket(payload.market);
-        }
-      } catch {
-        // The surrounding AccessGate handles auth/subscription errors.
-      }
+    if (lastMidRef.current !== null && market.mid !== lastMidRef.current) {
+      setFlash(true);
+      const flashTimer = window.setTimeout(() => setFlash(false), 420);
+      lastMidRef.current = market.mid;
+      return () => window.clearTimeout(flashTimer);
     }
-
-    void loadMarket();
-    const refreshTimer = window.setInterval(loadMarket, 2500);
-
-    return () => {
-      isMounted = false;
-      window.clearInterval(refreshTimer);
-    };
-  }, []);
+    lastMidRef.current = market.mid;
+  }, [market]);
 
   return (
     <Card className="gold-glow relative overflow-hidden border-[#1A1A1A] bg-[radial-gradient(circle_at_top,rgba(212,175,55,0.15),transparent_55%),rgba(8,8,8,0.92)]">

@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 
+import { DashboardDataProvider } from "@/components/dashboard/dashboard-data-provider";
 import { LiveTicker } from "@/components/dashboard/live-ticker";
 import { SignalDeck } from "@/components/dashboard/signal-deck";
 import { TradingViewWidget } from "@/components/dashboard/tradingview-widget";
@@ -33,8 +34,10 @@ export function DashboardShell() {
         </Link>
       </aside>
 
-      <LiveTicker />
-      <SignalDeck />
+      <DashboardDataProvider>
+        <LiveTicker />
+        <SignalDeck />
+      </DashboardDataProvider>
 
       <div className="grid gap-8 xl:grid-cols-[1.2fr_0.8fr]">
         <TradingViewWidget />
