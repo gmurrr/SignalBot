@@ -178,10 +178,13 @@ create table if not exists public.user_consents (
         check (type in (
             'TERMS_ACCEPTANCE',
             'PRIVACY_ACCEPTANCE',
+            'COOKIE_POLICY_ACCEPTANCE',
             'RISK_WARNING_ACCEPTANCE',
+            'NO_INVESTMENT_ADVICE_ACKNOWLEDGEMENT',
             'DIGITAL_SERVICE_CONSENT',
             'WITHDRAWAL_LOSS_ACKNOWLEDGEMENT',
-            'SUBSCRIPTION_RENEWAL_ACCEPTANCE'
+            'SUBSCRIPTION_RENEWAL_ACCEPTANCE',
+            'AGE_CONFIRMATION'
         )),
     version text not null,
     accepted_at timestamptz not null,
@@ -195,7 +198,8 @@ create table if not exists public.user_consents (
     source text not null
         check (source in ('REGISTER', 'CHECKOUT')),
     metadata jsonb not null default '{}'::jsonb,
-    created_at timestamptz not null default now()
+    created_at timestamptz not null default now(),
+    updated_at timestamptz not null default now()
 );
 
 alter table public.user_consents
@@ -208,6 +212,15 @@ alter table public.user_consents
 alter table public.user_consents
     add column if not exists privacy_policy_language text
         check (privacy_policy_language in ('PL', 'EN'));
+
+alter table public.user_consents
+    add column if not exists updated_at timestamptz not null default now();
+
+drop trigger if exists set_user_consents_updated_at on public.user_consents;
+create trigger set_user_consents_updated_at
+    before update on public.user_consents
+    for each row
+    execute function public.set_updated_at();
 
 create index if not exists user_consents_user_created_idx
     on public.user_consents (user_id, created_at desc);
@@ -225,13 +238,24 @@ create table if not exists public.checkout_consent_audits (
     privacy_policy_version text not null default '1.0',
     privacy_policy_language text not null default 'PL'
         check (privacy_policy_language in ('PL', 'EN')),
+    accepted_privacy_policy_at timestamptz not null default now(),
+    cookie_policy_version text,
+    accepted_cookie_policy_at timestamptz,
     risk_warning_version text not null default '1.0',
+    risk_warning_accepted boolean not null default false,
     risk_accepted_at timestamptz not null,
+    no_investment_advice_acknowledged boolean not null default false,
+    no_investment_advice_acknowledged_at timestamptz not null default now(),
     withdrawal_consent_version text not null default '1.0',
+    withdrawal_consent_accepted boolean not null default false,
     digital_service_consent_at timestamptz not null,
+    withdrawal_loss_acknowledged boolean not null default false,
     withdrawal_loss_acknowledged_at timestamptz not null,
     subscription_renewal_consent_version text not null default '1.0',
+    subscription_renewal_accepted boolean not null default false,
     subscription_renewal_accepted_at timestamptz not null,
+    age_confirmation_accepted boolean not null default false,
+    age_confirmation_accepted_at timestamptz,
     checkout_provider text not null,
     checkout_session_id text,
     checkout_url text,
@@ -243,7 +267,8 @@ create table if not exists public.checkout_consent_audits (
     source text not null default 'CHECKOUT'
         check (source = 'CHECKOUT'),
     metadata jsonb not null default '{}'::jsonb,
-    created_at timestamptz not null default now()
+    created_at timestamptz not null default now(),
+    updated_at timestamptz not null default now()
 );
 
 alter table public.checkout_consent_audits
@@ -261,10 +286,52 @@ alter table public.checkout_consent_audits
         check (privacy_policy_language in ('PL', 'EN'));
 
 alter table public.checkout_consent_audits
+    add column if not exists accepted_privacy_policy_at timestamptz not null default now();
+
+alter table public.checkout_consent_audits
+    add column if not exists cookie_policy_version text;
+
+alter table public.checkout_consent_audits
+    add column if not exists accepted_cookie_policy_at timestamptz;
+
+alter table public.checkout_consent_audits
     add column if not exists withdrawal_consent_version text not null default '1.0';
 
 alter table public.checkout_consent_audits
+    add column if not exists risk_warning_accepted boolean not null default false;
+
+alter table public.checkout_consent_audits
+    add column if not exists no_investment_advice_acknowledged boolean not null default false;
+
+alter table public.checkout_consent_audits
+    add column if not exists no_investment_advice_acknowledged_at timestamptz not null default now();
+
+alter table public.checkout_consent_audits
+    add column if not exists withdrawal_consent_accepted boolean not null default false;
+
+alter table public.checkout_consent_audits
+    add column if not exists withdrawal_loss_acknowledged boolean not null default false;
+
+alter table public.checkout_consent_audits
     add column if not exists subscription_renewal_consent_version text not null default '1.0';
+
+alter table public.checkout_consent_audits
+    add column if not exists subscription_renewal_accepted boolean not null default false;
+
+alter table public.checkout_consent_audits
+    add column if not exists age_confirmation_accepted boolean not null default false;
+
+alter table public.checkout_consent_audits
+    add column if not exists age_confirmation_accepted_at timestamptz;
+
+alter table public.checkout_consent_audits
+    add column if not exists updated_at timestamptz not null default now();
+
+drop trigger if exists set_checkout_consent_audits_updated_at on public.checkout_consent_audits;
+create trigger set_checkout_consent_audits_updated_at
+    before update on public.checkout_consent_audits
+    for each row
+    execute function public.set_updated_at();
 
 create index if not exists checkout_consent_audits_user_created_idx
     on public.checkout_consent_audits (user_id, created_at desc);

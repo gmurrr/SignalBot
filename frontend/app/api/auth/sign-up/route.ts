@@ -13,11 +13,13 @@ export async function POST(request: Request) {
     const body = await readJsonBody(request);
     const email = typeof body.email === "string" ? body.email.trim() : "";
     const password = typeof body.password === "string" ? body.password : "";
-    const acceptedLegal = body.acceptedLegal === true;
+    const acceptedTerms = body.acceptedTerms === true;
+    const acceptedPrivacyPolicy = body.acceptedPrivacyPolicy === true;
+    const ageConfirmed = body.ageConfirmed === true;
     const language = body.language === "EN" ? "EN" : "PL";
 
-    if (!acceptedLegal) {
-      return NextResponse.json({ error: "Legal acceptance is required." }, { status: 400 });
+    if (!acceptedTerms || !acceptedPrivacyPolicy || !ageConfirmed) {
+      return NextResponse.json({ error: "Required legal confirmations are missing." }, { status: 400 });
     }
 
     if (!email || !isValidEmail(email)) {
@@ -43,6 +45,8 @@ export async function POST(request: Request) {
             privacy_policy_version: PRIVACY_VERSION,
             privacy_version: PRIVACY_VERSION,
             source: "REGISTER",
+            age_confirmed: true,
+            age_confirmed_at: acceptedAt,
             terms_accepted: true,
             terms_accepted_at: acceptedAt,
             terms_language: language,

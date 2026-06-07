@@ -12,8 +12,7 @@ export type PurchaseConfirmationEmailInput = {
 export async function sendPurchaseConfirmationEmail(input: PurchaseConfirmationEmailInput) {
   const message = buildPurchaseConfirmationEmail(input);
 
-  // TODO: Connect a real transactional e-mail provider before enabling delivery.
-  // Missing integration point: call the chosen e-mail provider from the billing webhook after subscription activation.
+  // Delivery remains disabled until a transactional sender is configured and called from the billing webhook.
   return {
     legalLinks: getLocalizedLegalLinks(input.language ?? "PL"),
     message,

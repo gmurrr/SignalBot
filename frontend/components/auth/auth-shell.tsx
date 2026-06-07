@@ -26,6 +26,8 @@ export function AuthShell({ mode }: { mode: "signIn" | "signUp" }) {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [acceptedTerms, setAcceptedTerms] = useState(false);
+  const [acceptedPrivacyPolicy, setAcceptedPrivacyPolicy] = useState(false);
+  const [confirmedAge, setConfirmedAge] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -34,6 +36,8 @@ export function AuthShell({ mode }: { mode: "signIn" | "signUp" }) {
     setPassword("");
     setConfirmPassword("");
     setAcceptedTerms(false);
+    setAcceptedPrivacyPolicy(false);
+    setConfirmedAge(false);
     setMessage(null);
     setErrorMessage(null);
   }, [mode]);
@@ -47,7 +51,9 @@ export function AuthShell({ mode }: { mode: "signIn" | "signUp" }) {
     const supabase = getSupabaseBrowserClient();
     const normalizedEmail = email.trim();
     const validationError = validateAuthForm({
+      acceptedPrivacyPolicy,
       acceptedTerms,
+      confirmedAge,
       confirmPassword,
       email: normalizedEmail,
       errors: dict.auth.errors,
@@ -65,7 +71,9 @@ export function AuthShell({ mode }: { mode: "signIn" | "signUp" }) {
       if (isSignup) {
         const signUpResponse = await fetch("/api/auth/sign-up", {
           body: JSON.stringify({
-            acceptedLegal: acceptedTerms,
+            acceptedPrivacyPolicy,
+            acceptedTerms,
+            ageConfirmed: confirmedAge,
             email: normalizedEmail,
             language: legalLanguage,
             password
@@ -175,16 +183,36 @@ export function AuthShell({ mode }: { mode: "signIn" | "signUp" }) {
                     type="checkbox"
                   />
                   <span>
-                    {dict.auth.termsPrefix}{" "}
+                    {dict.auth.termsAcceptance}{" "}
                     <Link href={legalLinks.terms} target="_blank" rel="noreferrer" className="text-brass transition-colors hover:text-[#e6c55a]">
                       {dict.auth.termsLink}
                     </Link>
-                    {` ${dict.auth.termsConnector} `}
+                  </span>
+                </label>
+                <label className="flex cursor-pointer items-start gap-3 rounded-2xl border border-[rgba(212,175,55,0.18)] bg-[rgba(255,255,255,0.02)] p-4 text-sm leading-6 text-muted">
+                  <input
+                    checked={acceptedPrivacyPolicy}
+                    className="mt-1 h-4 w-4 shrink-0 accent-[#D4AF37]"
+                    onChange={(event) => setAcceptedPrivacyPolicy(event.target.checked)}
+                    required
+                    type="checkbox"
+                  />
+                  <span>
+                    {dict.auth.privacyAcceptance}{" "}
                     <Link href={legalLinks.privacy} target="_blank" rel="noreferrer" className="text-brass transition-colors hover:text-[#e6c55a]">
                       {dict.auth.privacyLink}
                     </Link>
-                    {dict.auth.termsSuffix}
                   </span>
+                </label>
+                <label className="flex cursor-pointer items-start gap-3 rounded-2xl border border-[rgba(212,175,55,0.18)] bg-[rgba(255,255,255,0.02)] p-4 text-sm leading-6 text-muted">
+                  <input
+                    checked={confirmedAge}
+                    className="mt-1 h-4 w-4 shrink-0 accent-[#D4AF37]"
+                    onChange={(event) => setConfirmedAge(event.target.checked)}
+                    required
+                    type="checkbox"
+                  />
+                  <span>{dict.auth.ageConfirmation}</span>
                 </label>
               </>
             ) : null}
@@ -228,7 +256,9 @@ type SignUpResponse = {
 };
 
 function validateAuthForm({
+  acceptedPrivacyPolicy,
   acceptedTerms,
+  confirmedAge,
   confirmPassword,
   email,
   errors,
@@ -236,12 +266,16 @@ function validateAuthForm({
   password
 }: {
   acceptedTerms: boolean;
+  acceptedPrivacyPolicy: boolean;
+  confirmedAge: boolean;
   confirmPassword: string;
   email: string;
   errors: {
+    ageRequired: string;
     emailRequired: string;
     invalidEmail: string;
     confirmPasswordRequired: string;
+    privacyRequired: string;
     passwordRequired: string;
     passwordRequirements: string;
     passwordMismatch: string;
@@ -276,6 +310,14 @@ function validateAuthForm({
 
   if (isSignup && !acceptedTerms) {
     return errors.termsRequired;
+  }
+
+  if (isSignup && !acceptedPrivacyPolicy) {
+    return errors.privacyRequired;
+  }
+
+  if (isSignup && !confirmedAge) {
+    return errors.ageRequired;
   }
 
   return null;

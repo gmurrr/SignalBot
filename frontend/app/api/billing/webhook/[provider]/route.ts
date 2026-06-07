@@ -28,6 +28,7 @@ export async function POST(request: Request, context: { params: Promise<{ provid
     });
   } catch (error) {
     const status = error instanceof BillingProviderError ? error.status : 500;
+    console.error("Billing webhook processing failed.", error);
     return NextResponse.json(
       { error: error instanceof Error ? error.message : "Unable to process billing webhook." },
       { status }

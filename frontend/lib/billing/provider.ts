@@ -1,5 +1,7 @@
 import "server-only";
 
+import { createHmac, timingSafeEqual } from "node:crypto";
+
 import type { BillingProvider, BillingWebhookEvent, CheckoutSessionInput, CheckoutSessionResult } from "@/lib/billing/types";
 import type { JsonRecord, SubscriptionStatus } from "@/types/database";
 
@@ -127,14 +129,24 @@ class StandardBillingProvider implements BillingProvider {
     }
 
     const reference = `${this.name}_${crypto.randomUUID()}`;
-    const checkoutUrl = appendQuery(checkoutBaseUrl, {
-      user_id: input.userId,
-      email: input.email,
-      plan_code: input.planCode,
-      reference,
-      success_url: input.successUrl,
-      cancel_url: input.cancelUrl
-    });
+    const checkoutUrl = appendQuery(
+      checkoutBaseUrl,
+      this.name === "lemon_squeezy"
+        ? {
+            "checkout[email]": input.email,
+            "checkout[custom][user_id]": input.userId,
+            "checkout[custom][plan_code]": input.planCode,
+            "checkout[custom][reference]": reference
+          }
+        : {
+            user_id: input.userId,
+            email: input.email,
+            plan_code: input.planCode,
+            reference,
+            success_url: input.successUrl,
+            cancel_url: input.cancelUrl
+          }
+    );
 
     return {
       provider: this.name,
@@ -144,6 +156,12 @@ class StandardBillingProvider implements BillingProvider {
   }
 
   async parseWebhook(request: Request, rawBody: string): Promise<BillingWebhookEvent> {
+    if (this.name === "lemon_squeezy") {
+      assertLemonSqueezySignature(request, rawBody);
+      const payload = parseJsonPayload(rawBody);
+      return parseLemonSqueezyWebhook(this.name, request, payload);
+    }
+
     assertWebhookSecret(request);
 
     const payload = parseJsonPayload(rawBody);
@@ -184,6 +202,57 @@ class StandardBillingProvider implements BillingProvider {
   }
 }
 
+function parseLemonSqueezyWebhook(provider: string, request: Request, payload: JsonRecord): BillingWebhookEvent {
+  const meta = isRecord(payload.meta) ? payload.meta : {};
+  const data = isRecord(payload.data) ? payload.data : payload;
+  const attributes = isRecord(data.attributes) ? data.attributes : {};
+  const customData = isRecord(meta.custom_data) ? meta.custom_data : {};
+  const eventType = request.headers.get("x-event-name") ?? readString(meta.event_name) ?? readString(payload.event_type) ?? "unknown";
+  const dataType = readString(data.type);
+  const dataId = readScalar(data.id);
+  const eventRevision = readString(attributes.updated_at) ?? readString(attributes.created_at) ?? readScalar(attributes.status);
+  const fallbackEventId = [eventType, dataType, dataId, eventRevision].filter(Boolean).join("_");
+  const eventId = readScalar(meta.webhook_id) ?? readScalar(meta.event_id) ?? (fallbackEventId || `${eventType}_${crypto.randomUUID()}`);
+  const userId = readScalar(customData.user_id) ?? readScalar(customData.userId) ?? readScalar(attributes.user_id);
+  const status = mapLemonSqueezySubscriptionStatus(readScalar(attributes.status));
+  const providerSubscriptionId = dataType === "subscriptions" ? dataId : readScalar(attributes.subscription_id);
+  const providerCustomerId = readScalar(attributes.customer_id);
+
+  return {
+    provider,
+    providerEventId: eventId,
+    eventType,
+    userId,
+    payload: sanitizeLemonSqueezyPayload({
+      attributes,
+      customData,
+      dataId,
+      dataType,
+      eventType,
+      providerCustomerId,
+      providerSubscriptionId
+    }),
+    subscriptionUpdate: status
+      ? {
+          userId,
+          status,
+          planCode: readScalar(customData.plan_code) ?? readScalar(customData.planCode) ?? readScalar(attributes.variant_id) ?? defaultPlanCode,
+          provider,
+          providerCustomerId,
+          providerSubscriptionId,
+          currentPeriodStart: readString(attributes.created_at),
+          currentPeriodEnd: readString(attributes.renews_at) ?? readString(attributes.ends_at),
+          trialEndsAt: readString(attributes.trial_ends_at),
+          cancelAtPeriodEnd: Boolean(attributes.cancelled) || eventType === "subscription_cancelled",
+          metadata: {
+            lemon_squeezy_event: eventType,
+            lemon_squeezy_object_type: dataType ?? null
+          }
+        }
+      : undefined
+  };
+}
+
 function assertWebhookSecret(request: Request) {
   const expectedSecret = process.env.BILLING_WEBHOOK_SECRET;
   if (!expectedSecret) {
@@ -193,6 +262,25 @@ function assertWebhookSecret(request: Request) {
   const actualSecret = request.headers.get("x-billing-webhook-secret");
   if (actualSecret !== expectedSecret) {
     throw new BillingProviderError("Invalid billing webhook secret.", 401);
+  }
+}
+
+function assertLemonSqueezySignature(request: Request, rawBody: string) {
+  const expectedSecret = process.env.BILLING_WEBHOOK_SECRET;
+  if (!expectedSecret) {
+    throw new BillingProviderError("Billing webhook secret is not configured.", 500);
+  }
+
+  const signatureHeader = request.headers.get("x-signature");
+  if (!signatureHeader) {
+    throw new BillingProviderError("Missing Lemon Squeezy webhook signature.", 401);
+  }
+
+  const digest = Buffer.from(createHmac("sha256", expectedSecret).update(rawBody).digest("hex"), "utf8");
+  const signature = Buffer.from(signatureHeader, "utf8");
+
+  if (digest.length !== signature.length || !timingSafeEqual(digest, signature)) {
+    throw new BillingProviderError("Invalid Lemon Squeezy webhook signature.", 401);
   }
 }
 
@@ -223,6 +311,71 @@ function isRecord(value: unknown): value is JsonRecord {
 
 function readString(value: unknown) {
   return typeof value === "string" && value.length > 0 ? value : null;
+}
+
+function readScalar(value: unknown) {
+  if (typeof value === "string" && value.length > 0) {
+    return value;
+  }
+
+  if (typeof value === "number" || typeof value === "bigint") {
+    return String(value);
+  }
+
+  return null;
+}
+
+function mapLemonSqueezySubscriptionStatus(value: string | null): SubscriptionStatus | null {
+  if (!value) {
+    return null;
+  }
+
+  const normalized = value.toLowerCase();
+  if (normalized === "cancelled") {
+    return "canceled";
+  }
+
+  if (normalized === "unpaid") {
+    return "past_due";
+  }
+
+  if (normalized === "paused") {
+    return "inactive";
+  }
+
+  return readSubscriptionStatus(normalized);
+}
+
+function sanitizeLemonSqueezyPayload(input: {
+  attributes: JsonRecord;
+  customData: JsonRecord;
+  dataId: string | null;
+  dataType: string | null;
+  eventType: string;
+  providerCustomerId: string | null;
+  providerSubscriptionId: string | null;
+}): JsonRecord {
+  const { attributes, customData, dataId, dataType, eventType, providerCustomerId, providerSubscriptionId } = input;
+
+  return {
+    provider: "lemon_squeezy",
+    event_name: eventType,
+    object_type: dataType,
+    object_id: dataId,
+    customer_id: providerCustomerId,
+    subscription_id: providerSubscriptionId,
+    status: readScalar(attributes.status),
+    plan_code: readScalar(customData.plan_code) ?? readScalar(customData.planCode) ?? readScalar(attributes.variant_id),
+    reference: readScalar(customData.reference),
+    product_id: readScalar(attributes.product_id),
+    variant_id: readScalar(attributes.variant_id),
+    order_id: readScalar(attributes.order_id),
+    renews_at: readString(attributes.renews_at),
+    ends_at: readString(attributes.ends_at),
+    trial_ends_at: readString(attributes.trial_ends_at),
+    cancelled: typeof attributes.cancelled === "boolean" ? attributes.cancelled : undefined,
+    test_mode: typeof attributes.test_mode === "boolean" ? attributes.test_mode : undefined
+  };
 }
 
 function readBooleanEnv(name: string, defaultValue: boolean) {

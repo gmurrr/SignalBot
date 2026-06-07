@@ -1,9 +1,8 @@
 import type { Metadata } from "next";
 
 import { TermsDocumentPage } from "@/components/legal/terms-document-page";
-import { LEGAL_LINKS, TERMS_VERSION } from "@/lib/legal/constants";
+import { LEGAL_LINKS, TERMS_EFFECTIVE_DATE_EN, TERMS_VERSION } from "@/lib/legal/constants";
 
-const effectiveDate = "[date]";
 const prevailingLanguageNote =
   "In case of any discrepancies between the Polish and English versions of these Terms of Service, the Polish version shall prevail, to the extent permitted by mandatory provisions of applicable law.";
 
@@ -28,7 +27,7 @@ export default function EnglishTermsPage() {
     <TermsDocumentPage
       boxText="This document contains the terms for using the Service, subscription information, market risk disclosures and the educational-informational nature of the service."
       downloadLabel="Download Terms PDF"
-      effectiveDateLabel={`Effective date: ${effectiveDate}`}
+      effectiveDateLabel={`Effective date: ${TERMS_EFFECTIVE_DATE_EN}`}
       fileName="terms-zeta-signals-en-v1-1.md"
       languageLabel="Language: EN"
       note={prevailingLanguageNote}

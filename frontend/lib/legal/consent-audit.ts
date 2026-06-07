@@ -4,6 +4,7 @@ import { getSupabaseAdminClient } from "@/lib/supabase/admin";
 import type { JsonRecord, UserConsentType } from "@/types/database";
 
 import {
+  COOKIE_POLICY_VERSION,
   PRIVACY_VERSION,
   RISK_WARNING_VERSION,
   SUBSCRIPTION_RENEWAL_CONSENT_VERSION,
@@ -59,6 +60,17 @@ export async function recordRegistrationConsents(input: RegistrationConsentInput
       userAgent: input.userAgent,
       userId: input.userId,
       version: PRIVACY_VERSION
+    }),
+    buildConsentRow({
+      acceptedAt: input.acceptedAt,
+      email: input.email,
+      ipAddress: input.ipAddress,
+      language: input.language,
+      source: "REGISTER",
+      type: "AGE_CONFIRMATION",
+      userAgent: input.userAgent,
+      userId: input.userId,
+      version: "18_PLUS"
     })
   ];
 
@@ -84,20 +96,31 @@ export async function recordCheckoutConsents(input: CheckoutConsentAuditInput) {
       ip_address: input.ipAddress,
       language: input.language,
       metadata: input.metadata ?? {},
+      age_confirmation_accepted: true,
+      age_confirmation_accepted_at: acceptedAt,
+      accepted_cookie_policy_at: null,
+      accepted_privacy_policy_at: acceptedAt,
+      cookie_policy_version: COOKIE_POLICY_VERSION,
+      no_investment_advice_acknowledged: true,
+      no_investment_advice_acknowledged_at: acceptedAt,
       order_id: input.orderId ?? null,
       privacy_policy_language: input.language,
       privacy_policy_version: PRIVACY_VERSION,
       privacy_version: PRIVACY_VERSION,
+      risk_warning_accepted: true,
       risk_accepted_at: acceptedAt,
       risk_warning_version: RISK_WARNING_VERSION,
       source: "CHECKOUT",
+      subscription_renewal_accepted: true,
       subscription_renewal_accepted_at: acceptedAt,
       subscription_renewal_consent_version: SUBSCRIPTION_RENEWAL_CONSENT_VERSION,
       terms_accepted_at: acceptedAt,
       terms_version: TERMS_VERSION,
       user_agent: input.userAgent,
       user_id: input.userId,
+      withdrawal_consent_accepted: true,
       withdrawal_consent_version: WITHDRAWAL_CONSENT_VERSION,
+      withdrawal_loss_acknowledged: true,
       withdrawal_loss_acknowledged_at: acceptedAt
     })
     .select("*")
@@ -124,8 +147,32 @@ export async function recordCheckoutConsents(input: CheckoutConsentAuditInput) {
       email: input.email,
       ipAddress: input.ipAddress,
       language: input.language,
+      privacyPolicyLanguage: input.language,
+      privacyPolicyVersion: PRIVACY_VERSION,
+      source: "CHECKOUT",
+      type: "PRIVACY_ACCEPTANCE",
+      userAgent: input.userAgent,
+      userId: input.userId,
+      version: PRIVACY_VERSION
+    }),
+    buildConsentRow({
+      acceptedAt,
+      email: input.email,
+      ipAddress: input.ipAddress,
+      language: input.language,
       source: "CHECKOUT",
       type: "RISK_WARNING_ACCEPTANCE",
+      userAgent: input.userAgent,
+      userId: input.userId,
+      version: RISK_WARNING_VERSION
+    }),
+    buildConsentRow({
+      acceptedAt,
+      email: input.email,
+      ipAddress: input.ipAddress,
+      language: input.language,
+      source: "CHECKOUT",
+      type: "NO_INVESTMENT_ADVICE_ACKNOWLEDGEMENT",
       userAgent: input.userAgent,
       userId: input.userId,
       version: RISK_WARNING_VERSION
@@ -162,6 +209,17 @@ export async function recordCheckoutConsents(input: CheckoutConsentAuditInput) {
       userAgent: input.userAgent,
       userId: input.userId,
       version: SUBSCRIPTION_RENEWAL_CONSENT_VERSION
+    }),
+    buildConsentRow({
+      acceptedAt,
+      email: input.email,
+      ipAddress: input.ipAddress,
+      language: input.language,
+      source: "CHECKOUT",
+      type: "AGE_CONFIRMATION",
+      userAgent: input.userAgent,
+      userId: input.userId,
+      version: "18_PLUS"
     })
   ];
 

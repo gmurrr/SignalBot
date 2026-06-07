@@ -159,6 +159,9 @@
     "termsConnector": "and confirm that I have read the",
     "privacyLink": "Privacy Policy",
     "termsSuffix": ".",
+    "termsAcceptance": "I accept the Zeta Signals Terms of Service.",
+    "privacyAcceptance": "I confirm that I have read the Zeta Signals Privacy Policy.",
+    "ageConfirmation": "I confirm that I am at least 18 years old.",
     "passwordRecovery": {
       "forgotLink": "Forgot your password?",
       "backToSignIn": "Back to sign in",
@@ -203,7 +206,9 @@
       "passwordTooShort": "Password must contain at least 10 characters.",
       "passwordRequirements": "Password must contain at least 10 characters, with lowercase, uppercase, a number and a special character.",
       "passwordMismatch": "Passwords do not match.",
-      "termsRequired": "To create an account, accept the Terms of Service and confirm that you have read the Privacy Policy.",
+      "termsRequired": "To create an account, accept the Terms of Service.",
+      "privacyRequired": "To create an account, confirm that you have read the Privacy Policy.",
+      "ageRequired": "To create an account, confirm that you are at least 18 years old.",
       "invalidCredentials": "Invalid email or password.",
       "emailNotConfirmed": "This email address has not been confirmed yet.",
       "userAlreadyRegistered": "An account with this email already exists.",
@@ -305,34 +310,28 @@
   "terms": {
     "eyebrow": "Legal documents",
     "title": "Terms, privacy and cookies",
-    "intro": "The content below is a professional scaffold for final legal documents. Replace the placeholders with lawyer-approved text before production release.",
+    "intro": "The current Zeta Signals legal documents are available as dedicated pages and PDF files in the versions effective from 07.06.2026.",
     "toc": "Table of contents",
     "sections": [
       {
         "id": "terms-of-service",
         "title": "Terms of Service",
         "body": [
-          "LOREM IPSUM: Use this section to describe the rules for using Zeta Signals, scope of service, technical requirements, access model and user responsibility.",
-          "LOREM IPSUM: State that Analytical Alerts are informational and educational and are not an individually tailored advisory service.",
-          "LOREM IPSUM: Add access suspension terms, complaint procedures, payment information and rules for ending service usage."
+          "The current Zeta Signals Terms of Service are available at /en/terms and as a downloadable PDF on that page."
         ]
       },
       {
         "id": "privacy-policy",
         "title": "Privacy Policy",
         "body": [
-          "LOREM IPSUM: Identify the data controller, the scope of personal data collected, processing purposes and legal bases.",
-          "LOREM IPSUM: Describe retention periods, user rights, privacy contact methods and processors acting on behalf of the controller.",
-          "LOREM IPSUM: Include analytics tools, payment systems, hosting services and technical safeguards."
+          "The current Privacy Policy version 1.2 is available at /en/privacy-policy and as a downloadable PDF on that page."
         ]
       },
       {
         "id": "cookies-policy",
         "title": "Cookies Policy",
         "body": [
-          "LOREM IPSUM: Describe what cookies and similar technologies are used by the service and for what purposes.",
-          "LOREM IPSUM: Separate necessary, analytical, functional and marketing cookies if they are used.",
-          "LOREM IPSUM: Add consent-management instructions and explain how users can change browser settings."
+          "The current Cookie Policy is available at /en/cookie-policy and as a downloadable PDF on that page."
         ]
       }
     ]

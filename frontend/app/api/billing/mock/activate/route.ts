@@ -97,9 +97,13 @@ function hasRequiredCheckoutConsents(value: unknown) {
 
   const consents = value as Record<string, unknown>;
   return (
+    consents.ageConfirmed === true &&
     consents.termsAccepted === true &&
+    consents.privacyAccepted === true &&
     consents.riskAccepted === true &&
+    consents.noInvestmentAdviceAccepted === true &&
     consents.digitalServiceConsent === true &&
+    consents.withdrawalLossAcknowledged === true &&
     consents.subscriptionRenewalAccepted === true
   );
 }

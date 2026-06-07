@@ -12,7 +12,7 @@ import { Separator } from "@/components/ui/separator";
 import { fetchWithSupabaseSession } from "@/lib/auth/api";
 import { getSubscriptionLabel, type AccountOverview } from "@/lib/account/subscription";
 import { useI18n } from "@/lib/i18n/provider";
-import { CHECKOUT_CONSENT_TEXT, CHECKOUT_CONSENT_TEXT_EN, SUBSCRIPTION_RENEWAL_NOTICE, getLocalizedLegalLinks } from "@/lib/legal/constants";
+import { CHECKOUT_CONSENT_TEXT, CHECKOUT_CONSENT_TEXT_EN, getLocalizedLegalLinks } from "@/lib/legal/constants";
 import type { SubscriptionStatus } from "@/types/database";
 
 type BillingState =
@@ -27,10 +27,14 @@ type CheckoutResponse = {
 
 const planCode = "premium-monthly";
 const initialCheckoutConsents = {
+  ageConfirmed: false,
   digitalServiceConsent: false,
+  noInvestmentAdviceAccepted: false,
+  privacyAccepted: false,
   riskAccepted: false,
   subscriptionRenewalAccepted: false,
-  termsAccepted: false
+  termsAccepted: false,
+  withdrawalLossAcknowledged: false
 };
 
 export function BillingShell() {
@@ -260,6 +264,15 @@ export function BillingShell() {
                 </Link>
               </CheckoutConsentCheckbox>
               <CheckoutConsentCheckbox
+                checked={checkoutConsents.privacyAccepted}
+                onChange={(checked) => setCheckoutConsents((current) => ({ ...current, privacyAccepted: checked }))}
+              >
+                {checkoutConsentText.privacy}{" "}
+                <Link href={legalLinks.privacy} target="_blank" rel="noreferrer" className="text-brass transition-colors hover:text-[#e6c55a]">
+                  {dict.common.privacy}
+                </Link>
+              </CheckoutConsentCheckbox>
+              <CheckoutConsentCheckbox
                 checked={checkoutConsents.riskAccepted}
                 onChange={(checked) => setCheckoutConsents((current) => ({ ...current, riskAccepted: checked }))}
               >
@@ -269,10 +282,22 @@ export function BillingShell() {
                 </Link>
               </CheckoutConsentCheckbox>
               <CheckoutConsentCheckbox
+                checked={checkoutConsents.noInvestmentAdviceAccepted}
+                onChange={(checked) => setCheckoutConsents((current) => ({ ...current, noInvestmentAdviceAccepted: checked }))}
+              >
+                {checkoutConsentText.noAdvice}
+              </CheckoutConsentCheckbox>
+              <CheckoutConsentCheckbox
                 checked={checkoutConsents.digitalServiceConsent}
                 onChange={(checked) => setCheckoutConsents((current) => ({ ...current, digitalServiceConsent: checked }))}
               >
                 {checkoutConsentText.digitalService}
+              </CheckoutConsentCheckbox>
+              <CheckoutConsentCheckbox
+                checked={checkoutConsents.withdrawalLossAcknowledged}
+                onChange={(checked) => setCheckoutConsents((current) => ({ ...current, withdrawalLossAcknowledged: checked }))}
+              >
+                {checkoutConsentText.withdrawalLoss}
               </CheckoutConsentCheckbox>
               <CheckoutConsentCheckbox
                 checked={checkoutConsents.subscriptionRenewalAccepted}
@@ -280,9 +305,15 @@ export function BillingShell() {
               >
                 {checkoutConsentText.renewal}
               </CheckoutConsentCheckbox>
+              <CheckoutConsentCheckbox
+                checked={checkoutConsents.ageConfirmed}
+                onChange={(checked) => setCheckoutConsents((current) => ({ ...current, ageConfirmed: checked }))}
+              >
+                {checkoutConsentText.age}
+              </CheckoutConsentCheckbox>
             </div>
           </div>
-          <p className="mt-5 text-sm leading-7 text-muted">{SUBSCRIPTION_RENEWAL_NOTICE}</p>
+          <p className="mt-5 text-sm leading-7 text-muted">{dict.billing.renewalNotice}</p>
           <div className="mt-8 flex flex-wrap gap-3">
             <Button type="button" onClick={startCheckout} disabled={isCheckoutPending || !allCheckoutConsentsAccepted}>
               {isCheckoutPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <CreditCard className="h-4 w-4" />}

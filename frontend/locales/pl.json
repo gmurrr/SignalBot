@@ -159,6 +159,9 @@
     "termsConnector": "oraz potwierdzam zapoznanie się z",
     "privacyLink": "Polityką Prywatności",
     "termsSuffix": ".",
+    "termsAcceptance": "Akceptuję Regulamin Zeta Signals.",
+    "privacyAcceptance": "Potwierdzam zapoznanie się z Polityką Prywatności Zeta Signals.",
+    "ageConfirmation": "Potwierdzam, że mam ukończone 18 lat.",
     "passwordRecovery": {
       "forgotLink": "Nie pamiętasz hasła?",
       "backToSignIn": "Wróć do logowania",
@@ -203,7 +206,9 @@
       "passwordTooShort": "Hasło musi mieć minimum 10 znaków.",
       "passwordRequirements": "Hasło musi mieć minimum 10 znaków oraz zawierać małą literę, dużą literę, cyfrę i znak specjalny.",
       "passwordMismatch": "Hasła nie są takie same.",
-      "termsRequired": "Aby założyć konto, zaakceptuj Regulamin oraz potwierdź zapoznanie się z Polityką Prywatności.",
+      "termsRequired": "Aby założyć konto, zaakceptuj Regulamin.",
+      "privacyRequired": "Aby założyć konto, potwierdź zapoznanie się z Polityką Prywatności.",
+      "ageRequired": "Aby założyć konto, potwierdź ukończenie 18 lat.",
       "invalidCredentials": "Nieprawidłowy e-mail lub hasło.",
       "emailNotConfirmed": "Adres e-mail nie został jeszcze potwierdzony.",
       "userAlreadyRegistered": "Konto z tym adresem e-mail już istnieje.",
@@ -305,34 +310,28 @@
   "terms": {
     "eyebrow": "Dokumenty prawne",
     "title": "Regulamin, prywatność i cookies",
-    "intro": "Poniższa treść jest profesjonalnym szkieletem pod finalne dokumenty prawne. Zastąp placeholdery treścią przygotowaną przez prawnika przed publikacją produkcyjną.",
+    "intro": "Aktualne dokumenty prawne Zeta Signals są dostępne jako osobne podstrony i pliki PDF w wersjach obowiązujących od 07.06.2026.",
     "toc": "Spis treści",
     "sections": [
       {
         "id": "terms-of-service",
         "title": "Regulamin Usługi",
         "body": [
-          "LOREM IPSUM: W tym miejscu należy opisać zasady korzystania z platformy Zeta Signals, zakres usługi, wymagania techniczne, sposób uzyskania dostępu oraz zasady odpowiedzialności użytkownika.",
-          "LOREM IPSUM: Należy wskazać, że Alerty Analityczne mają charakter informacyjny i edukacyjny oraz nie są indywidualnie dopasowaną usługą doradczą.",
-          "LOREM IPSUM: W tej sekcji można dodać warunki zawieszenia dostępu, procedury reklamacyjne, informacje o płatnościach oraz zasady zakończenia korzystania z usługi."
+          "Aktualny Regulamin Zeta Signals jest dostępny pod trasą /pl/regulamin oraz jako plik PDF do pobrania z tej podstrony."
         ]
       },
       {
         "id": "privacy-policy",
         "title": "Polityka Prywatności",
         "body": [
-          "LOREM IPSUM: W tej sekcji należy wskazać administratora danych, zakres zbieranych danych osobowych, cele przetwarzania oraz podstawy prawne przetwarzania.",
-          "LOREM IPSUM: Należy opisać czas przechowywania danych, prawa użytkownika, sposób kontaktu w sprawach prywatności oraz podmioty przetwarzające dane w imieniu administratora.",
-          "LOREM IPSUM: Warto uwzględnić informacje o narzędziach analitycznych, systemach płatności, usługach hostingowych i zabezpieczeniach technicznych."
+          "Aktualna Polityka Prywatności w wersji 1.2 jest dostępna pod trasą /pl/polityka-prywatnosci oraz jako plik PDF do pobrania z tej podstrony."
         ]
       },
       {
         "id": "cookies-policy",
         "title": "Polityka Cookies",
         "body": [
-          "LOREM IPSUM: W tym miejscu należy opisać, jakie pliki cookies i podobne technologie są używane przez serwis oraz w jakich celach.",
-          "LOREM IPSUM: Należy wskazać podział na cookies niezbędne, analityczne, funkcjonalne oraz marketingowe, jeśli takie będą wykorzystywane.",
-          "LOREM IPSUM: Dodaj instrukcję zarządzania zgodami cookies oraz informację, jak użytkownik może zmienić ustawienia przeglądarki."
+          "Aktualna Polityka Cookies jest dostępna pod trasą /pl/polityka-cookies oraz jako plik PDF do pobrania z tej podstrony."
         ]
       }
     ]

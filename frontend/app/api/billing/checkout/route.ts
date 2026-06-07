@@ -42,7 +42,7 @@ export async function POST(request: Request) {
     await recordCheckoutConsents({
       checkoutProvider: provider.name === "mock" ? "mock" : "Lemon Squeezy",
       checkoutSessionId: result.externalReference,
-      checkoutUrl: result.checkoutUrl,
+      checkoutUrl: getAuditableCheckoutUrl(result.checkoutUrl),
       email: account.billing_email ?? account.email,
       ipAddress: auditMetadata.ipAddress,
       language,
@@ -71,9 +71,13 @@ function hasRequiredCheckoutConsents(value: unknown) {
 
   const consents = value as Record<string, unknown>;
   return (
+    consents.ageConfirmed === true &&
     consents.termsAccepted === true &&
+    consents.privacyAccepted === true &&
     consents.riskAccepted === true &&
+    consents.noInvestmentAdviceAccepted === true &&
     consents.digitalServiceConsent === true &&
+    consents.withdrawalLossAcknowledged === true &&
     consents.subscriptionRenewalAccepted === true
   );
 }
@@ -97,6 +101,21 @@ function getTrustedSiteOrigin(request: Request) {
   }
 
   return new URL(request.url).origin;
+}
+
+function getAuditableCheckoutUrl(value: string | null | undefined) {
+  if (!value) {
+    return null;
+  }
+
+  try {
+    const url = new URL(value);
+    url.search = "";
+    url.hash = "";
+    return url.toString();
+  } catch {
+    return null;
+  }
 }
 
 function isSupportedPlanCode(planCode: string) {

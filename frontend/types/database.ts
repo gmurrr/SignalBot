@@ -8,10 +8,13 @@ export type LegalLanguage = "PL" | "EN";
 export type UserConsentType =
   | "TERMS_ACCEPTANCE"
   | "PRIVACY_ACCEPTANCE"
+  | "COOKIE_POLICY_ACCEPTANCE"
   | "RISK_WARNING_ACCEPTANCE"
+  | "NO_INVESTMENT_ADVICE_ACKNOWLEDGEMENT"
   | "DIGITAL_SERVICE_CONSENT"
   | "WITHDRAWAL_LOSS_ACKNOWLEDGEMENT"
-  | "SUBSCRIPTION_RENEWAL_ACCEPTANCE";
+  | "SUBSCRIPTION_RENEWAL_ACCEPTANCE"
+  | "AGE_CONFIRMATION";
 
 export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[];
 export type JsonRecord = { [key: string]: Json | undefined };
@@ -126,6 +129,7 @@ export interface UserConsentRow {
   source: UserConsentSource;
   metadata: JsonRecord;
   created_at: string;
+  updated_at: string;
 }
 
 export interface CheckoutConsentAuditRow {
@@ -138,13 +142,24 @@ export interface CheckoutConsentAuditRow {
   privacy_version: string;
   privacy_policy_version: string;
   privacy_policy_language: LegalLanguage;
+  accepted_privacy_policy_at: string;
+  cookie_policy_version: string | null;
+  accepted_cookie_policy_at: string | null;
   risk_warning_version: string;
+  risk_warning_accepted: boolean;
   risk_accepted_at: string;
+  no_investment_advice_acknowledged: boolean;
+  no_investment_advice_acknowledged_at: string;
   withdrawal_consent_version: string;
+  withdrawal_consent_accepted: boolean;
   digital_service_consent_at: string;
+  withdrawal_loss_acknowledged: boolean;
   withdrawal_loss_acknowledged_at: string;
   subscription_renewal_consent_version: string;
+  subscription_renewal_accepted: boolean;
   subscription_renewal_accepted_at: string;
+  age_confirmation_accepted: boolean;
+  age_confirmation_accepted_at: string | null;
   checkout_provider: string;
   checkout_session_id: string | null;
   checkout_url: string | null;
@@ -155,6 +170,7 @@ export interface CheckoutConsentAuditRow {
   source: "CHECKOUT";
   metadata: JsonRecord;
   created_at: string;
+  updated_at: string;
 }
 
 export type Database = {
@@ -261,6 +277,7 @@ export type Database = {
           source: UserConsentSource;
           metadata?: JsonRecord;
           created_at?: string;
+          updated_at?: string;
         };
         Update: Partial<Omit<UserConsentRow, "id" | "created_at">>;
         Relationships: [];
@@ -276,13 +293,24 @@ export type Database = {
           privacy_version?: string;
           privacy_policy_version?: string;
           privacy_policy_language?: LegalLanguage;
+          accepted_privacy_policy_at: string;
+          cookie_policy_version?: string | null;
+          accepted_cookie_policy_at?: string | null;
           risk_warning_version?: string;
+          risk_warning_accepted?: boolean;
           risk_accepted_at: string;
+          no_investment_advice_acknowledged?: boolean;
+          no_investment_advice_acknowledged_at: string;
           withdrawal_consent_version?: string;
+          withdrawal_consent_accepted?: boolean;
           digital_service_consent_at: string;
+          withdrawal_loss_acknowledged?: boolean;
           withdrawal_loss_acknowledged_at: string;
           subscription_renewal_consent_version?: string;
+          subscription_renewal_accepted?: boolean;
           subscription_renewal_accepted_at: string;
+          age_confirmation_accepted?: boolean;
+          age_confirmation_accepted_at?: string | null;
           checkout_provider: string;
           checkout_session_id?: string | null;
           checkout_url?: string | null;
@@ -293,6 +321,7 @@ export type Database = {
           source?: "CHECKOUT";
           metadata?: JsonRecord;
           created_at?: string;
+          updated_at?: string;
         };
         Update: Partial<Omit<CheckoutConsentAuditRow, "id" | "user_id" | "created_at">>;
         Relationships: [];
