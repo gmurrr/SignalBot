@@ -1,8 +1,8 @@
 export const TERMS_VERSION = "1.1";
 export const TERMS_EFFECTIVE_DATE = "[data]";
-export const PRIVACY_VERSION = "1.1";
-export const PRIVACY_EFFECTIVE_DATE = "[data]";
-export const PRIVACY_EFFECTIVE_DATE_EN = "[date]";
+export const PRIVACY_VERSION = "1.2";
+export const PRIVACY_EFFECTIVE_DATE = "07.06.2026";
+export const PRIVACY_EFFECTIVE_DATE_EN = "07.06.2026";
 export const COOKIE_POLICY_VERSION = "1.1";
 export const COOKIE_POLICY_EFFECTIVE_DATE = "[data]";
 export const COOKIE_POLICY_EFFECTIVE_DATE_EN = "[date]";
@@ -27,7 +27,7 @@ export const LEGAL_LINKS = {
   cookiePdf: "/files/polityka-cookies-zeta-signals-pl-v1-1.pdf",
   cookiePdfEn: "/files/cookie-policy-zeta-signals-en-v1-1.pdf",
   enCookie: "/en/cookie-policy",
-  contact: "mailto:contact@zetasignals.com",
+  contact: "mailto:kontakt@zetasignals.pl",
   enPrivacy: "/en/privacy-policy",
   enRiskWarning: "/en/risk-warning",
   enTerms: "/en/terms",
@@ -39,8 +39,8 @@ export const LEGAL_LINKS = {
   riskWarning: "/pl/ostrzezenie-o-ryzyku",
   subscriptionManagement: "/billing",
   terms: "/pl/regulamin",
-  privacyPdf: "/files/polityka-prywatnosci-zeta-signals-pl-v1-1.pdf",
-  privacyPdfEn: "/files/privacy-policy-zeta-signals-en-v1-1.pdf",
+  privacyPdf: "/files/polityka-prywatnosci-zeta-signals-pl-v1-2.pdf",
+  privacyPdfEn: "/files/privacy-policy-zeta-signals-en-v1-2.pdf",
   termsPdf: "/files/regulamin-zeta-signals-pl-v1-1.pdf",
   termsPdfEn: "/files/terms-zeta-signals-en-v1-1.pdf"
 } as const;

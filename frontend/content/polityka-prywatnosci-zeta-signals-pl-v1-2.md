@@ -2,7 +2,7 @@
 ## SERWISU ZETA SIGNALS
 
 **Data wejścia w życie:** 07.06.2026  
-**Wersja dokumentu:** 1.1  
+**Wersja dokumentu:** 1.2  
 **Adres serwisu:** https://www.zetasignals.pl/
 
 ## § 1. Postanowienia ogólne
@@ -51,7 +51,13 @@ Na potrzeby niniejszej Polityki Prywatności poniższym pojęciom nadaje się na
 
 9. **Lemon Squeezy** - zewnętrzny operator płatności oraz podmiot obsługujący transakcje, subskrypcje, fakturowanie i podatki transakcyjne w modelu Merchant of Record.
 
-10. **Podmiot przetwarzający** - podmiot, który przetwarza dane osobowe w imieniu Administratora na podstawie umowy powierzenia przetwarzania danych lub innego właściwego instrumentu prawnego.
+10. **Cloudflare** - dostawca usług infrastrukturalnych, DNS, bezpieczeństwa oraz routingu poczty elektronicznej wykorzystywany w związku z działaniem domeny i obsługą adresów e-mail Serwisu.
+
+11. **Resend** - dostawca usług wysyłki wiadomości e-mail, SMTP oraz poczty transakcyjnej wykorzystywany do obsługi komunikacji związanej z Serwisem.
+
+12. **Google/Gmail** - dostawca usługi poczty elektronicznej wykorzystywanej przez Administratora do odbierania, porządkowania, przechowywania i obsługi korespondencji kierowanej na adres kontaktowy Serwisu.
+
+13. **Podmiot przetwarzający** - podmiot, który przetwarza dane osobowe w imieniu Administratora na podstawie umowy powierzenia przetwarzania danych lub innego właściwego instrumentu prawnego.
 
 ## § 4. Kategorie przetwarzanych danych osobowych
 
@@ -71,7 +77,8 @@ k) dane z logów systemowych i bezpieczeństwa,
 l) informacje o zaakceptowanych wersjach dokumentów, w szczególności Regulaminu, Polityki Prywatności, Polityki Cookies, ostrzeżenia o ryzyku oraz zgód wymaganych przy zakupie,  
 m) dane dotyczące prób logowania, aktywności technicznej i zdarzeń bezpieczeństwa,  
 n) informacje o potencjalnych nadużyciach, chargebackach, próbach obejścia zabezpieczeń lub nieuprawnionego dostępu,  
-o) treść korespondencji kierowanej do Administratora, jeżeli Użytkownik kontaktuje się z Administratorem.
+o) treść korespondencji kierowanej do Administratora, jeżeli Użytkownik kontaktuje się z Administratorem,  
+p) dane techniczne i metadane korespondencji e-mail, w szczególności adres nadawcy i odbiorcy, temat wiadomości, data i godzina wysłania lub otrzymania wiadomości, identyfikatory wiadomości, informacje o doręczeniu, dane związane z routingiem poczty, wysyłką wiadomości oraz obsługą korespondencji.
 
 2. Administrator nie zamierza zbierać szczególnych kategorii danych osobowych, o których mowa w art. 9 RODO, w szczególności danych dotyczących zdrowia, poglądów politycznych, przekonań religijnych, danych biometrycznych ani danych dotyczących seksualności.
 
@@ -163,6 +170,14 @@ Cel: przesyłanie wiadomości niezbędnych do wykonania umowy, obsługi Konta, o
 
 Podstawa prawna: art. 6 ust. 1 lit. b RODO oraz art. 6 ust. 1 lit. f RODO.
 
+### 11) Obsługa poczty elektronicznej, routingu wiadomości i korespondencji
+
+Zakres danych: adres e-mail, treść korespondencji, metadane wiadomości e-mail, dane techniczne związane z doręczaniem, odbieraniem, wysyłką, filtrowaniem, etykietowaniem i przechowywaniem wiadomości, w tym informacje generowane przez Cloudflare, Resend oraz Google/Gmail.
+
+Cel: umożliwienie Użytkownikowi kontaktu z Administratorem, odbieranie i wysyłanie korespondencji, obsługa zapytań, zgłoszeń, reklamacji, spraw technicznych, płatniczych i prawnych, zapewnienie prawidłowego routingu poczty, wysyłki wiadomości oraz organizacji korespondencji w skrzynce pocztowej Administratora.
+
+Podstawa prawna: art. 6 ust. 1 lit. b RODO, jeżeli korespondencja dotyczy wykonania umowy lub działań przed jej zawarciem, oraz art. 6 ust. 1 lit. f RODO, czyli prawnie uzasadniony interes Administratora polegający na obsłudze komunikacji, organizacji korespondencji, zapewnieniu bezpieczeństwa poczty oraz obronie przed roszczeniami.
+
 ## § 6. Użytkownicy niepełnoletni
 
 1. Serwis jest przeznaczony wyłącznie dla osób, które ukończyły 18 lat i posiadają pełną zdolność do czynności prawnych.
@@ -191,7 +206,8 @@ c) operatorom płatności,
 d) dostawcom narzędzi do obsługi subskrypcji,  
 e) dostawcom hostingu, usług IT, zabezpieczeń i monitoringu technicznego,  
 f) podmiotom świadczącym usługi prawne, księgowe lub podatkowe, jeżeli okaże się to konieczne,  
-g) organom publicznym, sądom lub innym uprawnionym podmiotom, jeżeli obowiązek przekazania danych wynika z przepisów prawa.
+g) dostawcom usług poczty elektronicznej, routingu poczty, wysyłki wiadomości e-mail oraz poczty transakcyjnej,  
+h) organom publicznym, sądom lub innym uprawnionym podmiotom, jeżeli obowiązek przekazania danych wynika z przepisów prawa.
 
 2. Administrator nie sprzedaje danych osobowych Użytkowników ani nie przekazuje ich podmiotom trzecim w zamian za wynagrodzenie za same dane.
 
@@ -227,11 +243,41 @@ g) organom publicznym, sądom lub innym uprawnionym podmiotom, jeżeli obowiąze
 
 7. Administrator okresowo weryfikuje, w możliwym zakresie, dokumenty prawne Lemon Squeezy, w szczególności politykę prywatności, Data Processing Agreement, zasady Merchant of Record oraz listy podmiotów wspierających przetwarzanie danych.
 
+### 3) Cloudflare
+
+1. Serwis korzysta z usług Cloudflare w związku z obsługą domeny, DNS, bezpieczeństwa infrastruktury oraz routingu poczty elektronicznej kierowanej na adresy w domenie zetasignals.pl.
+
+2. Cloudflare może przetwarzać dane techniczne związane z działaniem domeny i routingu poczty, w szczególności dane dotyczące przekazywania wiadomości e-mail, metadane techniczne, dane związane z bezpieczeństwem, adresy e-mail nadawców i odbiorców oraz inne informacje niezbędne do świadczenia usług Cloudflare.
+
+3. W zakresie, w jakim Cloudflare przetwarza dane osobowe na potrzeby świadczenia usług Administratorowi, może działać jako podmiot przetwarzający albo jako odrębny administrator danych, zależnie od konkretnego zakresu usługi, dokumentacji i obowiązujących warunków Cloudflare.
+
+4. Administrator korzysta z usług Cloudflare na podstawie właściwych dokumentów umownych, w tym Data Processing Addendum lub równoważnych warunków dotyczących przetwarzania danych, jeżeli mają zastosowanie do danego zakresu usługi.
+
+### 4) Resend
+
+1. Serwis korzysta z usług Resend w zakresie wysyłki wiadomości e-mail, SMTP, poczty transakcyjnej oraz obsługi technicznej komunikacji związanej z Serwisem.
+
+2. Resend może przetwarzać dane takie jak adresy e-mail, treść wysyłanych wiadomości, metadane wiadomości, identyfikatory wiadomości, informacje o doręczeniu, odbiciach, błędach wysyłki, nadużyciach, bezpieczeństwie oraz dane techniczne niezbędne do świadczenia usług poczty elektronicznej.
+
+3. W zakresie danych przetwarzanych na potrzeby wysyłki wiadomości e-mail związanych z Serwisem Resend działa co do zasady jako podmiot przetwarzający dane na zlecenie Administratora. W określonych zakresach, w szczególności dotyczących danych konta technicznego Administratora, bezpieczeństwa, rozliczeń lub przeciwdziałania nadużyciom, Resend może działać jako odrębny administrator danych.
+
+4. Administrator korzysta z usług Resend na podstawie właściwych dokumentów umownych, w tym Data Processing Addendum lub równoważnego dokumentu, jeżeli ma zastosowanie do danego zakresu przetwarzania.
+
+### 5) Google/Gmail
+
+1. Administrator korzysta z usługi poczty elektronicznej Google/Gmail do odbierania, przechowywania, porządkowania, filtrowania i obsługi korespondencji kierowanej na adres **kontakt@zetasignals.pl**.
+
+2. Korespondencja kierowana na adres **kontakt@zetasignals.pl** może być przekazywana do skrzynki pocztowej Administratora prowadzonej w usłudze Google/Gmail, gdzie może być przechowywana, oznaczana etykietami, filtrowana i wykorzystywana do udzielenia odpowiedzi Użytkownikowi.
+
+3. Google może przetwarzać dane takie jak adres e-mail nadawcy i odbiorcy, treść korespondencji, temat wiadomości, załączniki, metadane wiadomości, dane techniczne związane z doręczeniem i przechowywaniem poczty oraz dane bezpieczeństwa.
+
+4. W zakresie świadczenia usługi poczty elektronicznej Google może działać jako dostawca usługi wykorzystywanej przez Administratora do obsługi korespondencji. Zasady przetwarzania danych przez Google wynikają z dokumentów i warunków prawnych Google właściwych dla wykorzystywanej usługi.
+
 4. Administrator może korzystać także z innych dostawców usług technicznych, jeżeli jest to konieczne do prawidłowego działania Serwisu, przy czym dane będą przekazywane wyłącznie w zakresie niezbędnym do realizacji danego celu.
 
 ## § 9. Przekazywanie danych poza Europejski Obszar Gospodarczy
 
-1. W związku z korzystaniem z usług podmiotów takich jak Supabase i Lemon Squeezy dane osobowe Użytkowników mogą być przekazywane do państw znajdujących się poza Europejskim Obszarem Gospodarczym, w szczególności do Stanów Zjednoczonych.
+1. W związku z korzystaniem z usług podmiotów takich jak Supabase, Lemon Squeezy, Cloudflare, Resend i Google dane osobowe Użytkowników mogą być przekazywane do państw znajdujących się poza Europejskim Obszarem Gospodarczym, w szczególności do Stanów Zjednoczonych.
 
 2. Przekazywanie danych poza Europejski Obszar Gospodarczy może następować wyłącznie wtedy, gdy spełnione są wymogi określone w RODO, w szczególności gdy:
 
@@ -243,7 +289,7 @@ e) przekazanie jest dopuszczalne na innej podstawie prawnej przewidzianej w RODO
 
 3. Administrator podejmuje działania zmierzające do tego, aby dostawcy zewnętrzni przetwarzający dane osobowe stosowali odpowiednie zabezpieczenia prawne, techniczne i organizacyjne.
 
-4. Administrator weryfikuje, w możliwym zakresie, czy wykorzystywani dostawcy zewnętrzni, w szczególności Supabase i Lemon Squeezy, stosują mechanizmy transferowe przewidziane przez RODO, takie jak decyzje stwierdzające odpowiedni stopień ochrony, standardowe klauzule umowne, DPA lub równoważne dokumenty.
+4. Administrator weryfikuje, w możliwym zakresie, czy wykorzystywani dostawcy zewnętrzni, w szczególności Supabase, Lemon Squeezy, Cloudflare, Resend i Google, stosują mechanizmy transferowe przewidziane przez RODO, takie jak decyzje stwierdzające odpowiedni stopień ochrony, standardowe klauzule umowne, DPA lub równoważne dokumenty.
 
 5. Użytkownik może uzyskać dodatkowe informacje o stosowanych zabezpieczeniach, kontaktując się z Administratorem pod adresem e-mail: **kontakt@zetasignals.pl**.
 
@@ -256,7 +302,7 @@ e) przekazanie jest dopuszczalne na innej podstawie prawnej przewidzianej w RODO
 - dane Konta, w szczególności adres e-mail i identyfikator Użytkownika - przez okres posiadania aktywnego Konta w Serwisie;
 - dane dotyczące Subskrypcji, transakcji, płatności i statusu dostępu - przez okres wymagany przepisami prawa, zasadami rozliczeń lub przez okres przedawnienia potencjalnych roszczeń;
 - dane dotyczące zgód, akceptacji dokumentów, wersji dokumentów i oświadczeń Użytkownika - przez okres obowiązywania Konta oraz przez okres przedawnienia potencjalnych roszczeń;
-- dane z korespondencji - przez okres niezbędny do obsługi sprawy, a następnie przez okres przedawnienia potencjalnych roszczeń;
+- dane z korespondencji, w tym wiadomości przechowywane w skrzynce pocztowej Administratora oraz metadane poczty e-mail - przez okres niezbędny do obsługi sprawy, a następnie przez okres przedawnienia potencjalnych roszczeń;
 - logi techniczne i bezpieczeństwa - przez okres niezbędny do zapewnienia bezpieczeństwa Serwisu, diagnozowania błędów i wykrywania nadużyć, co do zasady nie dłużej niż 12 miesięcy, chyba że dłuższe przechowywanie jest konieczne z uwagi na incydent bezpieczeństwa, spór, reklamację, chargeback, postępowanie prawne lub obowiązek prawny;
 - dane związane z fraud prevention i nadużyciami - przez okres niezbędny do analizy, zapobiegania nadużyciom, obsługi chargebacków, dochodzenia roszczeń lub obrony przed roszczeniami.
 
@@ -268,7 +314,7 @@ c) konieczność obsługi reklamacji,
 d) konieczność przeciwdziałania nadużyciom,  
 e) konieczność ustalenia, dochodzenia lub obrony przed roszczeniami.
 
-4. Jeżeli dane są przechowywane przez podmioty trzecie, takie jak Supabase lub Lemon Squeezy, okres ich przechowywania może wynikać również z dokumentów prawnych, polityk retencji, wymogów bezpieczeństwa, wymogów płatniczych, podatkowych lub rozliczeniowych tych podmiotów.
+4. Jeżeli dane są przechowywane przez podmioty trzecie, takie jak Supabase, Lemon Squeezy, Cloudflare, Resend lub Google, okres ich przechowywania może wynikać również z dokumentów prawnych, polityk retencji, wymogów bezpieczeństwa, wymogów płatniczych, podatkowych lub rozliczeniowych tych podmiotów.
 
 ## § 11. Prawa Użytkownika
 

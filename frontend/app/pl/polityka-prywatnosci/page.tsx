@@ -24,7 +24,7 @@ export default function PolishPrivacyPolicyPage() {
     <PrivacyDocumentPage
       downloadLabel="Pobierz Politykę Prywatności PDF"
       effectiveDateLabel={`Data wejścia w życie: ${PRIVACY_EFFECTIVE_DATE}`}
-      fileName="polityka-prywatnosci-zeta-signals-pl-v1-1.md"
+      fileName="polityka-prywatnosci-zeta-signals-pl-v1-2.md"
       languageLabel="Język: PL"
       links={{
         contact: LEGAL_LINKS.contact,
