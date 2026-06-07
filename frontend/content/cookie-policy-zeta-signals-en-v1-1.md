@@ -1,18 +1,19 @@
-# COOKIE POLICY AND SIMILAR TECHNOLOGIES POLICY OF ZETA SIGNALS
+# COOKIE POLICY AND SIMILAR TECHNOLOGIES POLICY
+## ZETA SIGNALS SERVICE
 
-**Effective date:** [date]  
+**Effective date:** 07.06.2026  
 **Document version:** 1.1  
-**Website address:** [domain address]
+**Website address:** https://www.zetasignals.pl/
 
 ## § 1. General provisions
 
-1. This Cookie Policy and Similar Technologies Policy, hereinafter referred to as the **"Cookie Policy"**, sets out the rules for using cookies, LocalStorage, SessionStorage and other similar technologies within the website operating under the name **Zeta Signals**, available at **[domain address]**, hereinafter referred to as the **"Service"**.
-2. The Service is administered by **[First and Last Name]**, a natural person conducting non-registered activity, contact address: **[Residential/Contact Address]**, contact e-mail address: **support@zetasignals.pl**, hereinafter referred to as the **"Administrator"**.
+1. This Cookie Policy and Similar Technologies Policy, hereinafter referred to as the **"Cookie Policy"**, sets out the rules for using cookies, LocalStorage, SessionStorage and other similar technologies within the website operating under the name **Zeta Signals**, available at **https://www.zetasignals.pl/**, hereinafter referred to as the **"Service"**.
+2. The Service is administered by **Damian Gmur**, a natural person conducting non-registered activity, contact address: **Truskawkowa 13, 05-200 Zagościniec, Poland**, contact e-mail address: **kontakt@zetasignals.pl**, hereinafter referred to as the **"Administrator"**.
 3. This Cookie Policy supplements the Terms of Service of Zeta Signals and the Privacy Policy of Zeta Signals.
 4. The Service is based on Next.js technology and uses technical solutions provided by third parties, in particular Supabase and Lemon Squeezy.
 5. The purpose of this Cookie Policy is to provide the User with clear information on what technologies are used in the Service, for what purposes, by whom, for how long and how the User may manage them.
 6. This Cookie Policy covers both cookies stored in the browser and similar technologies, in particular LocalStorage, SessionStorage, session identifiers, authentication tokens and other mechanisms for storing information in the User's terminal device.
-7. This document should be interpreted together with the Privacy Policy, because some information stored or accessed through cookies or similar technologies may constitute personal data or be linked to personal data.
+7. This document shall be interpreted together with the Privacy Policy, because some information stored or accessed through cookies or similar technologies may constitute personal data or be linked to personal data.
 
 ## § 2. What cookies, LocalStorage and similar technologies are
 
@@ -34,7 +35,7 @@
    d) storage or access is necessary to transmit a communication over a telecommunications network.
 3. Cookies and technologies necessary for the operation of the Service may be used without separate User consent if they are necessary to provide a service explicitly requested by the User, ensure communication transmission, login, session maintenance, payment processing, security or remembering the User's privacy choices.
 4. Optional cookies and technologies, in particular analytical, advertising, marketing, remarketing, personalization or profiling technologies, may be used only after obtaining the User's appropriate consent, where such consent is required by law.
-5. Optional cookies should not be activated before the User gives consent. Lack of consent to optional cookies must not block access to the basic functions of the Service if the technology is not necessary to provide the service requested by the User.
+5. Optional cookies are not activated before the User gives consent where consent is required by law. Lack of consent to optional cookies does not block access to the basic functions of the Service if the technology is not necessary to provide the service requested by the User.
 6. Where personal data is processed through cookies or similar technologies, the legal basis for processing may include in particular:
    a) Article 6(1)(b) GDPR - performance of a contract or taking steps prior to entering into a contract,
    b) Article 6(1)(f) GDPR - the Administrator's legitimate interest in ensuring security, stability, protection against abuse, payment support and defense against claims,
@@ -70,13 +71,13 @@
 
 ### 5) Analytical, marketing and advertising cookies
 
-1. As of the effective date of this Cookie Policy, the Service should not use analytical, advertising, marketing, remarketing cookies or tracking pixels without obtaining the User's separate consent.
-2. If the Administrator implements tools such as Google Analytics, Meta Pixel, TikTok Pixel, Hotjar, Microsoft Clarity, affiliate tools or other similar analytical or marketing tools in the future, this Cookie Policy should be updated and the User should be given the option to give or refuse consent before such technologies are activated.
+1. As of the effective date of this Cookie Policy, the Service does not use analytical, advertising, marketing, remarketing cookies or tracking pixels without obtaining the User's separate consent.
+2. If the Administrator implements tools such as Google Analytics, Meta Pixel, TikTok Pixel, Hotjar, Microsoft Clarity, affiliate tools or other similar analytical or marketing tools in the future, this Cookie Policy will be updated and the User will be given the option to give or refuse consent before such technologies are activated.
 
 ## § 5. Detailed list of cookies and similar technologies
 
 1. The following list describes the main categories of cookies and similar technologies used or potentially used in the Service. Specific technical names may vary depending on the configuration of the Service, Supabase, Lemon Squeezy, browser and software version.
-2. Before production launch of the Service, the Administrator should verify the actual cookies, LocalStorage keys and third-party technologies in browser developer tools and supplement the following list with actual names, domains and retention periods.
+2. The Administrator periodically verifies, where reasonably possible, the actual cookies, LocalStorage keys and third-party technologies used in the Service and updates the list where necessary due to a change in configuration, provider or processing purpose.
 
 ### 1) Supabase Auth - session and login
 
@@ -184,9 +185,9 @@
    e) save the User's decision so that the message is not displayed on every visit.
 3. Cookies and technologies necessary for the operation of the Service may remain active regardless of the User's decision concerning optional cookies.
 4. Optional cookies, in particular analytical, marketing, advertising, remarketing or profiling cookies, are not activated before the User gives consent, where consent is required by law.
-5. The User should be able to withdraw consent as easily as it was given.
+5. The User may withdraw consent to optional cookies in a manner not more difficult than giving it, where such a mechanism is required by law.
 6. If a cookie preferences panel is available in the Service, the User may change settings from that panel at any time.
-7. It is recommended to place a permanent **"Cookie settings"** link in the footer of the Service, enabling the User to reopen the preferences panel and change or withdraw consent to optional cookies.
+7. If a permanent **"Cookie settings"** link is available in the footer of the Service, the User may use it to reopen the preferences panel and change or withdraw consent to optional cookies.
 8. If the cookie preferences panel is not available, the User may manage cookies and similar technologies through browser settings.
 
 ## § 9. How to check cookies saved by the Service
@@ -270,33 +271,33 @@
    a) Supabase - for authentication, database and session infrastructure,
    b) Lemon Squeezy - for payments, checkout, Subscription, settlements and transaction security.
 4. The Administrator does not have full control over the lifecycle of all cookies used by third parties in their own environments, in particular in the external Lemon Squeezy checkout.
-5. When proceeding to an external provider's website, the User should read that provider's legal documents.
+5. When proceeding to an external provider's website, the User is advised to read that provider's legal documents.
 
 ## § 13. Lack of consent to optional cookies
 
-1. Refusal of consent to optional cookies should not prevent the use of basic Service functions, unless a given function technically requires a specific necessary technology.
+1. Refusal of consent to optional cookies does not prevent the use of basic Service functions, unless a given function technically requires a specific necessary technology.
 2. Refusal of consent to analytical, advertising or marketing cookies must not block access to the Service if those cookies are not necessary to provide the service requested by the User.
-3. The Administrator should not use mechanisms forcing consent to optional cookies as a condition of access to the Service if this is not compliant with applicable law.
-4. Optional cookies should be as easy to reject as to accept where consent is required for their use.
+3. The Administrator does not use mechanisms forcing consent to optional cookies as a condition of access to the Service if this is not compliant with applicable law.
+4. Optional cookies are, to the extent required by law, rejectable in a manner not more difficult than accepting them.
 
 ## § 14. Updating the cookie list
 
 1. Technologies used in the Service may change along with the development of the Service, Next.js updates, Supabase configuration, Lemon Squeezy configuration or implementation of new functions.
-2. The Administrator should periodically verify the actual list of cookies, LocalStorage keys, SessionStorage data and similar technologies used in the Service.
-3. In the event of implementing new categories of cookies, in particular analytical, marketing, advertising or remarketing cookies, the Administrator should:
+2. The Administrator periodically verifies, where reasonably possible, the actual list of cookies, LocalStorage keys, SessionStorage data and similar technologies used in the Service.
+3. In the event of implementing new categories of cookies, in particular analytical, marketing, advertising or remarketing cookies, the Administrator will:
    a) update this Cookie Policy,
-   b) update the cookie banner or preferences panel,
-   c) ensure the possibility to give or refuse consent before optional cookies are activated,
+   b) update the cookie banner or preferences panel, where required,
+   c) ensure the possibility to give or refuse consent before optional cookies are activated, where consent is required,
    d) supplement the Privacy Policy if personal data is processed for a new purpose.
 4. The User may check currently saved cookies and site data through browser settings.
 
 ## § 15. Security and technical limitations
 
 1. The Administrator makes reasonable efforts to ensure that cookies and similar technologies used in the Service are limited to the scope necessary to achieve specified purposes.
-2. The Administrator should apply appropriate technical and organizational measures to protect data processed through cookies and similar technologies.
-3. The use of cookies and similar technologies should not lead to the collection of data excessive in relation to the purposes specified in this Cookie Policy.
-4. The User should regularly update the web browser and operating system, as outdated software may increase security risks.
-5. The User should use trusted devices and networks, particularly when logging in to the Account or making payments.
+2. The Administrator applies appropriate technical and organizational measures to protect data processed through cookies and similar technologies.
+3. The use of cookies and similar technologies does not knowingly lead to the collection of data excessive in relation to the purposes specified in this Cookie Policy.
+4. The User is advised to regularly update the web browser and operating system, as outdated software may increase security risks.
+5. The User is advised to use trusted devices and networks, particularly when logging in to the Account or making payments.
 
 ## § 16. Changes to the Cookie Policy
 
@@ -313,12 +314,12 @@
 
 ## § 17. Contact
 
-1. In matters relating to this Cookie Policy, the User may contact the Administrator at: **support@zetasignals.pl**.
+1. In matters relating to this Cookie Policy, the User may contact the Administrator at: **kontakt@zetasignals.pl**.
 2. The Privacy Policy of Zeta Signals also applies to matters concerning personal data processing in connection with cookies and similar technologies.
 
 ## § 18. Final provisions
 
-1. This Cookie Policy applies from **[date]**.
+1. This Cookie Policy applies from **07.06.2026**.
 2. The Cookie Policy is available free of charge in the Service in a manner enabling its acquisition, reproduction and recording.
 3. In matters not regulated by this Cookie Policy, applicable Polish and European Union law shall apply.
-4. This Cookie Policy should be interpreted together with the Terms of Service and the Privacy Policy of Zeta Signals.
+4. This Cookie Policy shall be interpreted together with the Terms of Service and the Privacy Policy of Zeta Signals.

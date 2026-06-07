@@ -1,18 +1,19 @@
-# POLITYKA PLIKÓW COOKIES I TECHNOLOGII POKREWNYCH SERWISU ZETA SIGNALS
+# POLITYKA PLIKÓW COOKIES I TECHNOLOGII POKREWNYCH
+## SERWISU ZETA SIGNALS
 
-**Data wejścia w życie:** [data]  
+**Data wejścia w życie:** 07.06.2026  
 **Wersja dokumentu:** 1.1  
-**Adres serwisu:** [adres domeny]
+**Adres serwisu:** https://www.zetasignals.pl/
 
 ## § 1. Postanowienia ogólne
 
-1. Niniejsza Polityka Plików Cookies i Technologii Pokrewnych, zwana dalej **"Polityką Cookies"**, określa zasady wykorzystywania plików cookies, LocalStorage, SessionStorage oraz innych podobnych technologii w ramach serwisu internetowego działającego pod nazwą **Zeta Signals**, dostępnego pod adresem **[adres domeny]**, zwanego dalej **"Serwisem"**.
-2. Administratorem Serwisu jest **[Imię i Nazwisko]**, osoba fizyczna prowadząca działalność nierejestrowaną, adres kontaktowy: **[Adres Zamieszkania/Kontaktowy]**, adres e-mail do kontaktu: **support@zetasignals.pl**, zwany dalej **"Administratorem"**.
+1. Niniejsza Polityka Plików Cookies i Technologii Pokrewnych, zwana dalej **"Polityką Cookies"**, określa zasady wykorzystywania plików cookies, LocalStorage, SessionStorage oraz innych podobnych technologii w ramach serwisu internetowego działającego pod nazwą **Zeta Signals**, dostępnego pod adresem **https://www.zetasignals.pl/**, zwanego dalej **"Serwisem"**.
+2. Administratorem Serwisu jest **Damian Gmur**, osoba fizyczna prowadząca działalność nierejestrowaną, adres kontaktowy: **Truskawkowa 13, 05-200 Zagościniec, Polska**, adres e-mail do kontaktu: **kontakt@zetasignals.pl**, zwany dalej **"Administratorem"**.
 3. Polityka Cookies stanowi uzupełnienie Regulaminu świadczenia usług drogą elektroniczną Serwisu Zeta Signals oraz Polityki Prywatności Serwisu Zeta Signals.
 4. Serwis działa w oparciu o technologię Next.js oraz korzysta z rozwiązań technicznych podmiotów trzecich, w szczególności Supabase oraz Lemon Squeezy.
 5. Celem Polityki Cookies jest przekazanie Użytkownikowi jasnych informacji o tym, jakie technologie są stosowane w Serwisie, w jakich celach, przez kogo, przez jaki czas oraz w jaki sposób Użytkownik może nimi zarządzać.
 6. Polityka Cookies obejmuje zarówno pliki cookies zapisywane w przeglądarce, jak i technologie pokrewne, w szczególności LocalStorage, SessionStorage, identyfikatory sesji, tokeny uwierzytelniające oraz inne mechanizmy przechowywania informacji w urządzeniu końcowym Użytkownika.
-7. Niniejszy dokument powinien być interpretowany łącznie z Polityką Prywatności, ponieważ niektóre informacje przechowywane lub odczytywane przy użyciu cookies albo technologii pokrewnych mogą stanowić dane osobowe lub być powiązane z danymi osobowymi.
+7. Niniejszy dokument należy interpretować łącznie z Polityką Prywatności, ponieważ niektóre informacje przechowywane lub odczytywane przy użyciu cookies albo technologii pokrewnych mogą stanowić dane osobowe lub być powiązane z danymi osobowymi.
 
 ## § 2. Czym są pliki cookies, LocalStorage i technologie pokrewne
 
@@ -34,7 +35,7 @@
    d) przechowywanie lub dostęp są niezbędne do przekazania komunikatu za pośrednictwem sieci telekomunikacyjnej.
 3. Cookies i technologie niezbędne do działania Serwisu mogą być stosowane bez odrębnej zgody Użytkownika, jeżeli są konieczne do świadczenia usługi wyraźnie żądanej przez Użytkownika, zapewnienia transmisji komunikatu, logowania, utrzymania sesji, obsługi płatności, bezpieczeństwa albo zapamiętania decyzji Użytkownika dotyczących prywatności.
 4. Cookies i technologie opcjonalne, w szczególności analityczne, reklamowe, marketingowe, remarketingowe, personalizacyjne lub profilujące, mogą być stosowane wyłącznie po uzyskaniu odpowiedniej zgody Użytkownika, jeżeli zgoda taka jest wymagana przez przepisy prawa.
-5. Cookies opcjonalne nie powinny być uruchamiane przed wyrażeniem zgody przez Użytkownika. Brak zgody na cookies opcjonalne nie może blokować dostępu do podstawowych funkcji Serwisu, jeżeli dana technologia nie jest niezbędna do świadczenia usługi żądanej przez Użytkownika.
+5. Cookies opcjonalne nie są uruchamiane przed wyrażeniem zgody przez Użytkownika, jeżeli zgoda jest wymagana przez przepisy prawa. Brak zgody na cookies opcjonalne nie blokuje dostępu do podstawowych funkcji Serwisu, jeżeli dana technologia nie jest niezbędna do świadczenia usługi żądanej przez Użytkownika.
 6. Jeżeli w ramach cookies lub technologii pokrewnych dochodzi do przetwarzania danych osobowych, podstawą prawną przetwarzania może być w szczególności:
    a) art. 6 ust. 1 lit. b RODO - wykonanie umowy lub podjęcie działań przed jej zawarciem,
    b) art. 6 ust. 1 lit. f RODO - prawnie uzasadniony interes Administratora, polegający na zapewnieniu bezpieczeństwa, stabilności, ochronie przed nadużyciami, obsłudze płatności i obronie przed roszczeniami,
@@ -70,13 +71,13 @@
 
 ### 5) Cookies analityczne, marketingowe i reklamowe
 
-1. Na dzień wejścia w życie niniejszej Polityki Cookies Serwis nie powinien stosować cookies analitycznych, reklamowych, marketingowych, remarketingowych ani pikseli śledzących bez uzyskania odrębnej zgody Użytkownika.
-2. Jeżeli Administrator wdroży w przyszłości narzędzia takie jak Google Analytics, Meta Pixel, TikTok Pixel, Hotjar, Microsoft Clarity, narzędzia afiliacyjne lub inne podobne narzędzia analityczne albo marketingowe, niniejsza Polityka Cookies powinna zostać zaktualizowana, a Użytkownik powinien otrzymać możliwość wyrażenia lub odmowy zgody przed uruchomieniem takich technologii.
+1. Na dzień wejścia w życie niniejszej Polityki Cookies Serwis nie stosuje cookies analitycznych, reklamowych, marketingowych, remarketingowych ani pikseli śledzących bez uzyskania odrębnej zgody Użytkownika.
+2. Jeżeli Administrator wdroży w przyszłości narzędzia takie jak Google Analytics, Meta Pixel, TikTok Pixel, Hotjar, Microsoft Clarity, narzędzia afiliacyjne lub inne podobne narzędzia analityczne albo marketingowe, niniejsza Polityka Cookies zostanie zaktualizowana, a Użytkownik otrzyma możliwość wyrażenia lub odmowy zgody przed uruchomieniem takich technologii.
 
 ## § 5. Szczegółowy wykaz stosowanych cookies i technologii pokrewnych
 
 1. Poniższy wykaz opisuje główne kategorie cookies i technologii pokrewnych stosowanych lub możliwych do stosowania w Serwisie. Konkretne nazwy techniczne mogą różnić się w zależności od konfiguracji Serwisu, Supabase, Lemon Squeezy, przeglądarki oraz wersji oprogramowania.
-2. Przed produkcyjnym uruchomieniem Serwisu Administrator powinien zweryfikować rzeczywiste cookies, klucze LocalStorage i technologie podmiotów trzecich w narzędziach deweloperskich przeglądarki oraz uzupełnić poniższy wykaz o faktyczne nazwy, domeny i czasy przechowywania.
+2. Administrator okresowo weryfikuje, w możliwym zakresie, rzeczywiste cookies, klucze LocalStorage i technologie podmiotów trzecich stosowane w Serwisie oraz aktualizuje wykaz, jeżeli jest to konieczne ze względu na zmianę konfiguracji, dostawcy albo celu przetwarzania.
 
 ### 1) Supabase Auth - sesja i logowanie
 
@@ -184,8 +185,8 @@
    e) zapisania decyzji Użytkownika, aby komunikat nie był wyświetlany przy każdej wizycie.
 3. Cookies i technologie niezbędne do działania Serwisu mogą być aktywne niezależnie od decyzji Użytkownika dotyczącej cookies opcjonalnych.
 4. Cookies opcjonalne, w szczególności analityczne, marketingowe, reklamowe, remarketingowe lub profilujące, nie są uruchamiane przed wyrażeniem zgody przez Użytkownika, o ile zgoda jest wymagana przez prawo.
-5. Użytkownik powinien mieć możliwość równie łatwego wycofania zgody, jak jej udzielenia.
-6. Jeżeli w Serwisie dostępny jest panel preferencji cookies, Użytkownik może w każdej chwili zmienić swoje ustawienia z jego poziomu.
+5. Użytkownik może wycofać zgodę na cookies opcjonalne w sposób nie bardziej utrudniony niż jej udzielenie, jeżeli taki mechanizm jest wymagany przez przepisy prawa.
+6. Jeżeli w Serwisie dostępny jest panel preferencji cookies, Użytkownik może zmienić swoje ustawienia z jego poziomu.
 7. Zalecaną praktyką jest umieszczenie w stopce Serwisu stałego linku **"Ustawienia cookies"**, który umożliwia ponowne otwarcie panelu preferencji i zmianę lub wycofanie zgody na cookies opcjonalne.
 8. Jeżeli panel preferencji cookies nie jest dostępny, Użytkownik może zarządzać cookies i podobnymi technologiami z poziomu ustawień swojej przeglądarki.
 
@@ -270,33 +271,33 @@
    a) Supabase - w zakresie infrastruktury autoryzacyjnej, bazodanowej i sesyjnej,
    b) Lemon Squeezy - w zakresie płatności, checkoutu, Subskrypcji, rozliczeń i bezpieczeństwa transakcji.
 4. Administrator nie ma pełnej kontroli nad cyklem życia wszystkich cookies stosowanych przez podmioty trzecie w ich własnych środowiskach, w szczególności w zewnętrznym checkoutcie Lemon Squeezy.
-5. W przypadku przejścia na stronę zewnętrznego dostawcy Użytkownik powinien zapoznać się z dokumentami prawnymi tego dostawcy.
+5. W przypadku przejścia na stronę zewnętrznego dostawcy zaleca się zapoznanie z dokumentami prawnymi tego dostawcy.
 
 ## § 13. Brak zgody na cookies opcjonalne
 
-1. Odmowa zgody na cookies opcjonalne nie powinna uniemożliwiać korzystania z podstawowych funkcji Serwisu, chyba że dana funkcja technicznie wymaga użycia określonej niezbędnej technologii.
+1. Odmowa zgody na cookies opcjonalne nie uniemożliwia korzystania z podstawowych funkcji Serwisu, chyba że dana funkcja technicznie wymaga użycia określonej niezbędnej technologii.
 2. Odmowa zgody na cookies analityczne, reklamowe lub marketingowe nie może skutkować zablokowaniem dostępu do Serwisu, jeżeli te cookies nie są niezbędne do świadczenia usługi żądanej przez Użytkownika.
-3. Administrator nie powinien stosować mechanizmów wymuszających zgodę na cookies opcjonalne jako warunku dostępu do Serwisu, jeżeli nie jest to zgodne z obowiązującymi przepisami prawa.
-4. Cookies opcjonalne powinny być równie łatwe do odrzucenia jak do zaakceptowania, jeżeli przepisy wymagają zgody na ich użycie.
+3. Administrator nie stosuje mechanizmów wymuszających zgodę na cookies opcjonalne jako warunku dostępu do Serwisu, jeżeli nie jest to zgodne z obowiązującymi przepisami prawa.
+4. Cookies opcjonalne są, w zakresie wymaganym przez przepisy prawa, możliwe do odrzucenia w sposób nie bardziej utrudniony niż ich zaakceptowanie.
 
 ## § 14. Aktualizacja listy cookies
 
 1. Technologie wykorzystywane w Serwisie mogą ulegać zmianom wraz z rozwojem Serwisu, aktualizacją Next.js, konfiguracją Supabase, konfiguracją Lemon Squeezy lub wdrożeniem nowych funkcji.
-2. Administrator powinien okresowo weryfikować rzeczywistą listę cookies, kluczy LocalStorage, danych SessionStorage i technologii pokrewnych stosowanych w Serwisie.
-3. W przypadku wdrożenia nowych kategorii cookies, w szczególności cookies analitycznych, marketingowych, reklamowych lub remarketingowych, Administrator powinien:
-   a) zaktualizować niniejszą Politykę Cookies,
-   b) zaktualizować baner cookies lub panel preferencji,
-   c) zapewnić możliwość wyrażenia lub odmowy zgody przed uruchomieniem cookies opcjonalnych,
-   d) uzupełnić Politykę Prywatności, jeżeli dochodzi do przetwarzania danych osobowych w nowym celu.
+2. Administrator okresowo weryfikuje, w możliwym zakresie, rzeczywistą listę cookies, kluczy LocalStorage, danych SessionStorage i technologii pokrewnych stosowanych w Serwisie.
+3. W przypadku wdrożenia nowych kategorii cookies, w szczególności cookies analitycznych, marketingowych, reklamowych lub remarketingowych, Administrator:
+   a) zaktualizuje niniejszą Politykę Cookies,
+   b) zaktualizuje baner cookies lub panel preferencji, jeżeli będzie to wymagane,
+   c) zapewni możliwość wyrażenia lub odmowy zgody przed uruchomieniem cookies opcjonalnych, jeżeli zgoda będzie wymagana,
+   d) uzupełni Politykę Prywatności, jeżeli dojdzie do przetwarzania danych osobowych w nowym celu.
 4. Użytkownik może sprawdzić aktualnie zapisane cookies i dane witryny z poziomu ustawień swojej przeglądarki.
 
 ## § 15. Bezpieczeństwo i ograniczenia techniczne
 
 1. Administrator dokłada należytej staranności, aby cookies i technologie pokrewne stosowane w Serwisie były ograniczone do zakresu niezbędnego do realizacji określonych celów.
-2. Administrator powinien stosować odpowiednie środki techniczne i organizacyjne w celu ochrony danych przetwarzanych przy użyciu cookies i technologii pokrewnych.
-3. Stosowanie cookies i technologii pokrewnych nie powinno prowadzić do zbierania danych nadmiernych względem celów określonych w niniejszej Polityce Cookies.
-4. Użytkownik powinien regularnie aktualizować przeglądarkę internetową oraz system operacyjny, ponieważ nieaktualne oprogramowanie może zwiększać ryzyko naruszenia bezpieczeństwa.
-5. Użytkownik powinien korzystać z zaufanych urządzeń i sieci, szczególnie podczas logowania do Konta lub dokonywania płatności.
+2. Administrator stosuje odpowiednie środki techniczne i organizacyjne w celu ochrony danych przetwarzanych przy użyciu cookies i technologii pokrewnych.
+3. Stosowanie cookies i technologii pokrewnych nie prowadzi do świadomego zbierania danych nadmiernych względem celów określonych w niniejszej Polityce Cookies.
+4. Zaleca się, aby Użytkownik regularnie aktualizował przeglądarkę internetową oraz system operacyjny, ponieważ nieaktualne oprogramowanie może zwiększać ryzyko naruszenia bezpieczeństwa.
+5. Zaleca się, aby Użytkownik korzystał z zaufanych urządzeń i sieci, szczególnie podczas logowania do Konta lub dokonywania płatności.
 
 ## § 16. Zmiany Polityki Cookies
 
@@ -313,12 +314,12 @@
 
 ## § 17. Kontakt
 
-1. W sprawach dotyczących niniejszej Polityki Cookies Użytkownik może skontaktować się z Administratorem pod adresem e-mail: **support@zetasignals.pl**.
+1. W sprawach dotyczących niniejszej Polityki Cookies Użytkownik może skontaktować się z Administratorem pod adresem e-mail: **kontakt@zetasignals.pl**.
 2. W sprawach dotyczących przetwarzania danych osobowych w związku z cookies i technologiami pokrewnymi zastosowanie ma również Polityka Prywatności Serwisu Zeta Signals.
 
 ## § 18. Postanowienia końcowe
 
-1. Niniejsza Polityka Cookies obowiązuje od dnia **[data]**.
+1. Niniejsza Polityka Cookies obowiązuje od dnia **07.06.2026**.
 2. Polityka Cookies jest dostępna nieodpłatnie w Serwisie w sposób umożliwiający jej pozyskanie, odtwarzanie i utrwalanie.
 3. W zakresie nieuregulowanym niniejszą Polityką Cookies zastosowanie mają właściwe przepisy prawa polskiego oraz prawa Unii Europejskiej.
-4. Niniejsza Polityka Cookies powinna być interpretowana łącznie z Regulaminem świadczenia usług drogą elektroniczną oraz Polityką Prywatności Serwisu Zeta Signals.
+4. Niniejszą Politykę Cookies należy interpretować łącznie z Regulaminem świadczenia usług drogą elektroniczną oraz Polityką Prywatności Serwisu Zeta Signals.

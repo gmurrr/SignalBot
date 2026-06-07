@@ -1,12 +1,13 @@
-# POLITYKA PRYWATNOŚCI SERWISU ZETA SIGNALS
+# POLITYKA PRYWATNOŚCI
+## SERWISU ZETA SIGNALS
 
-**Data wejścia w życie:** [data]  
+**Data wejścia w życie:** 07.06.2026  
 **Wersja dokumentu:** 1.1  
-**Adres serwisu:** [adres domeny]
+**Adres serwisu:** https://www.zetasignals.pl/
 
 ## § 1. Postanowienia ogólne
 
-1. Niniejsza Polityka Prywatności określa zasady przetwarzania danych osobowych użytkowników serwisu internetowego działającego pod nazwą **Zeta Signals**, dostępnego pod adresem **[adres domeny]**, zwanego dalej **„Serwisem”**.
+1. Niniejsza Polityka Prywatności określa zasady przetwarzania danych osobowych użytkowników serwisu internetowego działającego pod nazwą **Zeta Signals**, dostępnego pod adresem **https://www.zetasignals.pl/**, zwanego dalej **„Serwisem”**.
 
 2. Polityka Prywatności została sporządzona zgodnie z przepisami Rozporządzenia Parlamentu Europejskiego i Rady UE 2016/679 z dnia 27 kwietnia 2016 r., zwanego dalej **„RODO”**, oraz właściwymi przepisami prawa polskiego dotyczącymi ochrony danych osobowych i świadczenia usług drogą elektroniczną.
 
@@ -20,17 +21,11 @@
 
 ## § 2. Administrator danych osobowych
 
-1. Administratorem danych osobowych Użytkowników Serwisu jest:
-
-**[Imię i Nazwisko]**  
-adres kontaktowy: **[Adres Zamieszkania/Kontaktowy]**  
-adres e-mail do kontaktu w sprawach danych osobowych: **support@zetasignals.pl**
-
-zwany dalej **„Administratorem”**.
+1. Administratorem danych osobowych Użytkowników Serwisu jest Damian Gmur, adres kontaktowy: Truskawkowa 13, 05-200 Zagościniec, Polska, adres e-mail do kontaktu w sprawach danych osobowych: kontakt@zetasignals.pl, zwany dalej **„Administratorem”**.
 
 2. Administrator prowadzi Serwis jako osoba fizyczna w ramach działalności nierejestrowanej, zgodnie z właściwymi przepisami prawa polskiego.
 
-3. W sprawach dotyczących ochrony danych osobowych Użytkownik może kontaktować się z Administratorem za pośrednictwem adresu e-mail: **support@zetasignals.pl**.
+3. W sprawach dotyczących ochrony danych osobowych Użytkownik może kontaktować się z Administratorem za pośrednictwem adresu e-mail: **kontakt@zetasignals.pl**.
 
 4. Administrator nie powołał Inspektora Ochrony Danych, ponieważ na dzień wejścia w życie niniejszej Polityki Prywatności nie ciąży na nim obowiązek jego wyznaczenia. Wszelkie sprawy dotyczące ochrony danych osobowych należy kierować bezpośrednio do Administratora.
 
@@ -44,7 +39,7 @@ Na potrzeby niniejszej Polityki Prywatności poniższym pojęciom nadaje się na
 
 3. **RODO** - Rozporządzenie Parlamentu Europejskiego i Rady UE 2016/679 z dnia 27 kwietnia 2016 r.
 
-4. **Serwis** - serwis internetowy Zeta Signals dostępny pod adresem **[adres domeny]**.
+4. **Serwis** - serwis internetowy Zeta Signals dostępny pod adresem **https://www.zetasignals.pl/**.
 
 5. **Użytkownik** - osoba fizyczna korzystająca z Serwisu, posiadająca konto w Serwisie lub dokonująca zakupu subskrypcji.
 
@@ -176,7 +171,7 @@ Podstawa prawna: art. 6 ust. 1 lit. b RODO oraz art. 6 ust. 1 lit. f RODO.
 
 3. Jeżeli Administrator poweźmie wiarygodną informację, że Konto zostało utworzone przez osobę niepełnoletnią, może usunąć Konto i dane w zakresie dopuszczalnym przez prawo, a także odmówić dalszego świadczenia usług.
 
-4. Rodzic, opiekun prawny albo inna osoba uprawniona może skontaktować się z Administratorem pod adresem **support@zetasignals.pl**, jeżeli posiada uzasadnione podejrzenie, że osoba niepełnoletnia przekazała dane osobowe w Serwisie.
+4. Rodzic, opiekun prawny albo inna osoba uprawniona może skontaktować się z Administratorem pod adresem **kontakt@zetasignals.pl**, jeżeli posiada uzasadnione podejrzenie, że osoba niepełnoletnia przekazała dane osobowe w Serwisie.
 
 ## § 7. Dobrowolność podania danych
 
@@ -212,9 +207,9 @@ g) organom publicznym, sądom lub innym uprawnionym podmiotom, jeżeli obowiąze
 
 4. W zakresie danych konta technicznego Administratora w Supabase, danych rozliczeniowych Administratora lub danych dotyczących korzystania przez Administratora z usług Supabase, Supabase może działać jako odrębny administrator danych.
 
-5. Administrator powinien posiadać zawartą lub zaakceptowaną umowę powierzenia przetwarzania danych z Supabase, w szczególności Data Processing Addendum lub równoważny dokument.
+5. Administrator korzysta z usług Supabase na podstawie właściwych dokumentów umownych, w tym Data Processing Addendum lub równoważnego dokumentu, jeżeli jest wymagany dla danego zakresu przetwarzania.
 
-6. Administrator powinien okresowo weryfikować listę subprocesorów Supabase oraz ustawienia regionu przetwarzania danych, jeżeli taka konfiguracja jest dostępna w wykorzystywanym planie usługi.
+6. Administrator okresowo weryfikuje, w możliwym zakresie, listę subprocesorów Supabase oraz ustawienia regionu przetwarzania danych, jeżeli taka konfiguracja jest dostępna w wykorzystywanym planie usługi.
 
 ### 2) Lemon Squeezy
 
@@ -230,7 +225,7 @@ g) organom publicznym, sądom lub innym uprawnionym podmiotom, jeżeli obowiąze
 
 6. Dane kart płatniczych nie są przechowywane przez Administratora w Serwisie.
 
-7. Administrator powinien okresowo weryfikować dokumenty prawne Lemon Squeezy, w szczególności politykę prywatności, Data Processing Agreement, zasady Merchant of Record oraz listy podmiotów wspierających przetwarzanie danych.
+7. Administrator okresowo weryfikuje, w możliwym zakresie, dokumenty prawne Lemon Squeezy, w szczególności politykę prywatności, Data Processing Agreement, zasady Merchant of Record oraz listy podmiotów wspierających przetwarzanie danych.
 
 4. Administrator może korzystać także z innych dostawców usług technicznych, jeżeli jest to konieczne do prawidłowego działania Serwisu, przy czym dane będą przekazywane wyłącznie w zakresie niezbędnym do realizacji danego celu.
 
@@ -248,9 +243,9 @@ e) przekazanie jest dopuszczalne na innej podstawie prawnej przewidzianej w RODO
 
 3. Administrator podejmuje działania zmierzające do tego, aby dostawcy zewnętrzni przetwarzający dane osobowe stosowali odpowiednie zabezpieczenia prawne, techniczne i organizacyjne.
 
-4. Administrator powinien weryfikować, czy wykorzystywani dostawcy zewnętrzni, w szczególności Supabase i Lemon Squeezy, stosują mechanizmy transferowe przewidziane przez RODO, takie jak decyzje stwierdzające odpowiedni stopień ochrony, standardowe klauzule umowne, DPA lub równoważne dokumenty.
+4. Administrator weryfikuje, w możliwym zakresie, czy wykorzystywani dostawcy zewnętrzni, w szczególności Supabase i Lemon Squeezy, stosują mechanizmy transferowe przewidziane przez RODO, takie jak decyzje stwierdzające odpowiedni stopień ochrony, standardowe klauzule umowne, DPA lub równoważne dokumenty.
 
-5. Użytkownik może uzyskać dodatkowe informacje o stosowanych zabezpieczeniach, kontaktując się z Administratorem pod adresem e-mail: **support@zetasignals.pl**.
+5. Użytkownik może uzyskać dodatkowe informacje o stosowanych zabezpieczeniach, kontaktując się z Administratorem pod adresem e-mail: **kontakt@zetasignals.pl**.
 
 ## § 10. Okres przechowywania danych
 
@@ -304,7 +299,7 @@ f) przeciwdziałania nadużyciom lub fraudom, jeżeli dalsze przetwarzanie jest 
 
 5. Jeżeli dane są przetwarzane na potrzeby marketingu bezpośredniego, Użytkownik może wnieść sprzeciw w każdym czasie. Po wniesieniu sprzeciwu dane nie będą przetwarzane w tym celu.
 
-6. W celu wykonania praw Użytkownik może skontaktować się z Administratorem pod adresem: **support@zetasignals.pl**.
+6. W celu wykonania praw Użytkownik może skontaktować się z Administratorem pod adresem: **kontakt@zetasignals.pl**.
 
 7. Administrator może poprosić Użytkownika o podanie dodatkowych informacji niezbędnych do potwierdzenia tożsamości, jeżeli ma uzasadnione wątpliwości co do osoby składającej żądanie.
 
@@ -439,13 +434,13 @@ g) wdrożenia nowych zabezpieczeń lub narzędzi technicznych.
 
 ## § 21. Kontakt
 
-1. W sprawach dotyczących niniejszej Polityki Prywatności oraz przetwarzania danych osobowych należy kontaktować się z Administratorem pod adresem: **support@zetasignals.pl**.
+1. W sprawach dotyczących niniejszej Polityki Prywatności oraz przetwarzania danych osobowych należy kontaktować się z Administratorem pod adresem: **kontakt@zetasignals.pl**.
 
 2. W korespondencji należy wskazać, czego dotyczy żądanie, oraz podać dane umożliwiające identyfikację osoby składającej żądanie, w szczególności adres e-mail powiązany z Kontem w Serwisie.
 
 ## § 22. Postanowienia końcowe
 
-1. Niniejsza Polityka Prywatności obowiązuje od dnia **[data]**.
+1. Niniejsza Polityka Prywatności obowiązuje od dnia **07.06.2026**.
 
 2. Polityka Prywatności jest dostępna nieodpłatnie w Serwisie w sposób umożliwiający jej pozyskanie, odtwarzanie i utrwalanie.
 

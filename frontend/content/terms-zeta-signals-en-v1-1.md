@@ -1,17 +1,16 @@
 # TERMS OF SERVICE FOR THE PROVISION OF ELECTRONIC SERVICES
 ## ZETA SIGNALS SERVICE
 
-Effective date: [date]  |  Version: 1.1  |  Language version: EN
+Effective date: 07.06.2026  |  Version: 1.1  |  Language version: EN
 
-This document contains placeholders that must be completed before publication, in particular: [Service Provider's First and Last Name], [Residential/Contact Address], [email address], [domain address], [link to Privacy Policy], [complaints email address].
 
-This English-language version is intended for Users using the English version of the Service. If both Polish and English versions are made available, the Polish version should remain the legally prevailing version unless the Service Provider expressly decides otherwise. In the event of discrepancies between the Polish and English versions, the Polish version shall prevail, to the extent permitted by mandatory provisions of applicable law.
+This English-language version is intended for Users using the English version of the Service. In the event of discrepancies between the Polish and English versions, the Polish version shall prevail to the extent permitted by mandatory provisions of applicable law.
 
 ## § 1. General provisions
 
-1. These terms of service, hereinafter referred to as the Terms, set out the rules for the provision of electronic services through the online service operating under the name Zeta Signals, available at: [domain address], hereinafter referred to as the Service.
+1. These terms of service, hereinafter referred to as the Terms, set out the rules for the provision of electronic services through the online service operating under the name Zeta Signals, available at: https://www.zetasignals.pl/, hereinafter referred to as the Service.
 
-2. The Service Provider is [Service Provider's First and Last Name], a natural person conducting unregistered business activity within the meaning of the relevant provisions of the Polish Entrepreneurs' Law, contact address: [Residential/Contact Address], e-mail address: [contact e-mail address], hereinafter referred to as the Service Provider.
+2. The Service Provider is Damian Gmur, a natural person conducting unregistered business activity within the meaning of the relevant provisions of the Polish Entrepreneurs' Law, contact address: Truskawkowa 13, 05-200 Zagościniec, Poland, e-mail address: kontakt@zetasignals.pl, hereinafter referred to as the Service Provider.
 
 3. The Terms are made available to the User free of charge before the conclusion of the agreement for the provision of electronic services, in a manner enabling the User to obtain, record, reproduce and store them using the ICT system used by the User.
 
@@ -35,7 +34,7 @@ This English-language version is intended for Users using the English version of
 
 3. Realtime Cockpit - the main panel of the Service available to a User with an active Subscription, in which Analytical Alerts and the history of selected Analytical Alerts are presented.
 
-4. Service - the Zeta Signals online platform available at [domain address].
+4. Service - the Zeta Signals online platform available at https://www.zetasignals.pl/.
 
 5. Subscription - paid, monthly renewable access to the paid functions of the Service, in particular to the Realtime Cockpit.
 
@@ -213,7 +212,7 @@ This English-language version is intended for Users using the English version of
 
 ## § 13. Complaints
 
-1. The User may submit a complaint concerning the operation of the Service electronically to: [complaints e-mail address].
+1. The User may submit a complaint concerning the operation of the Service electronically to: kontakt@zetasignals.pl.
 
 2. The complaint should contain at least: the User's e-mail address assigned to the Account, a description of the problem, the date and time of occurrence, the User's request and screenshots or other supporting materials, if available.
 
@@ -303,9 +302,9 @@ This English-language version is intended for Users using the English version of
 
 ## § 18. Personal data
 
-1. The controller of Users' personal data is [Service Provider's First and Last Name], contact address: [Residential/Contact Address], e-mail: [email address].
+1. The controller of Users' personal data is Damian Gmur, contact address: Truskawkowa 13, 05-200 Zagościniec, Poland, e-mail: kontakt@zetasignals.pl.
 
-2. Detailed rules for the processing of personal data are set out in the Privacy Policy available at: [link to Privacy Policy].
+2. Detailed rules for the processing of personal data are set out in the Privacy Policy available at: https://www.zetasignals.pl/en/privacy-policy.
 
 3. Users' personal data may be processed in particular for the purpose of providing electronic services, operating the Account, operating the Subscription, handling complaints, ensuring the security of the Service, complying with legal obligations, defending against claims or pursuing claims.
 
@@ -317,7 +316,7 @@ This English-language version is intended for Users using the English version of
 
 2. In the event of a material breach of the Terms, the Service Provider may terminate the provision of services with immediate effect.
 
-3. The User may request deletion of the Account at any time by contacting the Service Provider at: [email address].
+3. The User may request deletion of the Account at any time by contacting the Service Provider at: kontakt@zetasignals.pl.
 
 4. Deletion of the Account does not automatically cancel the Subscription if the Subscription is managed by the Payment Operator. The User should additionally cancel the Subscription in accordance with § 10 of the Terms.
 
@@ -371,26 +370,8 @@ This English-language version is intended for Users using the English version of
 
 3. Matters not regulated by the Terms are governed by the relevant provisions of Polish law.
 
-4. Contact with the Service Provider is possible at the e-mail address: [contact e-mail address].
+4. Contact with the Service Provider is possible at the e-mail address: kontakt@zetasignals.pl.
 
-5. The Terms apply from: [date].
+5. The Terms apply from: 07.06.2026.
 
 6. This version of the Terms is marked as version 1.1 and replaces previous versions from its effective date, subject to Users' acquired rights and mandatory provisions of law.
-
-## Appendix 1. Template checkboxes and purchase notices
-
-1. Acceptance of the Terms: I declare that I have read the Zeta Signals Terms of Service and accept their content.
-
-2. Investment risk: I declare that I understand that Zeta Signals does not provide investment advice and that Analytical Alerts are exclusively educational and informational in nature. I understand that trading Forex/CFD/XAU/USD involves a high risk of losing capital and that I make all investment decisions independently and at my own risk.
-
-3. Loss of the right of withdrawal: I expressly consent to the commencement of the digital service and the supply of digital content before the expiry of the 14-day withdrawal period and acknowledge that, after activation of access to the paid functions of the Service, I lose the right of withdrawal from the agreement to the extent provided by law.
-
-4. Renewable subscription: I acknowledge that the Subscription renews automatically every month until cancelled, and that cancellation of the Subscription results in access being retained until the end of the paid billing period without a pro-rata refund, unless mandatory provisions of law provide otherwise.
-
-5. Age and jurisdiction: I declare that I am at least 18 years old, have full legal capacity and that my use of Zeta Signals does not violate the laws applicable to my place of residence, stay or residence.
-
-6. The checkboxes should be separate, not pre-selected, required before payment activation and recorded in the system as an audit event with the date, time, version of the Terms, User's e-mail address, Account identifier, transaction identifier and the version of accepted documents.
-
-## Implementation note
-
-Before publishing the Terms, complete all placeholders, verify that the document is consistent with the actual operation of the Service, add a Privacy Policy, implement separate checkboxes during registration and payment, and ensure that the User can download the Terms in PDF format. If the Service model changes, especially the way Analytical Alerts are presented, the payment model, data sources, scope of personalisation or countries to which the service is directed, the document requires renewed legal analysis.

@@ -1,15 +1,14 @@
 # REGULAMIN ŚWIADCZENIA USŁUG DROGĄ ELEKTRONICZNĄ
 ## SERWISU ZETA SIGNALS
 
-Data wejścia w życie: [data]  |  Wersja: 1.1
+Data wejścia w życie: 07.06.2026  |  Wersja: 1.1
 
-Niniejszy dokument zawiera placeholdery wymagające uzupełnienia przed publikacją, w szczególności: [Imię i Nazwisko Usługodawcy], [Adres Zamieszkania/Kontaktowy], [adres e-mail], [adres domeny], [link do polityki prywatności].
 
 ## § 1. Postanowienia ogólne
 
-1. Niniejszy regulamin, zwany dalej Regulaminem, określa zasady świadczenia usług drogą elektroniczną za pośrednictwem serwisu internetowego działającego pod nazwą Zeta Signals, dostępnego pod adresem: [adres domeny], zwanego dalej Serwisem.
+1. Niniejszy regulamin, zwany dalej Regulaminem, określa zasady świadczenia usług drogą elektroniczną za pośrednictwem serwisu internetowego działającego pod nazwą Zeta Signals, dostępnego pod adresem: https://www.zetasignals.pl/, zwanego dalej Serwisem.
 
-2. Usługodawcą Serwisu jest [Imię i Nazwisko Usługodawcy], osoba fizyczna prowadząca działalność nierejestrowaną w rozumieniu właściwych przepisów ustawy - Prawo przedsiębiorców, adres kontaktowy: [Adres Zamieszkania/Kontaktowy], adres e-mail: [adres e-mail kontaktowy], zwana dalej Usługodawcą.
+2. Usługodawcą Serwisu jest Damian Gmur, osoba fizyczna prowadząca działalność nierejestrowaną w rozumieniu właściwych przepisów ustawy - Prawo przedsiębiorców, adres kontaktowy: Truskawkowa 13, 05-200 Zagościniec, Polska, adres e-mail: kontakt@zetasignals.pl, zwana dalej Usługodawcą.
 
 3. Regulamin jest udostępniany Użytkownikowi nieodpłatnie przed zawarciem umowy o świadczenie usług drogą elektroniczną, w sposób umożliwiający jego pozyskanie, utrwalenie, odtwarzanie i przechowywanie za pomocą systemu teleinformatycznego, którym posługuje się Użytkownik.
 
@@ -33,7 +32,7 @@ Niniejszy dokument zawiera placeholdery wymagające uzupełnienia przed publikac
 
 3. Realtime Cockpit - główny panel Serwisu dostępny dla Użytkownika posiadającego aktywną Subskrypcję, w którym prezentowane są Alerty Analityczne oraz historia wybranych Alertów Analitycznych.
 
-4. Serwis - platforma internetowa Zeta Signals dostępna pod adresem [adres domeny].
+4. Serwis - platforma internetowa Zeta Signals dostępna pod adresem https://www.zetasignals.pl/.
 
 5. Subskrypcja - odpłatny, odnawialny miesięcznie dostęp do płatnych funkcji Serwisu, w szczególności do Realtime Cockpit.
 
@@ -211,7 +210,7 @@ Niniejszy dokument zawiera placeholdery wymagające uzupełnienia przed publikac
 
 ## § 13. Reklamacje
 
-1. Użytkownik może złożyć reklamację dotyczącą działania Serwisu drogą elektroniczną na adres: [adres e-mail reklamacyjny].
+1. Użytkownik może złożyć reklamację dotyczącą działania Serwisu drogą elektroniczną na adres: kontakt@zetasignals.pl.
 
 2. Reklamacja powinna zawierać co najmniej: adres e-mail Użytkownika przypisany do Konta, opis problemu, datę i godzinę wystąpienia problemu, żądanie Użytkownika oraz zrzuty ekranu lub inne materiały pomocnicze, jeżeli są dostępne.
 
@@ -301,9 +300,9 @@ Niniejszy dokument zawiera placeholdery wymagające uzupełnienia przed publikac
 
 ## § 18. Dane osobowe
 
-1. Administratorem danych osobowych Użytkowników jest [Imię i Nazwisko Usługodawcy], adres kontaktowy: [Adres Zamieszkania/Kontaktowy], e-mail: [adres e-mail].
+1. Administratorem danych osobowych Użytkowników jest Damian Gmur, adres kontaktowy: Truskawkowa 13, 05-200 Zagościniec, Polska, e-mail: kontakt@zetasignals.pl.
 
-2. Szczegółowe zasady przetwarzania danych osobowych określa Polityka Prywatności dostępna pod adresem: [link do polityki prywatności].
+2. Szczegółowe zasady przetwarzania danych osobowych określa Polityka Prywatności dostępna pod adresem: https://www.zetasignals.pl/pl/polityka-prywatnosci.
 
 3. Dane osobowe Użytkowników mogą być przetwarzane w szczególności w celu świadczenia usług drogą elektroniczną, obsługi Konta, obsługi Subskrypcji, obsługi reklamacji, zapewnienia bezpieczeństwa Serwisu, realizacji obowiązków prawnych, obrony przed roszczeniami lub dochodzenia roszczeń.
 
@@ -315,7 +314,7 @@ Niniejszy dokument zawiera placeholdery wymagające uzupełnienia przed publikac
 
 2. W przypadku rażącego naruszenia Regulaminu Usługodawca może zakończyć świadczenie usług ze skutkiem natychmiastowym.
 
-3. Użytkownik może w każdym czasie żądać usunięcia Konta, kontaktując się z Usługodawcą na adres: [adres e-mail].
+3. Użytkownik może w każdym czasie żądać usunięcia Konta, kontaktując się z Usługodawcą na adres: kontakt@zetasignals.pl.
 
 4. Usunięcie Konta nie oznacza automatycznie anulowania Subskrypcji, jeżeli Subskrypcja jest zarządzana przez Operatora Płatności. Użytkownik powinien dodatkowo anulować Subskrypcję zgodnie z § 10 Regulaminu.
 
@@ -367,26 +366,8 @@ Niniejszy dokument zawiera placeholdery wymagające uzupełnienia przed publikac
 
 3. W sprawach nieuregulowanych Regulaminem zastosowanie mają właściwe przepisy prawa polskiego.
 
-4. Kontakt z Usługodawcą jest możliwy pod adresem e-mail: [adres e-mail kontaktowy].
+4. Kontakt z Usługodawcą jest możliwy pod adresem e-mail: kontakt@zetasignals.pl.
 
-5. Regulamin obowiązuje od dnia: [data].
+5. Regulamin obowiązuje od dnia: 07.06.2026.
 
 6. Niniejsza wersja Regulaminu oznaczona jest jako wersja 1.1 i zastępuje poprzednie wersje od dnia jej wejścia w życie, z zastrzeżeniem praw nabytych Użytkowników oraz bezwzględnie obowiązujących przepisów prawa.
-
-## Załącznik nr 1. Wzory checkboxów i komunikatów przy zakupie
-
-1. Akceptacja Regulaminu: Oświadczam, że zapoznałem/am się z Regulaminem Zeta Signals oraz akceptuję jego treść.
-
-2. Ryzyko inwestycyjne: Oświadczam, że rozumiem, iż Zeta Signals nie świadczy doradztwa inwestycyjnego, a Alerty Analityczne mają charakter wyłącznie edukacyjno-informacyjny. Rozumiem, że handel na rynku Forex/CFD/XAU/USD wiąże się z wysokim ryzykiem utraty kapitału, a wszelkie decyzje inwestycyjne podejmuję samodzielnie i na własne ryzyko.
-
-3. Utrata prawa odstąpienia: Wyrażam wyraźną zgodę na rozpoczęcie świadczenia usługi cyfrowej i dostarczania treści cyfrowych przed upływem 14-dniowego terminu odstąpienia od umowy oraz przyjmuję do wiadomości, że po aktywacji dostępu do płatnych funkcji Serwisu tracę prawo odstąpienia od umowy w zakresie przewidzianym przepisami prawa.
-
-4. Subskrypcja odnawialna: Przyjmuję do wiadomości, że Subskrypcja odnawia się automatycznie co miesiąc do czasu jej anulowania, a anulowanie Subskrypcji powoduje zachowanie dostępu do końca opłaconego okresu rozliczeniowego bez proporcjonalnego zwrotu opłaty, chyba że bezwzględnie obowiązujące przepisy prawa stanowią inaczej.
-
-5. Pełnoletność i jurysdykcja: Oświadczam, że mam co najmniej 18 lat, posiadam pełną zdolność do czynności prawnych oraz że korzystanie z Zeta Signals nie narusza przepisów prawa właściwych dla mojego miejsca zamieszkania, pobytu lub rezydencji.
-
-6. Checkboxy powinny być odrębne, nieprezaznaczone, wymagane przed aktywacją płatności i zapisane w systemie jako zdarzenie audytowe z datą, godziną, wersją Regulaminu, adresem e-mail Użytkownika, identyfikatorem Konta, identyfikatorem transakcji oraz wersją zaakceptowanych dokumentów.
-
-## Nota wdrożeniowa
-
-Przed publikacją Regulaminu należy uzupełnić wszystkie placeholdery, zweryfikować zgodność dokumentu z rzeczywistym działaniem Serwisu, dodać Politykę Prywatności, wdrożyć odrębne checkboxy przy rejestracji i płatności oraz zapewnić Użytkownikowi możliwość pobrania Regulaminu w formacie PDF. W przypadku zmiany modelu działania Serwisu, zwłaszcza sposobu prezentacji Alertów Analitycznych, modelu płatności, źródeł danych, zakresu personalizacji lub krajów, do których kierowana jest usługa, dokument wymaga ponownej analizy prawnej.

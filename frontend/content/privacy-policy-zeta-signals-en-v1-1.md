@@ -1,12 +1,13 @@
-# PRIVACY POLICY OF THE ZETA SIGNALS SERVICE
+# PRIVACY POLICY
+## ZETA SIGNALS SERVICE
 
-**Effective date:** [date]  
+**Effective date:** 07.06.2026  
 **Document version:** 1.1  
-**Service address:** [domain address]
+**Service address:** https://www.zetasignals.pl/
 
 ## § 1. General provisions
 
-1. This Privacy Policy sets out the rules for processing personal data of users of the website operating under the name **Zeta Signals**, available at **[domain address]**, hereinafter referred to as the **"Service"**.
+1. This Privacy Policy sets out the rules for processing personal data of users of the website operating under the name **Zeta Signals**, available at **https://www.zetasignals.pl/**, hereinafter referred to as the **"Service"**.
 
 2. This Privacy Policy has been prepared in accordance with Regulation (EU) 2016/679 of the European Parliament and of the Council of 27 April 2016, hereinafter referred to as **"GDPR"**, and applicable Polish laws on personal data protection and electronic services.
 
@@ -20,17 +21,11 @@
 
 ## § 2. Personal data Controller
 
-1. The Controller of Users' personal data is:
-
-**[Full Name]**  
-contact address: **[Residential/Contact Address]**  
-e-mail address for personal data matters: **support@zetasignals.pl**
-
-hereinafter referred to as the **"Controller"**.
+1. The Controller of Users' personal data is Damian Gmur, contact address: Truskawkowa 13, 05-200 Zagościniec, Poland, e-mail address for personal data matters: kontakt@zetasignals.pl, hereinafter referred to as the **"Controller"**.
 
 2. The Controller operates the Service as a natural person conducting non-registered activity under applicable Polish law.
 
-3. In matters related to personal data protection, the User may contact the Controller via e-mail at: **support@zetasignals.pl**.
+3. In matters related to personal data protection, the User may contact the Controller via e-mail at: **kontakt@zetasignals.pl**.
 
 4. The Controller has not appointed a Data Protection Officer because, as of the effective date of this Privacy Policy, there is no legal obligation to appoint one. All personal data matters should be addressed directly to the Controller.
 
@@ -44,7 +39,7 @@ For the purposes of this Privacy Policy, the following terms have the meanings a
 
 3. **GDPR** - Regulation (EU) 2016/679 of the European Parliament and of the Council of 27 April 2016.
 
-4. **Service** - the Zeta Signals website available at **[domain address]**.
+4. **Service** - the Zeta Signals website available at **https://www.zetasignals.pl/**.
 
 5. **User** - a natural person using the Service, holding an account in the Service or purchasing a subscription.
 
@@ -176,7 +171,7 @@ Legal basis: Article 6(1)(b) GDPR and Article 6(1)(f) GDPR.
 
 3. If the Controller obtains credible information that an Account has been created by a minor, the Controller may delete the Account and data to the extent permitted by law and refuse to provide further services.
 
-4. A parent, legal guardian or other authorised person may contact the Controller at **support@zetasignals.pl** if they have reasonable suspicion that a minor has provided personal data through the Service.
+4. A parent, legal guardian or other authorised person may contact the Controller at **kontakt@zetasignals.pl** if they have reasonable suspicion that a minor has provided personal data through the Service.
 
 ## § 7. Voluntary provision of data
 
@@ -212,9 +207,9 @@ g) public authorities, courts or other authorised entities where disclosure is r
 
 4. With respect to the Controller's technical account data in Supabase, the Controller's billing data or data concerning the Controller's use of Supabase services, Supabase may act as a separate data controller.
 
-5. The Controller should have a concluded or accepted data processing agreement with Supabase, in particular a Data Processing Addendum or equivalent document.
+5. The Controller uses Supabase services on the basis of appropriate contractual documents, including a Data Processing Addendum or an equivalent document, where required for the relevant scope of processing.
 
-6. The Controller should periodically verify Supabase's subprocessor list and data processing region settings where such configuration is available under the relevant service plan.
+6. The Controller periodically verifies, where reasonably possible, Supabase's subprocessor list and data processing region settings where such configuration is available under the relevant service plan.
 
 ### 2) Lemon Squeezy
 
@@ -230,7 +225,7 @@ g) public authorities, courts or other authorised entities where disclosure is r
 
 6. Full payment card data are not stored by the Controller in the Service.
 
-7. The Controller should periodically verify Lemon Squeezy's legal documents, in particular its privacy policy, Data Processing Agreement, Merchant of Record rules and lists of entities supporting data processing.
+7. The Controller periodically verifies, where reasonably possible, Lemon Squeezy's legal documents, in particular its privacy policy, Data Processing Agreement, Merchant of Record rules and lists of entities supporting data processing.
 
 4. The Controller may also use other technical service providers if necessary for the proper operation of the Service, with data transferred only to the extent necessary for the relevant purpose.
 
@@ -248,9 +243,9 @@ e) the transfer is permitted on another legal basis provided for in GDPR.
 
 3. The Controller takes steps to ensure that external providers processing personal data apply appropriate legal, technical and organisational safeguards.
 
-4. The Controller should verify whether external providers used, in particular Supabase and Lemon Squeezy, apply transfer mechanisms provided for in GDPR, such as adequacy decisions, standard contractual clauses, DPAs or equivalent documents.
+4. The Controller verifies, where reasonably possible, whether external providers used, in particular Supabase and Lemon Squeezy, apply transfer mechanisms provided for in GDPR, such as adequacy decisions, standard contractual clauses, DPAs or equivalent documents.
 
-5. The User may obtain additional information on the safeguards applied by contacting the Controller at **support@zetasignals.pl**.
+5. The User may obtain additional information on the safeguards applied by contacting the Controller at **kontakt@zetasignals.pl**.
 
 ## § 10. Data retention period
 
@@ -304,7 +299,7 @@ f) prevent abuse or fraud, where further processing is lawful.
 
 5. If data are processed for direct marketing purposes, the User may object at any time. After the objection is lodged, the data will no longer be processed for that purpose.
 
-6. To exercise rights, the User may contact the Controller at **support@zetasignals.pl**.
+6. To exercise rights, the User may contact the Controller at **kontakt@zetasignals.pl**.
 
 7. The Controller may request additional information necessary to confirm the User's identity if there are reasonable doubts as to the identity of the person submitting the request.
 
@@ -439,13 +434,13 @@ g) implementation of new security measures or technical tools.
 
 ## § 21. Contact
 
-1. In matters concerning this Privacy Policy and personal data processing, please contact the Controller at: **support@zetasignals.pl**.
+1. In matters concerning this Privacy Policy and personal data processing, please contact the Controller at: **kontakt@zetasignals.pl**.
 
 2. The correspondence should indicate what the request concerns and provide data enabling identification of the person submitting the request, in particular the e-mail address associated with the Account in the Service.
 
 ## § 22. Final provisions
 
-1. This Privacy Policy applies from **[date]**.
+1. This Privacy Policy applies from **07.06.2026**.
 
 2. The Privacy Policy is available free of charge in the Service in a manner that allows it to be obtained, reproduced and stored.
 
