@@ -73,9 +73,6 @@ export const CHECKOUT_CONSENT_TEXT = {
     "Oświadczam, że rozumiem, że handel na rynku Forex/CFD/XAU/USD wiąże się z wysokim ryzykiem utraty kapitału, a wszelkie decyzje inwestycyjne podejmuję samodzielnie i na własne ryzyko.",
   noAdvice:
     "Przyjmuję do wiadomości, że Zeta Signals nie świadczy doradztwa inwestycyjnego, a Alerty Analityczne mają charakter wyłącznie edukacyjno-informacyjny.",
-  terms: "Oświadczam, że zapoznałem/am się z Regulaminem Zeta Signals oraz akceptuję jego treść.",
-  privacy: "Oświadczam, że zapoznałem/am się z Polityką Prywatności Zeta Signals.",
-  age: "Potwierdzam, że mam ukończone 18 lat."
 } as const;
 
 export const CHECKOUT_CONSENT_TEXT_EN = {
@@ -89,9 +86,6 @@ export const CHECKOUT_CONSENT_TEXT_EN = {
     "I declare that I understand that trading Forex/CFD/XAU/USD involves a high risk of losing capital and that I make all investment decisions independently and at my own risk.",
   noAdvice:
     "I acknowledge that Zeta Signals does not provide investment advice and that Analytical Alerts are educational and informational only.",
-  terms: "I declare that I have read the Zeta Signals Terms of Service and accept their content.",
-  privacy: "I declare that I have read the Zeta Signals Privacy Policy.",
-  age: "I confirm that I am at least 18 years old."
 } as const;
 
 export function getLocalizedLegalLinks(language: "PL" | "EN") {

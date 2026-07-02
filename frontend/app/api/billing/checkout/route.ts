@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 
 import { ensureUserAccount } from "@/lib/account/server";
 import { BillingProviderError, getBillingProvider } from "@/lib/billing/provider";
-import { recordCheckoutConsents } from "@/lib/legal/consent-audit";
+import { getMissingCurrentRegistrationConsents, recordCheckoutConsents } from "@/lib/legal/consent-audit";
 import { getRequestAuditMetadata } from "@/lib/legal/request";
 import { getUserFromRequest } from "@/lib/supabase/admin";
 
@@ -25,6 +25,11 @@ export async function POST(request: Request) {
 
     if (!hasRequiredCheckoutConsents(body.consents)) {
       return NextResponse.json({ error: "All checkout consents are required." }, { status: 400 });
+    }
+
+    const missingRegistrationConsents = await getMissingCurrentRegistrationConsents(user.id);
+    if (missingRegistrationConsents.length > 0) {
+      return NextResponse.json({ error: "Account legal confirmations must be refreshed before checkout." }, { status: 409 });
     }
 
     const { account } = await ensureUserAccount(user);
@@ -71,9 +76,6 @@ function hasRequiredCheckoutConsents(value: unknown) {
 
   const consents = value as Record<string, unknown>;
   return (
-    consents.ageConfirmed === true &&
-    consents.termsAccepted === true &&
-    consents.privacyAccepted === true &&
     consents.riskAccepted === true &&
     consents.noInvestmentAdviceAccepted === true &&
     consents.digitalServiceConsent === true &&

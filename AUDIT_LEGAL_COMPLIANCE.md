@@ -8,7 +8,7 @@ Ten dokument opisuje techniczny audyt zgodności aplikacji Zeta Signals po stron
 
 Status: częściowo gotowe technicznie, z ręcznymi krokami produkcyjnymi.
 
-W kodzie poprawiono krytyczne braki dotyczące dat dokumentów, finalnych PDF-ów, checkboxów rejestracji, checkboxów checkoutu, zapisu zgód oraz podpisu webhooka Lemon Squeezy. Nie wykonywano destrukcyjnych zmian w bazie danych. Dodano migrację SQL do uruchomienia w Supabase.
+W kodzie poprawiono krytyczne braki dotyczące dat dokumentów, finalnych PDF-ów, checkboxów rejestracji, checkboxów checkoutu, zapisu zgód oraz podpisu webhooka Lemon Squeezy. Supabase ma teraz jeden kompletny plik `supabase/schema.sql` do postawienia czystej bazy od zera.
 
 ## Poprawione w kodzie
 
@@ -25,20 +25,16 @@ W kodzie poprawiono krytyczne braki dotyczące dat dokumentów, finalnych PDF-ó
   - potwierdzenia zapoznania z Polityką Prywatności,
   - potwierdzenia wieku 18+.
 - API rejestracji odrzuca request bez wszystkich trzech potwierdzeń i zapisuje metadane legal acceptance w Supabase Auth.
-- Checkout wymaga teraz 8 osobnych potwierdzeń:
-  - Regulamin,
-  - Polityka Prywatności,
+- Checkout wymaga teraz 5 osobnych potwierdzeń specyficznych dla zakupu:
   - ostrzeżenie o ryzyku,
   - brak doradztwa inwestycyjnego,
   - zgoda na natychmiastowe rozpoczęcie świadczenia usługi cyfrowej,
   - potwierdzenie możliwej utraty prawa odstąpienia,
-  - automatyczne odnawianie subskrypcji,
-  - wiek 18+.
-- Endpointy checkoutu i mock aktywacji odrzucają request bez pełnego zestawu wymaganych zgód.
-- `user_consents` zapisuje dodatkowo `PRIVACY_ACCEPTANCE`, `NO_INVESTMENT_ADVICE_ACKNOWLEDGEMENT` i `AGE_CONFIRMATION`.
-- `checkout_consent_audits` zapisuje rozszerzony ślad audytowy: wersje dokumentów, timestampy, ryzyko, brak doradztwa, odstąpienie, subskrypcję i wiek.
-- Dodano migrację: `supabase/migrations/20260607_legal_compliance_consents.sql`.
-- `schema.sql` został zsynchronizowany z migracją i nowymi typami zgód.
+  - automatyczne odnawianie subskrypcji.
+- Endpointy checkoutu i mock aktywacji odrzucają request bez pełnego zestawu wymaganych zgód zakupowych oraz sprawdzają, czy konto ma aktualne zgody rejestracyjne: Regulamin, Polityka Prywatności i 18+.
+- `user_consents` zapisuje zgody rejestracyjne tylko ze źródłem `REGISTER`, a przy checkoutcie dopisuje wyłącznie zgody zakupowe: `RISK_WARNING_ACCEPTANCE`, `NO_INVESTMENT_ADVICE_ACKNOWLEDGEMENT`, `DIGITAL_SERVICE_CONSENT`, `WITHDRAWAL_LOSS_ACKNOWLEDGEMENT`, `SUBSCRIPTION_RENEWAL_ACCEPTANCE`.
+- `checkout_consent_audits` zapisuje rozszerzony ślad audytowy dla zgód zakupowych: timestampy, ryzyko, brak doradztwa, odstąpienie i subskrypcję. Nie zawiera już kolumn powielających zgody rejestracyjne.
+- `supabase/schema.sql` jest teraz jedyną kompletną kwerendą do odtworzenia tabel, triggerów, funkcji, indeksów i RLS.
 - Webhook Lemon Squeezy weryfikuje teraz `X-Signature` przez HMAC SHA-256 z `BILLING_WEBHOOK_SECRET`.
 - Checkout Lemon Squeezy przekazuje `checkout[custom][user_id]`, `checkout[custom][plan_code]` i `checkout[custom][reference]`, aby dane wracały w `meta.custom_data` webhooków.
 - Payload Lemon Squeezy odkładany w `payment_events` jest zminimalizowany do technicznych pól potrzebnych do audytu i synchronizacji, zamiast pełnego payloadu płatności.
@@ -68,7 +64,7 @@ W kodzie poprawiono krytyczne braki dotyczące dat dokumentów, finalnych PDF-ó
 
 ### Supabase
 
-- Uruchomić migrację `supabase/migrations/20260607_legal_compliance_consents.sql` na produkcyjnej bazie.
+- Po wyczyszczeniu bazy uruchomić kompletny plik `supabase/schema.sql` w SQL Editorze Supabase.
 - Potwierdzić w Supabase Dashboard, że RLS jest aktywne dla:
   - `user_accounts`
   - `subscriptions`

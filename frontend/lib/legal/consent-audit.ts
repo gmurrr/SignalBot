@@ -34,6 +34,33 @@ export type CheckoutConsentAuditInput = {
   userId: string;
 };
 
+export async function getMissingCurrentRegistrationConsents(userId: string) {
+  const requiredConsents = [
+    { type: "TERMS_ACCEPTANCE", version: TERMS_VERSION },
+    { type: "PRIVACY_ACCEPTANCE", version: PRIVACY_VERSION },
+    { type: "AGE_CONFIRMATION", version: "18_PLUS" }
+  ] as const;
+  const supabase = getSupabaseAdminClient();
+  const { data, error } = await supabase
+    .from("user_consents")
+    .select("type, version")
+    .eq("user_id", userId)
+    .eq("source", "REGISTER")
+    .in(
+      "type",
+      requiredConsents.map((consent) => consent.type)
+    );
+
+  if (error) {
+    throw error;
+  }
+
+  const accepted = new Set((data ?? []).map((row) => `${row.type}:${row.version}`));
+  return requiredConsents
+    .filter((consent) => !accepted.has(`${consent.type}:${consent.version}`))
+    .map((consent) => consent.type);
+}
+
 export async function recordRegistrationConsents(input: RegistrationConsentInput) {
   const supabase = getSupabaseAdminClient();
   const rows = [
@@ -96,17 +123,11 @@ export async function recordCheckoutConsents(input: CheckoutConsentAuditInput) {
       ip_address: input.ipAddress,
       language: input.language,
       metadata: input.metadata ?? {},
-      age_confirmation_accepted: true,
-      age_confirmation_accepted_at: acceptedAt,
       accepted_cookie_policy_at: null,
-      accepted_privacy_policy_at: acceptedAt,
       cookie_policy_version: COOKIE_POLICY_VERSION,
       no_investment_advice_acknowledged: true,
       no_investment_advice_acknowledged_at: acceptedAt,
       order_id: input.orderId ?? null,
-      privacy_policy_language: input.language,
-      privacy_policy_version: PRIVACY_VERSION,
-      privacy_version: PRIVACY_VERSION,
       risk_warning_accepted: true,
       risk_accepted_at: acceptedAt,
       risk_warning_version: RISK_WARNING_VERSION,
@@ -114,8 +135,6 @@ export async function recordCheckoutConsents(input: CheckoutConsentAuditInput) {
       subscription_renewal_accepted: true,
       subscription_renewal_accepted_at: acceptedAt,
       subscription_renewal_consent_version: SUBSCRIPTION_RENEWAL_CONSENT_VERSION,
-      terms_accepted_at: acceptedAt,
-      terms_version: TERMS_VERSION,
       user_agent: input.userAgent,
       user_id: input.userId,
       withdrawal_consent_accepted: true,
@@ -131,30 +150,6 @@ export async function recordCheckoutConsents(input: CheckoutConsentAuditInput) {
   }
 
   const consentRows = [
-    buildConsentRow({
-      acceptedAt,
-      email: input.email,
-      ipAddress: input.ipAddress,
-      language: input.language,
-      source: "CHECKOUT",
-      type: "TERMS_ACCEPTANCE",
-      userAgent: input.userAgent,
-      userId: input.userId,
-      version: TERMS_VERSION
-    }),
-    buildConsentRow({
-      acceptedAt,
-      email: input.email,
-      ipAddress: input.ipAddress,
-      language: input.language,
-      privacyPolicyLanguage: input.language,
-      privacyPolicyVersion: PRIVACY_VERSION,
-      source: "CHECKOUT",
-      type: "PRIVACY_ACCEPTANCE",
-      userAgent: input.userAgent,
-      userId: input.userId,
-      version: PRIVACY_VERSION
-    }),
     buildConsentRow({
       acceptedAt,
       email: input.email,
@@ -209,17 +204,6 @@ export async function recordCheckoutConsents(input: CheckoutConsentAuditInput) {
       userAgent: input.userAgent,
       userId: input.userId,
       version: SUBSCRIPTION_RENEWAL_CONSENT_VERSION
-    }),
-    buildConsentRow({
-      acceptedAt,
-      email: input.email,
-      ipAddress: input.ipAddress,
-      language: input.language,
-      source: "CHECKOUT",
-      type: "AGE_CONFIRMATION",
-      userAgent: input.userAgent,
-      userId: input.userId,
-      version: "18_PLUS"
     })
   ];
 

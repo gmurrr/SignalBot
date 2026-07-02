@@ -27,13 +27,10 @@ type CheckoutResponse = {
 
 const planCode = "premium-monthly";
 const initialCheckoutConsents = {
-  ageConfirmed: false,
   digitalServiceConsent: false,
   noInvestmentAdviceAccepted: false,
-  privacyAccepted: false,
   riskAccepted: false,
   subscriptionRenewalAccepted: false,
-  termsAccepted: false,
   withdrawalLossAcknowledged: false
 };
 
@@ -255,24 +252,6 @@ export function BillingShell() {
             <p className="mt-3 text-xs leading-6 text-zinc-500">{dict.billing.paymentCookiesNotice}</p>
             <div className="mt-5 space-y-3">
               <CheckoutConsentCheckbox
-                checked={checkoutConsents.termsAccepted}
-                onChange={(checked) => setCheckoutConsents((current) => ({ ...current, termsAccepted: checked }))}
-              >
-                {checkoutConsentText.terms}{" "}
-                <Link href={legalLinks.terms} target="_blank" rel="noreferrer" className="text-brass transition-colors hover:text-[#e6c55a]">
-                  {dict.common.terms}
-                </Link>
-              </CheckoutConsentCheckbox>
-              <CheckoutConsentCheckbox
-                checked={checkoutConsents.privacyAccepted}
-                onChange={(checked) => setCheckoutConsents((current) => ({ ...current, privacyAccepted: checked }))}
-              >
-                {checkoutConsentText.privacy}{" "}
-                <Link href={legalLinks.privacy} target="_blank" rel="noreferrer" className="text-brass transition-colors hover:text-[#e6c55a]">
-                  {dict.common.privacy}
-                </Link>
-              </CheckoutConsentCheckbox>
-              <CheckoutConsentCheckbox
                 checked={checkoutConsents.riskAccepted}
                 onChange={(checked) => setCheckoutConsents((current) => ({ ...current, riskAccepted: checked }))}
               >
@@ -304,12 +283,6 @@ export function BillingShell() {
                 onChange={(checked) => setCheckoutConsents((current) => ({ ...current, subscriptionRenewalAccepted: checked }))}
               >
                 {checkoutConsentText.renewal}
-              </CheckoutConsentCheckbox>
-              <CheckoutConsentCheckbox
-                checked={checkoutConsents.ageConfirmed}
-                onChange={(checked) => setCheckoutConsents((current) => ({ ...current, ageConfirmed: checked }))}
-              >
-                {checkoutConsentText.age}
               </CheckoutConsentCheckbox>
             </div>
           </div>

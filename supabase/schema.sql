@@ -57,15 +57,6 @@ create table if not exists public.signals (
     updated_at timestamptz not null default now()
 );
 
-alter table public.signals
-    add column if not exists dxy_bias text not null default 'NEUTRAL_DXY';
-
-alter table public.signals
-    add column if not exists session_name text not null default 'MONITORING';
-
-alter table public.signals
-    add column if not exists liquidity_cleared boolean not null default false;
-
 create index if not exists signals_symbol_timestamp_idx
     on public.signals (symbol, "timestamp" desc);
 
@@ -87,7 +78,6 @@ create table if not exists public.user_accounts (
     updated_at timestamptz not null default now()
 );
 
-drop index if exists user_accounts_email_uniq;
 create unique index if not exists user_accounts_email_uniq
     on public.user_accounts (lower(email))
     where email <> '';
@@ -202,20 +192,6 @@ create table if not exists public.user_consents (
     updated_at timestamptz not null default now()
 );
 
-alter table public.user_consents
-    add column if not exists language text not null default 'PL'
-        check (language in ('PL', 'EN'));
-
-alter table public.user_consents
-    add column if not exists privacy_policy_version text;
-
-alter table public.user_consents
-    add column if not exists privacy_policy_language text
-        check (privacy_policy_language in ('PL', 'EN'));
-
-alter table public.user_consents
-    add column if not exists updated_at timestamptz not null default now();
-
 drop trigger if exists set_user_consents_updated_at on public.user_consents;
 create trigger set_user_consents_updated_at
     before update on public.user_consents
@@ -232,13 +208,6 @@ create table if not exists public.checkout_consent_audits (
     id uuid primary key default gen_random_uuid(),
     user_id uuid not null references public.user_accounts(id) on delete cascade,
     email text not null,
-    terms_version text not null,
-    terms_accepted_at timestamptz not null,
-    privacy_version text not null default '1.0',
-    privacy_policy_version text not null default '1.0',
-    privacy_policy_language text not null default 'PL'
-        check (privacy_policy_language in ('PL', 'EN')),
-    accepted_privacy_policy_at timestamptz not null default now(),
     cookie_policy_version text,
     accepted_cookie_policy_at timestamptz,
     risk_warning_version text not null default '1.0',
@@ -254,8 +223,6 @@ create table if not exists public.checkout_consent_audits (
     subscription_renewal_consent_version text not null default '1.0',
     subscription_renewal_accepted boolean not null default false,
     subscription_renewal_accepted_at timestamptz not null,
-    age_confirmation_accepted boolean not null default false,
-    age_confirmation_accepted_at timestamptz,
     checkout_provider text not null,
     checkout_session_id text,
     checkout_url text,
@@ -270,62 +237,6 @@ create table if not exists public.checkout_consent_audits (
     created_at timestamptz not null default now(),
     updated_at timestamptz not null default now()
 );
-
-alter table public.checkout_consent_audits
-    add column if not exists language text not null default 'PL'
-        check (language in ('PL', 'EN'));
-
-alter table public.checkout_consent_audits
-    add column if not exists privacy_version text not null default '1.0';
-
-alter table public.checkout_consent_audits
-    add column if not exists privacy_policy_version text not null default '1.0';
-
-alter table public.checkout_consent_audits
-    add column if not exists privacy_policy_language text not null default 'PL'
-        check (privacy_policy_language in ('PL', 'EN'));
-
-alter table public.checkout_consent_audits
-    add column if not exists accepted_privacy_policy_at timestamptz not null default now();
-
-alter table public.checkout_consent_audits
-    add column if not exists cookie_policy_version text;
-
-alter table public.checkout_consent_audits
-    add column if not exists accepted_cookie_policy_at timestamptz;
-
-alter table public.checkout_consent_audits
-    add column if not exists withdrawal_consent_version text not null default '1.0';
-
-alter table public.checkout_consent_audits
-    add column if not exists risk_warning_accepted boolean not null default false;
-
-alter table public.checkout_consent_audits
-    add column if not exists no_investment_advice_acknowledged boolean not null default false;
-
-alter table public.checkout_consent_audits
-    add column if not exists no_investment_advice_acknowledged_at timestamptz not null default now();
-
-alter table public.checkout_consent_audits
-    add column if not exists withdrawal_consent_accepted boolean not null default false;
-
-alter table public.checkout_consent_audits
-    add column if not exists withdrawal_loss_acknowledged boolean not null default false;
-
-alter table public.checkout_consent_audits
-    add column if not exists subscription_renewal_consent_version text not null default '1.0';
-
-alter table public.checkout_consent_audits
-    add column if not exists subscription_renewal_accepted boolean not null default false;
-
-alter table public.checkout_consent_audits
-    add column if not exists age_confirmation_accepted boolean not null default false;
-
-alter table public.checkout_consent_audits
-    add column if not exists age_confirmation_accepted_at timestamptz;
-
-alter table public.checkout_consent_audits
-    add column if not exists updated_at timestamptz not null default now();
 
 drop trigger if exists set_checkout_consent_audits_updated_at on public.checkout_consent_audits;
 create trigger set_checkout_consent_audits_updated_at
@@ -434,7 +345,6 @@ alter table public.account_security_events enable row level security;
 alter table public.user_consents enable row level security;
 alter table public.checkout_consent_audits enable row level security;
 
-drop policy if exists "public read market_data" on public.market_data;
 drop policy if exists "subscribers read market_data" on public.market_data;
 create policy "subscribers read market_data"
     on public.market_data
@@ -442,7 +352,6 @@ create policy "subscribers read market_data"
     to authenticated
     using (public.has_active_subscription());
 
-drop policy if exists "public read signals" on public.signals;
 drop policy if exists "subscribers read signals" on public.signals;
 create policy "subscribers read signals"
     on public.signals
@@ -456,8 +365,6 @@ create policy "accounts read own profile"
     for select
     to authenticated
     using (id = auth.uid() or public.is_account_admin());
-
-drop policy if exists "accounts update own profile" on public.user_accounts;
 
 drop policy if exists "accounts read own subscription" on public.subscriptions;
 create policy "accounts read own subscription"

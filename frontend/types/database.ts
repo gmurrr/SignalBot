@@ -137,12 +137,6 @@ export interface CheckoutConsentAuditRow {
   id: string;
   user_id: string;
   email: string;
-  terms_version: string;
-  terms_accepted_at: string;
-  privacy_version: string;
-  privacy_policy_version: string;
-  privacy_policy_language: LegalLanguage;
-  accepted_privacy_policy_at: string;
   cookie_policy_version: string | null;
   accepted_cookie_policy_at: string | null;
   risk_warning_version: string;
@@ -158,8 +152,6 @@ export interface CheckoutConsentAuditRow {
   subscription_renewal_consent_version: string;
   subscription_renewal_accepted: boolean;
   subscription_renewal_accepted_at: string;
-  age_confirmation_accepted: boolean;
-  age_confirmation_accepted_at: string | null;
   checkout_provider: string;
   checkout_session_id: string | null;
   checkout_url: string | null;
@@ -288,12 +280,6 @@ export type Database = {
           id?: string;
           user_id: string;
           email: string;
-          terms_version: string;
-          terms_accepted_at: string;
-          privacy_version?: string;
-          privacy_policy_version?: string;
-          privacy_policy_language?: LegalLanguage;
-          accepted_privacy_policy_at: string;
           cookie_policy_version?: string | null;
           accepted_cookie_policy_at?: string | null;
           risk_warning_version?: string;
@@ -309,8 +295,6 @@ export type Database = {
           subscription_renewal_consent_version?: string;
           subscription_renewal_accepted?: boolean;
           subscription_renewal_accepted_at: string;
-          age_confirmation_accepted?: boolean;
-          age_confirmation_accepted_at?: string | null;
           checkout_provider: string;
           checkout_session_id?: string | null;
           checkout_url?: string | null;
