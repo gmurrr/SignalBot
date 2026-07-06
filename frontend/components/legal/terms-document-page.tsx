@@ -34,6 +34,7 @@ type LegalBlock =
     }
   | {
       items: string[];
+      start: number;
       type: "list";
     };
 
@@ -126,7 +127,7 @@ function LegalBlockView({ block }: { block: LegalBlock }) {
 
   if (block.type === "list") {
     return (
-      <ol className="list-decimal space-y-4 pl-6 text-sm leading-8 text-muted marker:text-brass">
+      <ol className="list-decimal space-y-4 pl-6 text-sm leading-8 text-muted marker:text-brass" start={block.start}>
         {block.items.map((item) => (
           <li className="break-words" key={item}>
             {item}
@@ -149,6 +150,7 @@ function parseLegalMarkdown(markdown: string): LegalBlock[] {
   const lines = markdown.replace(/\r\n/g, "\n").split("\n");
   let paragraph: string[] = [];
   let listItems: string[] = [];
+  let listStart: number | null = null;
 
   function flushParagraph() {
     if (!paragraph.length) {
@@ -175,9 +177,11 @@ function parseLegalMarkdown(markdown: string): LegalBlock[] {
 
     blocks.push({
       items: listItems,
+      start: listStart ?? 1,
       type: "list"
     });
     listItems = [];
+    listStart = null;
   }
 
   for (const line of lines) {
@@ -208,10 +212,13 @@ function parseLegalMarkdown(markdown: string): LegalBlock[] {
       continue;
     }
 
-    const listMatch = /^\d+\.\s+(.+)$/.exec(trimmed);
+    const listMatch = /^(\d+)\.\s+(.+)$/.exec(trimmed);
     if (listMatch) {
       flushParagraph();
-      listItems.push(listMatch[1].trim());
+      if (!listItems.length) {
+        listStart = Number(listMatch[1]);
+      }
+      listItems.push(listMatch[2].trim());
       continue;
     }
 
