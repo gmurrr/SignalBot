@@ -1,12 +1,12 @@
-export const TERMS_VERSION = "1.1";
-export const TERMS_EFFECTIVE_DATE = "07.06.2026";
-export const TERMS_EFFECTIVE_DATE_EN = "07.06.2026";
-export const PRIVACY_VERSION = "1.2";
-export const PRIVACY_EFFECTIVE_DATE = "07.06.2026";
-export const PRIVACY_EFFECTIVE_DATE_EN = "07.06.2026";
-export const COOKIE_POLICY_VERSION = "1.1";
-export const COOKIE_POLICY_EFFECTIVE_DATE = "07.06.2026";
-export const COOKIE_POLICY_EFFECTIVE_DATE_EN = "07.06.2026";
+export const TERMS_VERSION = "1.2";
+export const TERMS_EFFECTIVE_DATE = "08.07.2026";
+export const TERMS_EFFECTIVE_DATE_EN = "08.07.2026";
+export const PRIVACY_VERSION = "1.3";
+export const PRIVACY_EFFECTIVE_DATE = "08.07.2026";
+export const PRIVACY_EFFECTIVE_DATE_EN = "08.07.2026";
+export const COOKIE_POLICY_VERSION = "1.2";
+export const COOKIE_POLICY_EFFECTIVE_DATE = "08.07.2026";
+export const COOKIE_POLICY_EFFECTIVE_DATE_EN = "08.07.2026";
 export const RISK_WARNING_VERSION = "1.0";
 export const WITHDRAWAL_CONSENT_VERSION = "1.0";
 export const SUBSCRIPTION_RENEWAL_CONSENT_VERSION = "1.0";
@@ -26,8 +26,8 @@ export const LEGAL_DOCUMENTS = {
 
 export const LEGAL_LINKS = {
   cookie: "/pl/polityka-cookies",
-  cookiePdf: "/files/polityka-cookies-zeta-signals-pl-v1-1-final.pdf",
-  cookiePdfEn: "/files/cookie-policy-zeta-signals-en-v1-1-final.pdf",
+  cookiePdf: "/files/polityka-cookies-zeta-signals-pl-v1-2-final.pdf",
+  cookiePdfEn: "/files/cookie-policy-zeta-signals-en-v1-2-final.pdf",
   enCookie: "/en/cookie-policy",
   contact: "mailto:kontakt@zetasignals.pl",
   enPrivacy: "/en/privacy-policy",
@@ -41,10 +41,10 @@ export const LEGAL_LINKS = {
   riskWarning: "/pl/ostrzezenie-o-ryzyku",
   subscriptionManagement: "/billing",
   terms: "/pl/regulamin",
-  privacyPdf: "/files/polityka-prywatnosci-zeta-signals-pl-v1-2-final.pdf",
-  privacyPdfEn: "/files/privacy-policy-zeta-signals-en-v1-2-final.pdf",
-  termsPdf: "/files/regulamin-zeta-signals-pl-v1-1-final.pdf",
-  termsPdfEn: "/files/terms-zeta-signals-en-v1-1-final.pdf"
+  privacyPdf: "/files/polityka-prywatnosci-zeta-signals-pl-v1-3-final.pdf",
+  privacyPdfEn: "/files/privacy-policy-zeta-signals-en-v1-3-final.pdf",
+  termsPdf: "/files/regulamin-zeta-signals-pl-v1-2-final.pdf",
+  termsPdfEn: "/files/terms-zeta-signals-en-v1-2-final.pdf"
 } as const;
 
 export const PUBLIC_RISK_DISCLAIMER =

@@ -1,5 +1,7 @@
 import type { JsonRecord, SubscriptionStatus } from "@/types/database";
 
+export const PENDING_PAYMENT_OPERATOR = "pending_payment_operator";
+
 export type CheckoutSessionInput = {
   userId: string;
   email: string;

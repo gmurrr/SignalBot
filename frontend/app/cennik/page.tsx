@@ -25,7 +25,7 @@ export default function PricingPage() {
             Zeta Signals Premium
           </h1>
           <p className="mt-6 max-w-3xl text-sm leading-7 text-muted">
-            Miesięczna subskrypcja daje dostęp do Realtime Cockpit oraz Alertów Analitycznych XAU/USD po potwierdzeniu płatności przez Lemon Squeezy albo skonfigurowanego Operatora Płatności.
+            Miesięczna subskrypcja da dostęp do Realtime Cockpit oraz Alertów Analitycznych XAU/USD po uruchomieniu wybranego Operatora Płatności i potwierdzeniu płatności.
           </p>
         </section>
 

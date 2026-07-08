@@ -11,6 +11,7 @@ import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { fetchWithSupabaseSession } from "@/lib/auth/api";
 import { getSubscriptionLabel, type AccountOverview } from "@/lib/account/subscription";
+import { PENDING_PAYMENT_OPERATOR } from "@/lib/billing/types";
 import { useI18n } from "@/lib/i18n/provider";
 import { CHECKOUT_CONSENT_TEXT, CHECKOUT_CONSENT_TEXT_EN, getLocalizedLegalLinks } from "@/lib/legal/constants";
 import type { SubscriptionStatus } from "@/types/database";
@@ -44,6 +45,7 @@ export function BillingShell() {
   const [isCheckoutPending, setIsCheckoutPending] = useState(false);
   const [isMockPending, setIsMockPending] = useState(false);
   const [checkoutConsents, setCheckoutConsents] = useState(initialCheckoutConsents);
+  const isPaymentOperatorPending = state.status === "ready" && state.overview.provider === PENDING_PAYMENT_OPERATOR;
 
   const statusLabel = useMemo(() => {
     if (state.status !== "ready") {
@@ -55,6 +57,7 @@ export function BillingShell() {
   }, [dict.billing.status, state]);
 
   const allCheckoutConsentsAccepted = Object.values(checkoutConsents).every(Boolean);
+  const isCheckoutDisabled = isCheckoutPending || state.status !== "ready" || isPaymentOperatorPending || !allCheckoutConsentsAccepted;
 
   async function loadOverview() {
     setState({ status: "loading" });
@@ -85,6 +88,11 @@ export function BillingShell() {
   }, []);
 
   async function startCheckout() {
+    if (isPaymentOperatorPending) {
+      setNotice(dict.billing.operatorPendingNotice);
+      return;
+    }
+
     if (!allCheckoutConsentsAccepted) {
       setNotice(dict.billing.consentsRequired);
       return;
@@ -185,7 +193,10 @@ export function BillingShell() {
               <Metric label={dict.billing.emailLabel} value={state.overview.account?.email ?? "-"} />
               <Metric label={dict.billing.statusLabel} value={statusLabel} />
               <Metric label={dict.billing.planLabel} value={state.overview.subscription?.plan_code ?? "free"} />
-              <Metric label={dict.billing.providerLabel} value={state.overview.subscription?.provider ?? state.overview.provider} />
+              <Metric
+                label={dict.billing.providerLabel}
+                value={formatPaymentProvider(state.overview.provider, state.overview.subscription?.provider, dict.billing.operatorPendingMetric, dict.billing.providerConfigured)}
+              />
               <Metric label={dict.billing.periodEndLabel} value={formatDate(state.overview.subscription?.current_period_end, locale)} />
             </div>
           ) : null}
@@ -220,6 +231,12 @@ export function BillingShell() {
               <p className="mt-2 text-lg text-brass">{planCode}</p>
             </div>
           </div>
+          {isPaymentOperatorPending ? (
+            <div className="mt-6 rounded-2xl border border-[rgba(212,175,55,0.2)] bg-[rgba(212,175,55,0.08)] p-5">
+              <p className="text-xs uppercase tracking-[0.28em] text-brass">{dict.billing.operatorPendingTitle}</p>
+              <p className="mt-3 text-sm leading-7 text-muted">{dict.billing.operatorPendingBody}</p>
+            </div>
+          ) : null}
           <Separator className="my-8" />
           <div className="grid gap-4 md:grid-cols-3">
             {dict.billing.features.map((feature) => (
@@ -288,9 +305,9 @@ export function BillingShell() {
           </div>
           <p className="mt-5 text-sm leading-7 text-muted">{dict.billing.renewalNotice}</p>
           <div className="mt-8 flex flex-wrap gap-3">
-            <Button type="button" onClick={startCheckout} disabled={isCheckoutPending || !allCheckoutConsentsAccepted}>
+            <Button type="button" onClick={startCheckout} disabled={isCheckoutDisabled}>
               {isCheckoutPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <CreditCard className="h-4 w-4" />}
-              {dict.billing.checkoutCta}
+              {isPaymentOperatorPending ? dict.billing.operatorPendingCta : dict.billing.checkoutCta}
             </Button>
             {state.status === "ready" && state.overview.provider === "mock" ? (
               <Button type="button" variant="outline" onClick={activateMock} disabled={isMockPending || !allCheckoutConsentsAccepted}>
@@ -321,6 +338,18 @@ function Metric({ label, value }: { label: string; value: string }) {
       <p className="mt-2 break-words text-lg text-foreground">{value}</p>
     </div>
   );
+}
+
+function formatPaymentProvider(configuredProvider: string, subscriptionProvider: string | null | undefined, pendingLabel: string, configuredLabel: string) {
+  if (configuredProvider === PENDING_PAYMENT_OPERATOR) {
+    return pendingLabel;
+  }
+
+  if (configuredProvider === "mock" || subscriptionProvider === "mock") {
+    return "mock";
+  }
+
+  return configuredLabel;
 }
 
 function formatDate(value: string | null | undefined, locale: string) {

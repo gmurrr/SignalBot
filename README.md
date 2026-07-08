@@ -69,12 +69,13 @@ SIGNAL_SYMBOLS=XAUUSD,GOLD
 NEXT_PUBLIC_DASHBOARD_REFRESH_MS=15000
 NEXT_ALLOWED_DEV_ORIGINS=192.168.*.*
 ENABLE_MOCK_BILLING=false
-BILLING_PROVIDER=lemon_squeezy
+BILLING_PROVIDER=
 BILLING_WEBHOOK_SECRET=strong-random-secret
-BILLING_CHECKOUT_URL=https://checkout-provider.example/session
+BILLING_CHECKOUT_URL=
+NEXT_PUBLIC_BILLING_PORTAL_URL=
 ```
 
-`BILLING_PROVIDER` może przyjąć nazwę operatora, np. `stripe`, `paddle`, `payu`, `easycart`, `lemon_squeezy` albo własną nazwę adaptera. Webhook powinien aktualizować `subscriptions`; frontend nigdy sam nie nadaje produkcyjnego dostępu.
+Puste `BILLING_PROVIDER` oznacza stan oczekiwania na operatora płatności. Po wyborze operatora zmienna może przyjąć jego nazwę, np. `stripe`, `paddle`, `payu`, `easycart` albo własną nazwę adaptera. Webhook powinien aktualizować `subscriptions`; frontend nigdy sam nie nadaje produkcyjnego dostępu.
 
 ## Szybki Start Backend
 

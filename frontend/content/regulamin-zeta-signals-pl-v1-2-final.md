@@ -1,7 +1,7 @@
 # REGULAMIN ŚWIADCZENIA USŁUG DROGĄ ELEKTRONICZNĄ
 ## SERWISU ZETA SIGNALS
 
-Data wejścia w życie: 07.06.2026  |  Wersja: 1.1
+Data wejścia w życie: 08.07.2026  |  Wersja: 1.2
 
 
 ## § 1. Postanowienia ogólne
@@ -30,21 +30,25 @@ Data wejścia w życie: 07.06.2026  |  Wersja: 1.1
 
 2. Konto - indywidualny panel Użytkownika utworzony po rejestracji w Serwisie, umożliwiający korzystanie z wybranych funkcji Serwisu.
 
-3. Realtime Cockpit - główny panel Serwisu dostępny dla Użytkownika posiadającego aktywną Subskrypcję, w którym prezentowane są Alerty Analityczne oraz historia wybranych Alertów Analitycznych.
+3. Realtime Cockpit - główny panel Serwisu dostępny dla Użytkownika posiadającego aktywny Dostęp Płatny, w którym prezentowane są Alerty Analityczne oraz historia wybranych Alertów Analitycznych.
 
 4. Serwis - platforma internetowa Zeta Signals dostępna pod adresem https://www.zetasignals.pl/.
 
-5. Subskrypcja - odpłatny, odnawialny miesięcznie dostęp do płatnych funkcji Serwisu, w szczególności do Realtime Cockpit.
+5. Dostęp Płatny - odpłatny dostęp do wybranych funkcji Serwisu, w szczególności do Realtime Cockpit, udostępniany na okres, za cenę i na zasadach wskazanych Użytkownikowi przed złożeniem zamówienia.
 
-6. Użytkownik - osoba fizyczna, osoba prawna albo jednostka organizacyjna korzystająca z Serwisu.
+6. Plan Jednorazowy - rodzaj Dostępu Płatnego udostępniany na oznaczony okres bez automatycznego odnowienia, chyba że Użytkownik samodzielnie dokona kolejnego zakupu.
 
-7. Konsument - Użytkownik będący osobą fizyczną, który zawiera umowę z Usługodawcą lub korzysta z Serwisu w celu niezwiązanym bezpośrednio z jego działalnością gospodarczą lub zawodową.
+7. Subskrypcja - rodzaj Dostępu Płatnego odnawiany automatycznie za kolejne okresy rozliczeniowe, wyłącznie jeżeli taki model został wyraźnie przedstawiony Użytkownikowi przed złożeniem zamówienia i zaakceptowany przez Użytkownika.
 
-8. Przedsiębiorca na prawach konsumenta - osoba fizyczna zawierająca umowę bezpośrednio związaną z jej działalnością gospodarczą, gdy z treści tej umowy wynika, że nie ma ona dla tej osoby charakteru zawodowego.
+8. Użytkownik - osoba fizyczna, osoba prawna albo jednostka organizacyjna korzystająca z Serwisu.
 
-9. Operator Płatności - zewnętrzny podmiot obsługujący płatności, fakturowanie, subskrypcje, podatki transakcyjne oraz rozliczenia, tj. Lemon Squeezy albo inny podmiot wskazany przez Usługodawcę.
+9. Konsument - Użytkownik będący osobą fizyczną, który zawiera umowę z Usługodawcą lub korzysta z Serwisu w celu niezwiązanym bezpośrednio z jego działalnością gospodarczą lub zawodową.
 
-10. Treść Cyfrowa / Usługa Cyfrowa - dane lub funkcjonalności wytwarzane i dostarczane w postaci cyfrowej, w szczególności dostęp do panelu, Alertów Analitycznych, historii Alertów Analitycznych oraz funkcji Serwisu.
+10. Przedsiębiorca na prawach konsumenta - osoba fizyczna zawierająca umowę bezpośrednio związaną z jej działalnością gospodarczą, gdy z treści tej umowy wynika, że nie ma ona dla tej osoby charakteru zawodowego.
+
+11. Operator Płatności - zewnętrzny podmiot udostępniający lub obsługujący określone metody płatności, rozliczenia, subskrypcje, dokumenty sprzedaży, zwroty, podatki transakcyjne lub inne elementy procesu zakupu, w zakresie wynikającym z przyjętego modelu współpracy i informacji przedstawionych Użytkownikowi przed dokonaniem płatności.
+
+12. Treść Cyfrowa / Usługa Cyfrowa - dane lub funkcjonalności wytwarzane i dostarczane w postaci cyfrowej, w szczególności dostęp do panelu, Alertów Analitycznych, historii Alertów Analitycznych oraz funkcji Serwisu.
 
 ## § 3. Charakter Serwisu i ograniczenia regulacyjne
 
@@ -106,15 +110,17 @@ Data wejścia w życie: 07.06.2026  |  Wersja: 1.1
 
 ## § 6. Zakres usług świadczonych drogą elektroniczną
 
-1. Usługodawca świadczy za pośrednictwem Serwisu następujące usługi drogą elektroniczną: umożliwienie utworzenia Konta; umożliwienie logowania do Konta; umożliwienie wykupienia Subskrypcji; udostępnienie Realtime Cockpit dla Użytkowników posiadających aktywną Subskrypcję; prezentowanie Alertów Analitycznych; prezentowanie historii wybranych Alertów Analitycznych, obejmującej zarówno Alerty zakończone wynikiem dodatnim, jak i ujemnym; przesyłanie komunikatów technicznych, systemowych lub organizacyjnych dotyczących Serwisu.
+1. Usługodawca świadczy za pośrednictwem Serwisu następujące usługi drogą elektroniczną: umożliwienie utworzenia Konta; umożliwienie logowania do Konta; udostępnienie bezpłatnych funkcji Serwisu, jeżeli są dostępne; umożliwienie zakupu Dostępu Płatnego, jeżeli sprzedaż została uruchomiona; udostępnienie Realtime Cockpit Użytkownikom posiadającym aktywny Dostęp Płatny; prezentowanie Alertów Analitycznych; prezentowanie historii wybranych Alertów Analitycznych, obejmującej zarówno Alerty zakończone wynikiem dodatnim, jak i ujemnym; przesyłanie komunikatów technicznych, systemowych lub organizacyjnych dotyczących Serwisu.
 
-2. Usługodawca może rozwijać, zmieniać, ograniczać albo usuwać poszczególne funkcje Serwisu, o ile nie narusza to praw nabytych Użytkownika w zakresie już opłaconego okresu Subskrypcji, z zastrzeżeniem postanowień dotyczących awarii, bezpieczeństwa, zmian prawnych i technicznych.
+2. Do czasu uruchomienia w Serwisie aktywnej metody płatności lub integracji z Operatorem Płatności możliwość zakupu Dostępu Płatnego może pozostawać niedostępna. W takim okresie Użytkownik może korzystać wyłącznie z funkcji udostępnionych bezpłatnie lub testowo.
 
-3. Usługodawca nie gwarantuje określonej liczby Alertów Analitycznych w danym dniu, tygodniu, miesiącu ani okresie rozliczeniowym.
+3. Usługodawca może rozwijać, zmieniać, ograniczać albo usuwać poszczególne funkcje Serwisu, o ile nie narusza to praw nabytych Użytkownika w zakresie już opłaconego okresu Dostępu Płatnego, z zastrzeżeniem postanowień dotyczących awarii, bezpieczeństwa, zmian prawnych i technicznych.
 
-4. Użytkownik przyjmuje do wiadomości, że algorytm może przez dłuższy czas nie wygenerować żadnego Alertu Analitycznego, jeżeli warunki rynkowe nie spełniają założeń matematycznych przyjętych przez system.
+4. Usługodawca nie gwarantuje określonej liczby Alertów Analitycznych w danym dniu, tygodniu, miesiącu ani okresie dostępu.
 
-5. Brak Alertów Analitycznych w danym okresie nie stanowi nienależytego wykonania umowy, o ile wynika z założeń działania algorytmu, warunków rynkowych lub braku spełnienia kryteriów generowania Alertów.
+5. Użytkownik przyjmuje do wiadomości, że algorytm może przez dłuższy czas nie wygenerować żadnego Alertu Analitycznego, jeżeli warunki rynkowe nie spełniają założeń matematycznych przyjętych przez system.
+
+6. Brak Alertów Analitycznych w danym okresie nie stanowi nienależytego wykonania umowy, o ile wynika z założeń działania algorytmu, warunków rynkowych lub braku spełnienia kryteriów generowania Alertów.
 
 ## § 7. Warunki techniczne korzystania z Serwisu
 
@@ -148,49 +154,55 @@ Data wejścia w życie: 07.06.2026  |  Wersja: 1.1
 
 10. Usługodawca może odmówić rejestracji, zawiesić Konto albo zakończyć świadczenie usług, jeżeli poweźmie uzasadnione podejrzenie, że Użytkownik nie spełnia wymogu pełnoletności, pełnej zdolności do czynności prawnych albo korzysta z Serwisu z jurysdykcji, w której korzystanie z tego rodzaju usług może być niedozwolone, ograniczone lub obciążone istotnym ryzykiem regulacyjnym.
 
-## § 9. Subskrypcja i płatności
+## § 9. Plany płatne i płatności
 
-1. Dostęp do Realtime Cockpit oraz Alertów Analitycznych wymaga posiadania aktywnej Subskrypcji.
+1. Dostęp do Realtime Cockpit, Alertów Analitycznych lub innych oznaczonych funkcji może wymagać aktywnego Dostępu Płatnego, zgodnie z ofertą prezentowaną w Serwisie.
 
-2. Subskrypcja jest odpłatna i odnawiana automatycznie w cyklach miesięcznych, chyba że Użytkownik anuluje Subskrypcję przed rozpoczęciem kolejnego okresu rozliczeniowego.
+2. Przed złożeniem zamówienia Użytkownik otrzymuje jasną informację co najmniej o: cenie i walucie; okresie Dostępu Płatnego; tym, czy zakup ma charakter jednorazowy czy odnawialny; częstotliwości i zasadach ewentualnego automatycznego odnowienia; dostępnych metodach płatności; tożsamości Operatora Płatności, jeżeli bierze udział w transakcji; podatkach, opłatach i innych kosztach, o ile mają zastosowanie i mogą zostać ustalone przed zawarciem umowy.
 
-3. Cena Subskrypcji jest prezentowana Użytkownikowi przed dokonaniem płatności.
+3. Dostęp Płatny może być oferowany jako Plan Jednorazowy albo Subskrypcja. Automatyczne odnowienie i kolejne obciążenia mogą nastąpić wyłącznie wtedy, gdy taki model został wyraźnie przedstawiony Użytkownikowi przed złożeniem zamówienia i świadomie przez niego zaakceptowany.
 
-4. Płatności są obsługiwane przez Operatora Płatności.
+4. Do czasu udostępnienia w Serwisie aktywnej metody płatności zawarcie umowy o Dostęp Płatny nie jest możliwe. Samo utworzenie Konta, zapisanie się na listę oczekujących albo wyświetlenie informacji o planach nie powoduje obowiązku zapłaty.
 
-5. Operator Płatności może działać jako Merchant of Record, co oznacza, że w zakresie rozliczenia transakcji, pobrania płatności, wystawienia dokumentów sprzedaży, podatków transakcyjnych, obsługi płatności, zwrotów, chargebacków i fakturowania mogą mieć zastosowanie regulaminy, polityki i procedury Operatora Płatności.
+5. Płatności mogą być obsługiwane przez Operatora Płatności wskazanego Użytkownikowi przed złożeniem zamówienia. W zależności od przyjętego modelu Operator Płatności może działać w szczególności jako dostawca usług płatniczych, procesor płatności, podmiot obsługujący subskrypcję albo formalny sprzedawca w modelu Merchant of Record.
 
-6. Usługodawca nie przechowuje pełnych danych kart płatniczych Użytkownika.
+6. Regulaminy, polityki oraz procedury Operatora Płatności mogą mieć zastosowanie wyłącznie w zakresie usług faktycznie świadczonych przez tego Operatora. Przed dokonaniem płatności Użytkownik otrzyma możliwość zapoznania się z właściwymi dokumentami Operatora Płatności.
 
-7. Użytkownik zobowiązany jest zapoznać się z regulaminami i politykami Operatora Płatności przed dokonaniem płatności.
+7. Usługodawca nie przechowuje pełnych danych kart płatniczych, danych uwierzytelniających do rachunków płatniczych, kluczy prywatnych ani innych poufnych danych płatniczych Użytkownika, chyba że wyraźnie wskazano inaczej i jest to zgodne z obowiązującymi przepisami oraz standardami bezpieczeństwa.
 
-8. W przypadku niepowodzenia płatności, cofnięcia płatności, chargebacku, podejrzenia oszustwa płatniczego lub naruszenia zasad Operatora Płatności, dostęp do płatnych funkcji Serwisu może zostać zawieszony albo zakończony.
+8. Aktywacja Dostępu Płatnego następuje po otrzymaniu wiarygodnego potwierdzenia płatności lub innego statusu uprawniającego do aktywacji, przekazanego przez Operatora Płatności albo ustalonego zgodnie z udostępnioną metodą płatności.
 
-9. Usługodawca może zmienić cenę Subskrypcji. Zmiana ceny nie wpływa na już opłacony okres rozliczeniowy. Użytkownik zostanie poinformowany o zmianie ceny przed jej zastosowaniem do kolejnego okresu rozliczeniowego, o ile wymagają tego przepisy prawa lub zasady Operatora Płatności.
+9. W przypadku niepowodzenia płatności, cofnięcia płatności, chargebacku, zwrotu środków, uzasadnionego podejrzenia oszustwa płatniczego, naruszenia zasad Operatora Płatności albo obowiązków prawnych związanych z bezpieczeństwem transakcji, Dostęp Płatny może zostać nieaktywowany, zawieszony albo zakończony.
 
-10. Brak korzystania z Serwisu przez Użytkownika w okresie aktywnej Subskrypcji nie stanowi podstawy do zwrotu opłaty.
+10. Usługodawca może zmieniać ceny planów. Zmiana ceny nie wpływa na już opłacony okres Dostępu Płatnego. W przypadku Subskrypcji nowa cena może zostać zastosowana do przyszłych okresów wyłącznie po uprzednim przekazaniu Użytkownikowi jasnej informacji oraz, jeżeli wymagają tego przepisy prawa lub charakter zmiany, po uzyskaniu odpowiedniej zgody Użytkownika.
 
-## § 10. Anulowanie Subskrypcji
+11. Brak korzystania z Serwisu przez Użytkownika w okresie aktywnego Dostępu Płatnego nie stanowi samodzielnej podstawy do zwrotu opłaty, z zastrzeżeniem bezwzględnie obowiązujących przepisów prawa.
 
-1. Użytkownik może anulować Subskrypcję w dowolnym momencie za pośrednictwem panelu Użytkownika, linku zarządzania Subskrypcją, panelu Operatora Płatności albo poprzez kontakt z Usługodawcą, jeżeli taka forma zostanie udostępniona.
+## § 10. Czas trwania, odnowienie i rezygnacja z Dostępu Płatnego
 
-2. Anulowanie Subskrypcji powoduje wyłączenie automatycznego odnowienia Subskrypcji na kolejny okres rozliczeniowy.
+1. Plan Jednorazowy wygasa z końcem okresu wskazanego przed zakupem i nie odnawia się automatycznie. Dalsze korzystanie z płatnych funkcji wymaga dokonania kolejnego zakupu, jeżeli taki plan jest dostępny.
 
-3. Po anulowaniu Subskrypcji Użytkownik zachowuje dostęp do płatnych funkcji Serwisu do końca aktualnie opłaconego okresu rozliczeniowego, chyba że dostęp zostanie zakończony wcześniej z powodu naruszenia Regulaminu, nadużycia, chargebacku albo wymogu prawnego.
+2. Subskrypcja odnawia się automatycznie wyłącznie na zasadach, w cyklu i za cenę przedstawioną Użytkownikowi przed złożeniem zamówienia oraz zaakceptowaną przez Użytkownika.
 
-4. Usługodawca nie dokonuje proporcjonalnych zwrotów za niewykorzystaną część okresu rozliczeniowego, chyba że bezwzględnie obowiązujące przepisy prawa albo wiążące zasady Operatora Płatności stanowią inaczej.
+3. Użytkownik może wyłączyć automatyczne odnowienie Subskrypcji w sposób wskazany w Serwisie, w panelu Operatora Płatności, za pośrednictwem linku zarządzania Subskrypcją albo poprzez kontakt z Usługodawcą, jeżeli dana forma została udostępniona.
 
-5. Niezależnie od ust. 4, Usługodawca może indywidualnie rozpatrzyć zwrot albo inną rekompensatę w przypadku udokumentowanej, długotrwałej i zawinionej przez Usługodawcę niedostępności płatnych funkcji Serwisu, z zastrzeżeniem bezwzględnie obowiązujących przepisów prawa oraz zasad Operatora Płatności.
+4. Wyłączenie automatycznego odnowienia nie powoduje utraty dostępu do końca już opłaconego okresu, chyba że dostęp zostanie zakończony wcześniej z powodu naruszenia Regulaminu, nadużycia, zwrotu płatności, chargebacku albo wymogu prawnego.
 
-6. Samo zaprzestanie korzystania z Serwisu, usunięcie aplikacji, brak logowania albo brak używania Konta nie oznacza anulowania Subskrypcji.
+5. Usunięcie Konta nie zawsze powoduje automatyczne wyłączenie przyszłych obciążeń, jeżeli Subskrypcja jest technicznie zarządzana przez Operatora Płatności. Użytkownik powinien skorzystać także z właściwego mechanizmu anulowania wskazanego przed zakupem lub po zakupie.
+
+6. Usługodawca nie dokonuje proporcjonalnych zwrotów za niewykorzystaną część opłaconego okresu, chyba że bezwzględnie obowiązujące przepisy prawa, uznana reklamacja albo wiążące zasady Operatora Płatności stanowią inaczej.
+
+7. Niezależnie od ust. 6, Usługodawca może indywidualnie rozpatrzyć zwrot albo inną rekompensatę w przypadku udokumentowanej, długotrwałej i zawinionej przez Usługodawcę niedostępności płatnych funkcji Serwisu, z zastrzeżeniem bezwzględnie obowiązujących przepisów prawa.
+
+8. Samo zaprzestanie korzystania z Serwisu, brak logowania albo brak używania Konta nie oznacza rezygnacji z Subskrypcji ani wyłączenia jej automatycznego odnowienia.
 
 ## § 11. Brak darmowego okresu próbnego
 
-1. Serwis nie oferuje darmowego okresu próbnego, chyba że Usługodawca wyraźnie postanowi inaczej w odrębnej promocji.
+1. Serwis nie oferuje darmowego okresu próbnego, chyba że Usługodawca wyraźnie postanowi inaczej w odrębnej ofercie lub promocji.
 
-2. Użytkownik przyjmuje do wiadomości, że brak darmowego okresu próbnego wynika ze specyfiki działania algorytmu, który może generować Alerty Analityczne rzadko i wyłącznie w określonych warunkach rynkowych.
+2. Użytkownik przyjmuje do wiadomości, że brak darmowego okresu próbnego może wynikać ze specyfiki działania algorytmu, który może generować Alerty Analityczne rzadko i wyłącznie w określonych warunkach rynkowych.
 
-3. Zakup Subskrypcji nie gwarantuje otrzymania określonej liczby Alertów Analitycznych w okresie rozliczeniowym.
+3. Zakup Dostępu Płatnego nie gwarantuje otrzymania określonej liczby Alertów Analitycznych w okresie dostępu.
 
 ## § 12. Prawo odstąpienia od umowy i zgoda na natychmiastowe świadczenie
 
@@ -202,11 +214,13 @@ Data wejścia w życie: 07.06.2026  |  Wersja: 1.1
 
 4. Zgoda, o której mowa w ust. 2, powinna zostać wyrażona przez Użytkownika w sposób wyraźny, świadomy i odrębny od akceptacji Regulaminu.
 
-5. Użytkownik przyjmuje do wiadomości, że po aktywacji Subskrypcji i uzyskaniu dostępu do płatnych funkcji Serwisu, w szczególności Realtime Cockpit i Alertów Analitycznych, opłata za Subskrypcję nie podlega zwrotowi z tytułu odstąpienia od umowy, jeżeli zostały spełnione wszystkie ustawowe przesłanki utraty prawa odstąpienia.
+5. Użytkownik przyjmuje do wiadomości, że po aktywacji Dostępu Płatnego i uzyskaniu dostępu do płatnych funkcji Serwisu, w szczególności Realtime Cockpit i Alertów Analitycznych, opłata może nie podlegać zwrotowi z tytułu odstąpienia od umowy, jeżeli zostały spełnione wszystkie ustawowe przesłanki utraty prawa odstąpienia.
 
 6. Postanowienia niniejszego paragrafu nie ograniczają bezwzględnie obowiązujących uprawnień Konsumenta ani Przedsiębiorcy na prawach konsumenta wynikających z przepisów prawa, w szczególności dotyczących niezgodności Treści Cyfrowej lub Usługi Cyfrowej z umową.
 
 7. Usługodawca może utrwalać informację o wyrażeniu przez Użytkownika zgody na rozpoczęcie świadczenia Usługi Cyfrowej przed upływem terminu odstąpienia oraz o przyjęciu do wiadomości utraty prawa odstąpienia, w szczególności poprzez zapis daty, godziny, wersji dokumentów, identyfikatora Konta, adresu e-mail, identyfikatora transakcji oraz innych danych audytowych niezbędnych do wykazania wykonania obowiązków informacyjnych.
+
+8. Jeżeli wymagają tego przepisy prawa, potwierdzenie zawarcia umowy oraz otrzymania zgód i oświadczeń Użytkownika zostanie przekazane na trwałym nośniku, w szczególności w wiadomości e-mail.
 
 ## § 13. Reklamacje
 
@@ -218,9 +232,9 @@ Data wejścia w życie: 07.06.2026  |  Wersja: 1.1
 
 4. Odpowiedź na reklamację zostanie przesłana na adres e-mail Użytkownika.
 
-5. Reklamacje dotyczące płatności, faktur, podatków, chargebacków lub technicznego procesu płatności mogą zostać przekierowane do Operatora Płatności, jeżeli dana sprawa pozostaje w zakresie jego odpowiedzialności.
+5. Reklamacje dotyczące płatności, dokumentów sprzedaży, podatków, chargebacków, zwrotów albo technicznego procesu płatności mogą być rozpatrywane przy współudziale Operatora Płatności lub formalnego sprzedawcy, jeżeli dana sprawa pozostaje w zakresie jego odpowiedzialności. Użytkownik zostanie poinformowany o takim przekazaniu lub konieczności kontaktu z właściwym podmiotem.
 
-6. Złożenie reklamacji nie zwalnia Użytkownika z obowiązku terminowego opłacenia Subskrypcji, chyba że bezwzględnie obowiązujące przepisy prawa stanowią inaczej.
+6. Złożenie reklamacji nie zwalnia Użytkownika z obowiązku uregulowania wymagalnych należności, jeżeli takie istnieją, chyba że bezwzględnie obowiązujące przepisy prawa stanowią inaczej.
 
 7. Reklamacja dotycząca wyniku transakcji zawartej przez Użytkownika na rynku finansowym, straty finansowej, poślizgu cenowego u brokera, opóźnienia wykonania zlecenia przez brokera lub decyzji inwestycyjnej Użytkownika nie stanowi reklamacji dotyczącej działania Serwisu.
 
@@ -238,7 +252,7 @@ Data wejścia w życie: 07.06.2026  |  Wersja: 1.1
 
 5. Użytkownik przyjmuje do wiadomości, że korzystanie z Serwisu nie zastępuje własnej analizy rynku, kontroli ryzyka, zarządzania kapitałem ani profesjonalnego doradztwa.
 
-6. Odpowiedzialność Usługodawcy wobec Użytkownika niebędącego Konsumentem ani Przedsiębiorcą na prawach konsumenta, niezależnie od podstawy prawnej roszczenia, jest ograniczona do wysokości opłat faktycznie zapłaconych przez tego Użytkownika za ostatni pełny okres rozliczeniowy poprzedzający zdarzenie będące podstawą roszczenia.
+6. Odpowiedzialność Usługodawcy wobec Użytkownika niebędącego Konsumentem ani Przedsiębiorcą na prawach konsumenta, niezależnie od podstawy prawnej roszczenia, jest ograniczona do wysokości opłat faktycznie zapłaconych przez tego Użytkownika za ostatni opłacony okres Dostępu Płatnego poprzedzający zdarzenie będące podstawą roszczenia.
 
 7. Ograniczenia odpowiedzialności wskazane w Regulaminie nie wyłączają odpowiedzialności, której nie można wyłączyć ani ograniczyć na podstawie bezwzględnie obowiązujących przepisów prawa.
 
@@ -256,7 +270,7 @@ Data wejścia w życie: 07.06.2026  |  Wersja: 1.1
 
 3. Przerwy techniczne mogą być planowane albo nieplanowane.
 
-4. Usługodawca nie ponosi odpowiedzialności za niedostępność Serwisu wynikającą z siły wyższej, awarii dostawców zewnętrznych, awarii Internetu, hostingu, VPS, API, dostawcy danych lub Operatora Płatności, cyberataków, działań organów publicznych, konieczności usunięcia krytycznej podatności bezpieczeństwa albo działań lub zaniechań Użytkownika.
+4. Usługodawca nie ponosi odpowiedzialności za niedostępność Serwisu wynikającą z siły wyższej, awarii dostawców zewnętrznych, awarii Internetu, hostingu, VPS, API, dostawcy danych, Operatora Płatności lub innego elementu infrastruktury zewnętrznej, cyberataków, działań organów publicznych, konieczności usunięcia krytycznej podatności bezpieczeństwa albo działań lub zaniechań Użytkownika, w zakresie, w jakim odpowiedzialność ta może zostać wyłączona na podstawie prawa.
 
 5. Usługodawca może czasowo ograniczyć dostęp do Serwisu, jeżeli jest to konieczne ze względów bezpieczeństwa, prawnych, technicznych lub organizacyjnych.
 
@@ -286,7 +300,7 @@ Data wejścia w życie: 07.06.2026  |  Wersja: 1.1
 
 2. Korzystanie z Serwisu nie powoduje przeniesienia na Użytkownika jakichkolwiek praw własności intelektualnej.
 
-3. Użytkownik otrzymuje wyłącznie ograniczone, niewyłączne, niezbywalne i odwołalne prawo do korzystania z Serwisu w zakresie wynikającym z Regulaminu i aktywnej Subskrypcji.
+3. Użytkownik otrzymuje wyłącznie ograniczone, niewyłączne, niezbywalne i odwołalne prawo do korzystania z Serwisu w zakresie wynikającym z Regulaminu i aktywnego Dostępu Płatnego.
 
 4. Zabronione jest kopiowanie, utrwalanie, rozpowszechnianie, publikowanie, odsprzedawanie, udostępnianie, modyfikowanie, dekompilowanie, analizowanie kodu źródłowego, reverse engineering albo tworzenie produktów pochodnych na podstawie Serwisu bez uprzedniej zgody Usługodawcy.
 
@@ -304,31 +318,31 @@ Data wejścia w życie: 07.06.2026  |  Wersja: 1.1
 
 2. Szczegółowe zasady przetwarzania danych osobowych określa Polityka Prywatności dostępna pod adresem: https://www.zetasignals.pl/pl/polityka-prywatnosci.
 
-3. Dane osobowe Użytkowników mogą być przetwarzane w szczególności w celu świadczenia usług drogą elektroniczną, obsługi Konta, obsługi Subskrypcji, obsługi reklamacji, zapewnienia bezpieczeństwa Serwisu, realizacji obowiązków prawnych, obrony przed roszczeniami lub dochodzenia roszczeń.
+3. Dane osobowe Użytkowników mogą być przetwarzane w szczególności w celu świadczenia usług drogą elektroniczną, obsługi Konta, obsługi Dostępu Płatnego, obsługi reklamacji, zapewnienia bezpieczeństwa Serwisu, realizacji obowiązków prawnych, obrony przed roszczeniami lub dochodzenia roszczeń.
 
-4. W zakresie płatności, fakturowania, podatków i obsługi transakcji dane Użytkownika mogą być przetwarzane także przez Operatora Płatności jako odrębnego administratora albo podmiot przetwarzający, zgodnie z jego regulaminami i politykami prywatności.
+4. Jeżeli w Serwisie zostanie uruchomiona metoda płatności, dane Użytkownika mogą być przetwarzane przez wskazanego Operatora Płatności jako odrębnego administratora, współadministratora albo podmiot przetwarzający, zależnie od rzeczywistego modelu usługi. Tożsamość operatora i zakres przetwarzania zostaną opisane w aktualnej Polityce Prywatności oraz dokumentach udostępnionych przed dokonaniem płatności.
 
 ## § 19. Zawieszenie i usunięcie Konta
 
-1. Usługodawca może zawiesić albo usunąć Konto Użytkownika w przypadku naruszenia Regulaminu, naruszenia przepisów prawa, podejrzenia nadużycia, oszustwa, prania pieniędzy, naruszenia bezpieczeństwa lub chargebacku, udostępniania Konta osobom trzecim, odsprzedaży dostępu do Serwisu, publikowania Alertów Analitycznych poza Serwisem bez zgody Usługodawcy, działania na szkodę Usługodawcy, Serwisu lub innych Użytkowników albo wymogu wynikającego z decyzji organu, przepisów prawa lub zasad Operatora Płatności.
+1. Usługodawca może zawiesić albo usunąć Konto Użytkownika w przypadku naruszenia Regulaminu, naruszenia przepisów prawa, podejrzenia nadużycia, oszustwa, prania pieniędzy, naruszenia bezpieczeństwa, cofnięcia płatności lub chargebacku, udostępniania Konta osobom trzecim, odsprzedaży dostępu do Serwisu, publikowania Alertów Analitycznych poza Serwisem bez zgody Usługodawcy, działania na szkodę Usługodawcy, Serwisu lub innych Użytkowników albo wymogu wynikającego z decyzji organu, przepisów prawa lub zasad Operatora Płatności.
 
 2. W przypadku rażącego naruszenia Regulaminu Usługodawca może zakończyć świadczenie usług ze skutkiem natychmiastowym.
 
 3. Użytkownik może w każdym czasie żądać usunięcia Konta, kontaktując się z Usługodawcą na adres: kontakt@zetasignals.pl.
 
-4. Usunięcie Konta nie oznacza automatycznie anulowania Subskrypcji, jeżeli Subskrypcja jest zarządzana przez Operatora Płatności. Użytkownik powinien dodatkowo anulować Subskrypcję zgodnie z § 10 Regulaminu.
+4. Usunięcie Konta nie musi automatycznie wyłączać przyszłych obciążeń wynikających z Subskrypcji, jeżeli jest ona zarządzana przez Operatora Płatności. Użytkownik powinien dodatkowo wyłączyć automatyczne odnowienie zgodnie z § 10 Regulaminu.
 
 ## § 20. Zmiany Regulaminu
 
-1. Usługodawca może zmienić Regulamin z ważnych przyczyn, w szczególności w przypadku zmiany przepisów prawa, zmiany sposobu działania Serwisu, zmiany funkcjonalności Serwisu, zmiany Operatora Płatności, konieczności doprecyzowania postanowień Regulaminu, względów bezpieczeństwa albo zmian organizacyjnych lub technicznych.
+1. Usługodawca może zmienić Regulamin z ważnych przyczyn, w szczególności w przypadku zmiany przepisów prawa, zmiany sposobu działania Serwisu, zmiany funkcjonalności Serwisu, uruchomienia lub zmiany modelu płatności, zmiany Operatora Płatności, konieczności doprecyzowania postanowień Regulaminu, względów bezpieczeństwa albo zmian organizacyjnych lub technicznych.
 
 2. Użytkownicy zostaną poinformowani o zmianie Regulaminu poprzez publikację nowej wersji w Serwisie lub przesłanie informacji na adres e-mail przypisany do Konta.
 
 3. Zmiana Regulaminu wchodzi w życie w terminie wskazanym przez Usługodawcę, nie krótszym niż 7 dni od poinformowania Użytkownika, chyba że natychmiastowa zmiana jest wymagana przez przepisy prawa, decyzję organu, względy bezpieczeństwa albo usunięcie nadużyć.
 
-4. Użytkownik, który nie akceptuje zmian Regulaminu, może zrezygnować z korzystania z Serwisu i anulować Subskrypcję przed wejściem zmian w życie.
+4. Użytkownik, który nie akceptuje zmian Regulaminu, może zrezygnować z korzystania z Serwisu i wyłączyć automatyczne odnowienie Subskrypcji, jeżeli jest aktywne, przed wejściem zmian w życie.
 
-5. Zmiana Regulaminu nie wpływa na prawa nabyte Użytkownika w zakresie już opłaconego okresu Subskrypcji, chyba że zmiana jest konieczna ze względów prawnych, bezpieczeństwa albo technicznych.
+5. Zmiana Regulaminu nie wpływa na prawa nabyte Użytkownika w zakresie już opłaconego okresu Dostępu Płatnego, chyba że zmiana jest konieczna ze względów prawnych, bezpieczeństwa albo technicznych.
 
 ## § 21. Pozasądowe rozwiązywanie sporów
 
@@ -354,13 +368,13 @@ Data wejścia w życie: 07.06.2026  |  Wersja: 1.1
 
 2. Użytkownik ponosi odpowiedzialność za ustalenie, czy korzystanie z Serwisu jest zgodne z prawem właściwym dla jego miejsca zamieszkania, pobytu, obywatelstwa, rezydencji podatkowej lub prowadzenia działalności.
 
-3. Usługodawca może odmówić świadczenia usług, zablokować rejestrację, zawiesić Konto albo zakończyć świadczenie usług wobec Użytkownika, jeżeli uzna, że jest to konieczne ze względu na przepisy prawa, ryzyko regulacyjne, sankcje, zasady Operatora Płatności, ograniczenia jurysdykcyjne albo bezpieczeństwo Serwisu.
+3. Usługodawca może odmówić świadczenia usług, zablokować rejestrację, zawiesić Konto albo zakończyć świadczenie usług wobec Użytkownika, jeżeli uzna, że jest to konieczne ze względu na przepisy prawa, ryzyko regulacyjne, sankcje, wymagania Operatora Płatności, ograniczenia jurysdykcyjne albo bezpieczeństwo Serwisu.
 
 4. Użytkownik zobowiązuje się nie korzystać z Serwisu w sposób naruszający przepisy sankcyjne, przepisy przeciwdziałające praniu pieniędzy, przepisy dotyczące finansowania terroryzmu, przepisy podatkowe, regulacje rynku finansowego ani inne przepisy właściwe dla Użytkownika.
 
 ## § 24. Postanowienia końcowe
 
-1. Regulamin stanowi całość zasad korzystania z Serwisu, z zastrzeżeniem regulaminów, polityk i dokumentów Operatora Płatności oraz Polityki Prywatności.
+1. Regulamin stanowi całość zasad korzystania z Serwisu, z zastrzeżeniem Polityki Prywatności oraz - jeżeli mają zastosowanie - dokumentów Operatora Płatności udostępnionych Użytkownikowi przed dokonaniem płatności.
 
 2. Jeżeli którekolwiek postanowienie Regulaminu okaże się nieważne, bezskuteczne albo niewykonalne, nie wpływa to na ważność pozostałych postanowień Regulaminu.
 
@@ -368,6 +382,7 @@ Data wejścia w życie: 07.06.2026  |  Wersja: 1.1
 
 4. Kontakt z Usługodawcą jest możliwy pod adresem e-mail: kontakt@zetasignals.pl.
 
-5. Regulamin obowiązuje od dnia: 07.06.2026.
+5. Regulamin obowiązuje od dnia: 08.07.2026.
 
-6. Niniejsza wersja Regulaminu oznaczona jest jako wersja 1.1 i zastępuje poprzednie wersje od dnia jej wejścia w życie, z zastrzeżeniem praw nabytych Użytkowników oraz bezwzględnie obowiązujących przepisów prawa.
+6. Niniejsza wersja Regulaminu oznaczona jest jako wersja 1.2 i zastępuje poprzednie wersje od dnia jej wejścia w życie, z zastrzeżeniem praw nabytych Użytkowników oraz bezwzględnie obowiązujących przepisów prawa.
+

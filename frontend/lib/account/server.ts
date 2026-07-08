@@ -101,7 +101,7 @@ export async function getAccountOverview(user: User): Promise<AccountOverview> {
 }
 
 function getBillingPortalUrl() {
-  return process.env.NEXT_PUBLIC_LEMON_SQUEEZY_CUSTOMER_PORTAL_URL || process.env.NEXT_PUBLIC_BILLING_PORTAL_URL || null;
+  return process.env.NEXT_PUBLIC_BILLING_PORTAL_URL || null;
 }
 
 function getBillingProviderNameForOverview() {

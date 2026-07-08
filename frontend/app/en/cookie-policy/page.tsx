@@ -5,7 +5,7 @@ import { COOKIE_POLICY_EFFECTIVE_DATE_EN, COOKIE_POLICY_VERSION, LEGAL_LINKS } f
 
 export const metadata: Metadata = {
   title: "Cookie Policy | Zeta Signals",
-  description: "Zeta Signals Cookie Policy and similar technologies information, including Supabase Auth, LocalStorage and Lemon Squeezy payment-related cookies.",
+  description: "Zeta Signals Cookie Policy and similar technologies information, including Supabase Auth, LocalStorage and payment-related cookies.",
   alternates: {
     canonical: "/en/cookie-policy",
     languages: {
@@ -24,7 +24,7 @@ export default function EnglishCookiePolicyPage() {
     <CookieDocumentPage
       downloadLabel="Download PDF"
       effectiveDateLabel={`Effective date: ${COOKIE_POLICY_EFFECTIVE_DATE_EN}`}
-      fileName="cookie-policy-zeta-signals-en-v1-1.md"
+      fileName="cookie-policy-zeta-signals-en-v1-2-final.md"
       languageLabel="Language: EN"
       links={{
         contact: LEGAL_LINKS.contact,
@@ -39,7 +39,7 @@ export default function EnglishCookiePolicyPage() {
         riskWarning: "Risk Warning",
         terms: "Terms of Service"
       }}
-      summary="This document describes cookies, LocalStorage, SessionStorage, technologies necessary for the Service, Supabase Auth, Lemon Squeezy payments and preference management."
+      summary="This document describes cookies, LocalStorage, SessionStorage, technologies necessary for the Service, Supabase Auth, payments and preference management."
       title="Cookie Policy"
       versionLabel={`Version: ${COOKIE_POLICY_VERSION}`}
     />

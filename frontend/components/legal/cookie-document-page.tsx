@@ -321,8 +321,12 @@ function shouldSkipLeadLine(text: string) {
   const plainText = stripInlineMarkdown(text);
 
   return (
+    plainText === "POLITYKA PLIKÓW COOKIES I TECHNOLOGII POKREWNYCH" ||
     plainText === "POLITYKA PLIKÓW COOKIES I TECHNOLOGII POKREWNYCH SERWISU ZETA SIGNALS" ||
+    plainText === "COOKIE POLICY AND SIMILAR TECHNOLOGIES POLICY" ||
     plainText === "COOKIE POLICY AND SIMILAR TECHNOLOGIES POLICY OF THE ZETA SIGNALS SERVICE" ||
+    plainText === "SERWISU ZETA SIGNALS" ||
+    plainText === "ZETA SIGNALS SERVICE" ||
     plainText.startsWith("Data wejścia w życie:") ||
     plainText.startsWith("Wersja dokumentu:") ||
     plainText.startsWith("Adres serwisu:") ||

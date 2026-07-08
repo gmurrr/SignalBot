@@ -5,7 +5,7 @@ import { LEGAL_LINKS, PRIVACY_EFFECTIVE_DATE, PRIVACY_VERSION } from "@/lib/lega
 
 export const metadata: Metadata = {
   title: "Polityka prywatności | Zeta Signals",
-  description: "Polityka prywatności serwisu Zeta Signals, w tym informacje o danych osobowych, cookies, Supabase i Lemon Squeezy.",
+  description: "Polityka prywatności serwisu Zeta Signals, w tym informacje o danych osobowych, cookies, Supabase i operatorze płatności.",
   alternates: {
     canonical: "/pl/polityka-prywatnosci",
     languages: {
@@ -24,7 +24,7 @@ export default function PolishPrivacyPolicyPage() {
     <PrivacyDocumentPage
       downloadLabel="Pobierz Politykę Prywatności PDF"
       effectiveDateLabel={`Data wejścia w życie: ${PRIVACY_EFFECTIVE_DATE}`}
-      fileName="polityka-prywatnosci-zeta-signals-pl-v1-2.md"
+      fileName="polityka-prywatnosci-zeta-signals-pl-v1-3-final.md"
       languageLabel="Język: PL"
       links={{
         contact: LEGAL_LINKS.contact,
@@ -39,7 +39,7 @@ export default function PolishPrivacyPolicyPage() {
         riskWarning: "Ostrzeżenie o ryzyku",
         terms: "Regulamin"
       }}
-      summary="Dokument opisuje zasady przetwarzania danych osobowych, korzystania z cookies i Local Storage, obsługi Supabase Auth oraz płatności i subskrypcji przez Lemon Squeezy."
+      summary="Dokument opisuje zasady przetwarzania danych osobowych, korzystania z cookies i Local Storage, obsługi Supabase Auth oraz płatności i subskrypcji przez wybranego operatora płatności."
       title="Polityka prywatności"
       versionLabel={`Wersja: ${PRIVACY_VERSION}`}
     />

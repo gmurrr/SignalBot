@@ -240,7 +240,7 @@
   "billing": {
     "badge": "Premium access",
     "title": "Subscription and access",
-    "body": "This is the account access center. Payment is a monthly auto-renewing subscription handled by Lemon Squeezy or the configured payment operator.",
+    "body": "This is the account access center. Payment will be a monthly auto-renewing subscription after the selected payment operator is launched.",
     "refresh": "Refresh",
     "loading": "Loading account data...",
     "loadError": "Subscription data could not be loaded.",
@@ -257,17 +257,23 @@
     "periodEndLabel": "Period end",
     "planEyebrow": "Base plan",
     "planTitle": "Zeta Signals Premium",
-    "planBody": "Access to Realtime Cockpit, Analytical Alerts and premium account features. This internal plan code is mapped to a product at the payment operator.",
+    "planBody": "Access to Realtime Cockpit, Analytical Alerts and premium account features. This internal plan code is ready to be mapped to a product at the selected payment operator.",
     "planCodeLabel": "Plan code",
     "checkoutCta": "Continue to checkout",
+    "operatorPendingTitle": "Payment operator in progress",
+    "operatorPendingBody": "We are currently waiting for payment operator selection and configuration. Subscription purchase will become available after the integration is completed, and premium access will activate only after payment confirmation from the operator.",
+    "operatorPendingNotice": "Subscription purchase is not available yet because the payment operator is still being configured.",
+    "operatorPendingCta": "Operator in progress",
+    "operatorPendingMetric": "Awaiting operator",
+    "providerConfigured": "Payment operator",
     "consentsTitle": "Required consents before checkout",
     "consentsIntro": "Select the consents required only before purchasing the subscription.",
     "consentsRequired": "Select all required purchase consents before continuing to checkout.",
-    "paymentCookiesNotice": "Payment may be handled by Lemon Squeezy. The payment operator may use its own cookies or similar technologies necessary for transaction handling and fraud prevention.",
+    "paymentCookiesNotice": "After payments are launched, the selected payment operator may use its own cookies or similar technologies necessary for transaction handling and fraud prevention.",
     "subscriptionSectionTitle": "Subscription",
     "subscriptionSectionBody": "The subscription renews automatically every month. Cancellation stops the next renewal and access remains active until the end of the paid period.",
     "manageSubscription": "Manage subscription",
-    "portalUnavailable": "The Lemon Squeezy management portal is not configured yet. To cancel, contact us by e-mail.",
+    "portalUnavailable": "The subscription management portal is not configured yet. To cancel, contact us by e-mail.",
     "renewalNotice": "The subscription renews automatically every month. You can cancel anytime and keep access until the end of the paid period.",
     "mockCta": "Activate test access",
     "features": [
@@ -310,28 +316,28 @@
   "terms": {
     "eyebrow": "Legal documents",
     "title": "Terms, privacy and cookies",
-    "intro": "The current Zeta Signals legal documents are available as dedicated pages and PDF files in the versions effective from 07.06.2026.",
+    "intro": "The current Zeta Signals legal documents are available as dedicated pages and PDF files in the versions effective from 08.07.2026.",
     "toc": "Table of contents",
     "sections": [
       {
         "id": "terms-of-service",
         "title": "Terms of Service",
         "body": [
-          "The current Zeta Signals Terms of Service are available at /en/terms and as a downloadable PDF on that page."
+          "The current Zeta Signals Terms of Service version 1.2 is available at /en/terms and as a downloadable PDF on that page."
         ]
       },
       {
         "id": "privacy-policy",
         "title": "Privacy Policy",
         "body": [
-          "The current Privacy Policy version 1.2 is available at /en/privacy-policy and as a downloadable PDF on that page."
+          "The current Privacy Policy version 1.3 is available at /en/privacy-policy and as a downloadable PDF on that page."
         ]
       },
       {
         "id": "cookies-policy",
         "title": "Cookies Policy",
         "body": [
-          "The current Cookie Policy is available at /en/cookie-policy and as a downloadable PDF on that page."
+          "The current Cookie Policy version 1.2 is available at /en/cookie-policy and as a downloadable PDF on that page."
         ]
       }
     ]

@@ -1,7 +1,7 @@
 # TERMS OF SERVICE FOR THE PROVISION OF ELECTRONIC SERVICES
 ## ZETA SIGNALS SERVICE
 
-Effective date: 07.06.2026  |  Version: 1.1  |  Language version: EN
+Effective date: 08.07.2026  |  Version: 1.2  |  Language version: EN
 
 
 This English-language version is intended for Users using the English version of the Service. In the event of discrepancies between the Polish and English versions, the Polish version shall prevail to the extent permitted by mandatory provisions of applicable law.
@@ -32,21 +32,25 @@ This English-language version is intended for Users using the English version of
 
 2. Account - an individual User panel created after registration in the Service, enabling the User to use selected functions of the Service.
 
-3. Realtime Cockpit - the main panel of the Service available to a User with an active Subscription, in which Analytical Alerts and the history of selected Analytical Alerts are presented.
+3. Realtime Cockpit - the main panel of the Service available to a User with active Paid Access, in which Analytical Alerts and the history of selected Analytical Alerts are presented.
 
 4. Service - the Zeta Signals online platform available at https://www.zetasignals.pl/.
 
-5. Subscription - paid, monthly renewable access to the paid functions of the Service, in particular to the Realtime Cockpit.
+5. Paid Access - paid access to selected functions of the Service, in particular the Realtime Cockpit, provided for the period, price and on the terms displayed to the User before the order is placed.
 
-6. User - a natural person, legal person or organisational unit using the Service. In the case of a natural person, the User may only be a person who is at least 18 years old and has full legal capacity, unless mandatory provisions of law provide otherwise.
+6. One-Time Plan - a type of Paid Access provided for a specified period without automatic renewal, unless the User independently makes another purchase.
 
-7. Consumer - a User who is a natural person entering into an agreement with the Service Provider or using the Service for purposes not directly related to that person's business or professional activity.
+7. Subscription - a type of Paid Access automatically renewed for subsequent billing periods, only where this model has been clearly presented to the User before the order is placed and accepted by the User.
 
-8. Entrepreneur with consumer rights - a natural person entering into an agreement directly related to that person's business activity, where the content of the agreement indicates that it is not of a professional nature for that person.
+8. User - a natural person, legal person or organisational unit using the Service. In the case of a natural person, the User may only be a person who is at least 18 years old and has full legal capacity, unless mandatory provisions of law provide otherwise.
 
-9. Payment Operator - an external entity handling payments, invoicing, subscriptions, transactional taxes and settlements, i.e. Lemon Squeezy or another entity indicated by the Service Provider.
+9. Consumer - a User who is a natural person entering into an agreement with the Service Provider or using the Service for purposes not directly related to that person's business or professional activity.
 
-10. Digital Content / Digital Service - data or functionalities produced and supplied in digital form, in particular access to the panel, Analytical Alerts, the history of Analytical Alerts and Service functions.
+10. Entrepreneur with consumer rights - a natural person entering into an agreement directly related to that person's business activity, where the content of the agreement indicates that it is not of a professional nature for that person.
+
+11. Payment Operator - an external entity providing or handling specified payment methods, settlements, subscriptions, sales documents, refunds, transactional taxes or other elements of the purchase process, to the extent resulting from the adopted cooperation model and the information displayed to the User before payment.
+
+12. Digital Content / Digital Service - data or functionalities produced and supplied in digital form, in particular access to the panel, Analytical Alerts, the history of Analytical Alerts and Service functions.
 
 ## § 3. Nature of the Service and regulatory limitations
 
@@ -108,15 +112,17 @@ This English-language version is intended for Users using the English version of
 
 ## § 6. Scope of electronic services
 
-1. Through the Service, the Service Provider provides the following electronic services: enabling the creation of an Account; enabling login to the Account; enabling the purchase of a Subscription; providing the Realtime Cockpit to Users with an active Subscription; presenting Analytical Alerts; presenting the history of selected Analytical Alerts, including both alerts with positive and negative outcomes; and sending technical, system or organisational messages concerning the Service.
+1. Through the Service, the Service Provider provides the following electronic services: enabling the creation of an Account; enabling login to the Account; providing free Service functions where available; enabling the purchase of Paid Access where sales have been activated; providing the Realtime Cockpit to Users with active Paid Access; presenting Analytical Alerts; presenting the history of selected Analytical Alerts, including both alerts with positive and negative outcomes; and sending technical, system or organisational messages concerning the Service.
 
-2. The Service Provider may develop, modify, limit or remove individual functions of the Service, provided that this does not infringe the User's acquired rights in respect of an already paid Subscription period, subject to the provisions concerning failures, security, legal changes and technical changes.
+2. Until an active payment method or integration with a Payment Operator is launched in the Service, the ability to purchase Paid Access may remain unavailable. During such period, the User may only use functions made available free of charge or for testing purposes.
 
-3. The Service Provider does not guarantee a specific number of Analytical Alerts on any given day, week, month or billing period.
+3. The Service Provider may develop, modify, limit or remove individual functions of the Service, provided that this does not infringe the User's acquired rights in respect of an already-paid period of Paid Access, subject to the provisions concerning failures, security, legal changes and technical changes.
 
-4. The User acknowledges that the algorithm may fail to generate any Analytical Alert for an extended period if market conditions do not meet the mathematical assumptions adopted by the system.
+4. The Service Provider does not guarantee a specific number of Analytical Alerts on any given day, week, month or access period.
 
-5. The absence of Analytical Alerts in a given period does not constitute improper performance of the agreement if it results from the assumptions of the algorithm, market conditions or failure to meet the criteria for generating alerts.
+5. The User acknowledges that the algorithm may fail to generate any Analytical Alert for an extended period if market conditions do not meet the mathematical assumptions adopted by the system.
+
+6. The absence of Analytical Alerts in a given period does not constitute improper performance of the agreement if it results from the assumptions of the algorithm, market conditions or failure to meet the criteria for generating alerts.
 
 ## § 7. Technical requirements for using the Service
 
@@ -150,65 +156,73 @@ This English-language version is intended for Users using the English version of
 
 10. The Service Provider may refuse registration, suspend the Account or terminate the provision of services if it reasonably suspects that the User does not meet the age requirement, does not have full legal capacity, or uses the Service from a jurisdiction where the use of this type of service may be prohibited, restricted or subject to significant regulatory risk.
 
-## § 9. Subscription and payments
+## § 9. Paid plans and payments
 
-1. Access to the Realtime Cockpit and Analytical Alerts requires an active Subscription.
+1. Access to the Realtime Cockpit, Analytical Alerts or other designated functions may require active Paid Access in accordance with the offer displayed in the Service.
 
-2. The Subscription is paid and automatically renews in monthly cycles unless the User cancels the Subscription before the start of the next billing period.
+2. Before placing an order, the User will receive clear information at least on: the price and currency; the Paid Access period; whether the purchase is one-time or recurring; the frequency and rules of any automatic renewal; available payment methods; the identity of the Payment Operator where it participates in the transaction; and taxes, fees and other costs where applicable and capable of being determined before conclusion of the agreement.
 
-3. The Subscription price is presented to the User before payment is made.
+3. Paid Access may be offered as a One-Time Plan or a Subscription. Automatic renewal and subsequent charges may occur only where this model has been clearly presented to the User before the order is placed and knowingly accepted by the User.
 
-4. Payments are handled by the Payment Operator.
+4. Until an active payment method is made available in the Service, an agreement for Paid Access cannot be concluded. Creating an Account, joining a waiting list or viewing information about plans does not create any payment obligation.
 
-5. The Payment Operator may act as Merchant of Record, which means that the Payment Operator's terms, policies and procedures may apply to transaction settlement, payment collection, issuance of sales documents, transactional taxes, payment handling, refunds, chargebacks and invoicing.
+5. Payments may be handled by the Payment Operator identified to the User before the order is placed. Depending on the adopted model, the Payment Operator may act, in particular, as a payment service provider, payment processor, subscription management provider or formal seller under a Merchant of Record model.
 
-6. The Service Provider does not store full User payment card data.
+6. The Payment Operator's terms, policies and procedures may apply only to the services actually provided by that operator. Before payment, the User will be given an opportunity to review the relevant Payment Operator documents.
 
-7. The User is obliged to review the Payment Operator's terms and policies before making a payment.
+7. The Service Provider does not store full payment card data, payment account authentication credentials, private keys or other confidential payment credentials of the User, unless expressly stated otherwise and compliant with applicable law and security standards.
 
-8. In the event of payment failure, payment reversal, chargeback, suspected payment fraud or breach of the Payment Operator's rules, access to paid Service functions may be suspended or terminated.
+8. Paid Access is activated after receipt of reliable payment confirmation or another status authorising activation, provided by the Payment Operator or established in accordance with the available payment method.
 
-9. The Service Provider may change the Subscription price. A price change does not affect an already paid billing period. The User will be informed of a price change before it applies to the next billing period, where required by law or the Payment Operator's rules.
+9. In the event of payment failure, payment reversal, chargeback, refund, reasonable suspicion of payment fraud, breach of the Payment Operator's rules or legal obligations relating to transaction security, Paid Access may not be activated, may be suspended or may be terminated.
 
-10. The User's failure to use the Service during an active Subscription period does not constitute grounds for a refund.
+10. The Service Provider may change plan prices. A price change does not affect an already-paid period of Paid Access. In the case of a Subscription, a new price may apply to future periods only after clear prior notice to the User and, where required by law or by the nature of the change, after obtaining the User's appropriate consent.
 
-## § 10. Subscription cancellation
+11. The User's failure to use the Service during an active Paid Access period does not, by itself, constitute grounds for a refund, subject to mandatory provisions of law.
 
-1. The User may cancel the Subscription at any time via the User panel, the subscription management link, the Payment Operator's panel or by contacting the Service Provider, if such a form is made available.
+## § 10. Duration, renewal and cancellation of Paid Access
 
-2. Cancellation of the Subscription disables automatic renewal of the Subscription for the next billing period.
+1. A One-Time Plan expires at the end of the period displayed before purchase and does not renew automatically. Continued use of paid functions requires another purchase where such plan remains available.
 
-3. After cancellation of the Subscription, the User retains access to the paid functions of the Service until the end of the currently paid billing period, unless access is terminated earlier due to breach of the Terms, abuse, chargeback or a legal requirement.
+2. A Subscription renews automatically only on the terms, cycle and at the price displayed to and accepted by the User before the order is placed.
 
-4. The Service Provider does not provide pro-rata refunds for the unused part of the billing period unless mandatory provisions of law or binding rules of the Payment Operator provide otherwise.
+3. The User may disable automatic renewal of a Subscription in the manner indicated in the Service, in the Payment Operator's panel, through a subscription management link or by contacting the Service Provider, where such option has been made available.
 
-5. Notwithstanding section 4, the Service Provider may individually consider a refund or other compensation in the event of documented, prolonged and Service Provider-attributable unavailability of paid Service functions, subject to mandatory provisions of law and the Payment Operator's rules.
+4. Disabling automatic renewal does not terminate access before the end of the already paid period, unless access is terminated earlier due to a breach of the Terms, abuse, payment refund, chargeback or a legal requirement.
 
-6. Simply ceasing to use the Service, deleting an application, not logging in or not using the Account does not constitute cancellation of the Subscription.
+5. Deleting the Account may not automatically stop future charges where the Subscription is technically managed by the Payment Operator. The User should also use the applicable cancellation mechanism indicated before or after purchase.
+
+6. The Service Provider does not provide pro-rata refunds for the unused part of a paid period unless mandatory provisions of law, an accepted complaint or binding rules of the Payment Operator provide otherwise.
+
+7. Notwithstanding section 6, the Service Provider may individually consider a refund or other compensation in the event of documented, prolonged and Service Provider-attributable unavailability of paid Service functions, subject to mandatory provisions of law.
+
+8. Simply ceasing to use the Service, not logging in or not using the Account does not constitute cancellation of a Subscription or disabling its automatic renewal.
 
 ## § 11. No free trial
 
-1. The Service does not offer a free trial unless the Service Provider expressly decides otherwise in a separate promotion.
+1. The Service does not offer a free trial unless the Service Provider expressly decides otherwise in a separate offer or promotion.
 
-2. The User acknowledges that the absence of a free trial results from the specific nature of the algorithm, which may generate Analytical Alerts rarely and only under specific market conditions.
+2. The User acknowledges that the absence of a free trial may result from the specific nature of the algorithm, which may generate Analytical Alerts rarely and only under specific market conditions.
 
-3. Purchase of a Subscription does not guarantee receipt of any specific number of Analytical Alerts during the billing period.
+3. Purchase of Paid Access does not guarantee receipt of any specific number of Analytical Alerts during the access period.
 
 ## § 12. Right of withdrawal and consent to immediate performance
 
 1. A User who is a Consumer or an Entrepreneur with consumer rights may, in principle, have a statutory right to withdraw from a distance contract, subject to exceptions provided by law.
 
-2. Due to the digital nature of the Service, in particular the immediate provision of Realtime Cockpit, Analytical Alerts, Analytical Alert history and other digital functions, the User may be asked before payment to give express consent to the commencement of the Digital Service or the supply of Digital Content before the expiry of the withdrawal period.
+2. Due to the digital nature of the Service, in particular the immediate provision of the Realtime Cockpit, Analytical Alerts, Analytical Alert history and other digital functions, the User may be asked before payment to give express consent to the commencement of the Digital Service or the supply of Digital Content before the expiry of the withdrawal period.
 
 3. By giving the consent referred to in section 2, the User acknowledges that after the commencement of the Digital Service or the supply of Digital Content, the User may lose the right to withdraw from the agreement to the extent provided by mandatory provisions of law.
 
-4. The consent referred to in section 2 should be given by the User in an express, informed manner and separately from acceptance of the Terms.
+4. The consent referred to in section 2 should be given by the User expressly, knowingly and separately from acceptance of the Terms.
 
-5. The User acknowledges that after activation of the Subscription and access to the paid functions of the Service, in particular the Realtime Cockpit and Analytical Alerts, the Subscription fee is not refundable on the basis of withdrawal from the agreement if all statutory conditions for the loss of the right of withdrawal have been met.
+5. The User acknowledges that after activation of Paid Access and access to the paid functions of the Service, in particular the Realtime Cockpit and Analytical Alerts, the fee may not be refundable on the basis of withdrawal from the agreement if all statutory conditions for the loss of the right of withdrawal have been met.
 
 6. This section does not limit mandatory rights of a Consumer or an Entrepreneur with consumer rights arising under applicable law, in particular rights related to non-conformity of Digital Content or Digital Service with the agreement.
 
 7. The Service Provider may record information about the User's consent to start providing the Digital Service before the withdrawal period expires and the User's acknowledgement of the loss of the right of withdrawal, in particular by recording the date, time, document version, Account identifier, e-mail address, transaction identifier and other audit data necessary to demonstrate fulfilment of information obligations.
+
+8. Where required by applicable law, confirmation of the conclusion of the agreement and receipt of the User's consents and statements will be provided on a durable medium, in particular by e-mail.
 
 ## § 13. Complaints
 
@@ -220,9 +234,9 @@ This English-language version is intended for Users using the English version of
 
 4. A response to the complaint will be sent to the User's e-mail address.
 
-5. Complaints concerning payments, invoices, taxes, chargebacks or the technical payment process may be redirected to the Payment Operator if the matter falls within its responsibility.
+5. Complaints concerning payments, sales documents, taxes, chargebacks, refunds or the technical payment process may be handled with the participation of the Payment Operator or formal seller where the matter falls within its responsibility. The User will be informed of such referral or of the need to contact the appropriate entity.
 
-6. Filing a complaint does not release the User from the obligation to pay the Subscription on time, unless mandatory provisions of law provide otherwise.
+6. Filing a complaint does not release the User from the obligation to pay due amounts, where any exist, unless mandatory provisions of law provide otherwise.
 
 7. A complaint concerning the result of a transaction entered into by the User on the financial market, financial loss, broker slippage, delayed execution of an order by a broker or the User's investment decision does not constitute a complaint concerning the operation of the Service.
 
@@ -240,7 +254,7 @@ This English-language version is intended for Users using the English version of
 
 5. The User acknowledges that using the Service does not replace the User's own market analysis, risk control, capital management or professional advice.
 
-6. The Service Provider's liability towards a User who is neither a Consumer nor an Entrepreneur with consumer rights, regardless of the legal basis of the claim, is limited to the amount of fees actually paid by that User for the last full billing period preceding the event giving rise to the claim.
+6. The Service Provider's liability towards a User who is neither a Consumer nor an Entrepreneur with consumer rights, regardless of the legal basis of the claim, is limited to the amount of fees actually paid by that User for the most recent paid period of Paid Access preceding the event giving rise to the claim.
 
 7. The limitations of liability set out in the Terms do not exclude liability that cannot be excluded or limited under mandatory provisions of law.
 
@@ -258,7 +272,7 @@ This English-language version is intended for Users using the English version of
 
 3. Technical breaks may be planned or unplanned.
 
-4. The Service Provider is not liable for Service unavailability resulting from force majeure, failures of external providers, Internet failures, hosting, VPS, API, data provider or Payment Operator failures, cyberattacks, actions of public authorities, the need to remove a critical security vulnerability or actions or omissions of the User.
+4. The Service Provider is not liable for Service unavailability resulting from force majeure, failures of external providers, Internet failures, hosting, VPS, APIs, data providers, the Payment Operator or another element of external infrastructure, cyberattacks, actions of public authorities, the need to remove a critical security vulnerability or actions or omissions of the User, to the extent such liability may be excluded under applicable law.
 
 5. The Service Provider may temporarily restrict access to the Service if necessary for security, legal, technical or organisational reasons.
 
@@ -288,7 +302,7 @@ This English-language version is intended for Users using the English version of
 
 2. Use of the Service does not transfer any intellectual property rights to the User.
 
-3. The User receives only a limited, non-exclusive, non-transferable and revocable right to use the Service within the scope resulting from the Terms and the active Subscription.
+3. The User receives only a limited, non-exclusive, non-transferable and revocable right to use the Service within the scope resulting from the Terms and the active Paid Access.
 
 4. It is prohibited to copy, record, distribute, publish, resell, make available, modify, decompile, analyse source code, reverse engineer or create derivative products based on the Service without the Service Provider's prior consent.
 
@@ -306,31 +320,31 @@ This English-language version is intended for Users using the English version of
 
 2. Detailed rules for the processing of personal data are set out in the Privacy Policy available at: https://www.zetasignals.pl/en/privacy-policy.
 
-3. Users' personal data may be processed in particular for the purpose of providing electronic services, operating the Account, operating the Subscription, handling complaints, ensuring the security of the Service, complying with legal obligations, defending against claims or pursuing claims.
+3. Users' personal data may be processed in particular for the purpose of providing electronic services, operating the Account, operating Paid Access, handling complaints, ensuring the security of the Service, complying with legal obligations, defending against claims or pursuing claims.
 
-4. In the scope of payments, invoicing, taxes and transaction handling, the User's data may also be processed by the Payment Operator as a separate controller or processor, in accordance with its terms and privacy policies.
+4. If a payment method is activated in the Service, the User's data may be processed by the identified Payment Operator as a separate controller, joint controller or processor, depending on the actual service model. The operator's identity and the scope of processing will be described in the current Privacy Policy and in documents made available before payment.
 
 ## § 19. Suspension and deletion of the Account
 
-1. The Service Provider may suspend or delete the User's Account in the event of breach of the Terms, breach of law, suspicion of abuse, fraud, money laundering, security breach or chargeback, sharing the Account with third parties, reselling access to the Service, publishing Analytical Alerts outside the Service without the Service Provider's consent, acting to the detriment of the Service Provider, the Service or other Users, or a requirement resulting from a decision of an authority, law or the Payment Operator's rules.
+1. The Service Provider may suspend or delete the User's Account in the event of breach of the Terms, breach of law, suspicion of abuse, fraud, money laundering, security breach, payment reversal or chargeback, sharing the Account with third parties, reselling access to the Service, publishing Analytical Alerts outside the Service without the Service Provider's consent, acting to the detriment of the Service Provider, the Service or other Users, or a requirement resulting from a decision of an authority, law or the Payment Operator's rules.
 
 2. In the event of a material breach of the Terms, the Service Provider may terminate the provision of services with immediate effect.
 
 3. The User may request deletion of the Account at any time by contacting the Service Provider at: kontakt@zetasignals.pl.
 
-4. Deletion of the Account does not automatically cancel the Subscription if the Subscription is managed by the Payment Operator. The User should additionally cancel the Subscription in accordance with § 10 of the Terms.
+4. Deletion of the Account may not automatically stop future charges arising from a Subscription where it is managed by the Payment Operator. The User should also disable automatic renewal in accordance with § 10 of the Terms.
 
 ## § 20. Amendments to the Terms
 
-1. The Service Provider may amend the Terms for important reasons, in particular in the event of changes in law, changes in the operation of the Service, changes in Service functionality, change of the Payment Operator, the need to clarify provisions of the Terms, security reasons or organisational or technical changes.
+1. The Service Provider may amend the Terms for important reasons, in particular in the event of changes in law, changes in the operation of the Service, changes in Service functionality, activation or change of the payment model, change of the Payment Operator, the need to clarify provisions of the Terms, security reasons or organisational or technical changes.
 
 2. Users will be informed of amendments to the Terms by publication of a new version in the Service or by sending information to the e-mail address assigned to the Account.
 
 3. Amendments to the Terms enter into force on the date indicated by the Service Provider, not earlier than 7 days after informing the User, unless an immediate amendment is required by law, a decision of an authority, security reasons or the removal of abuse.
 
-4. A User who does not accept amendments to the Terms may stop using the Service and cancel the Subscription before the amendments enter into force.
+4. A User who does not accept amendments to the Terms may stop using the Service and disable automatic renewal of a Subscription, where active, before the amendments enter into force.
 
-5. Amendments to the Terms do not affect the User's acquired rights in respect of an already paid Subscription period, unless the amendment is necessary for legal, security or technical reasons.
+5. Amendments to the Terms do not affect the User's acquired rights in respect of an already-paid period of Paid Access, unless the change is necessary for legal, security or technical reasons.
 
 ## § 21. Out-of-court dispute resolution
 
@@ -354,24 +368,25 @@ This English-language version is intended for Users using the English version of
 
 ## § 23. Jurisdictional restrictions, sanctions and local law compliance
 
-1. The Service is not directed to persons located in jurisdictions where the use of analytical, informational, educational or financial-market-related services would be contrary to local law, would require the Service Provider to obtain an authorisation, registration, licence or satisfy other regulatory obligations.
+1. The Service is not directed to persons located in jurisdictions where the use of services of an analytical, informational, educational or financial-market-related nature would be contrary to local law or would require the Service Provider to obtain authorisation, registration, a licence or comply with other regulatory obligations.
 
-2. The User is responsible for determining whether use of the Service is lawful under the laws applicable to the User's place of residence, stay, citizenship, tax residence or place of business.
+2. The User is responsible for determining whether use of the Service is lawful under the laws applicable to the User's residence, place of stay, citizenship, tax residence or place of business.
 
-3. The Service Provider may refuse to provide services, block registration, suspend the Account or terminate services to the User if the Service Provider considers it necessary due to law, regulatory risk, sanctions, Payment Operator rules, jurisdictional restrictions or Service security.
+3. The Service Provider may refuse to provide services, block registration, suspend the Account or terminate services to a User where it considers this necessary due to law, regulatory risk, sanctions, Payment Operator requirements, jurisdictional restrictions or Service security.
 
-4. The User undertakes not to use the Service in a manner that violates sanctions laws, anti-money laundering laws, counter-terrorist financing laws, tax laws, financial market regulations or any other laws applicable to the User.
+4. The User undertakes not to use the Service in a manner that violates sanctions laws, anti-money laundering laws, counter-terrorist financing laws, tax laws, financial market regulations or other laws applicable to the User.
 
 ## § 24. Final provisions
 
-1. The Terms constitute the entire set of rules for using the Service, subject to the terms, policies and documents of the Payment Operator and the Privacy Policy.
+1. The Terms constitute the complete rules for using the Service, subject to the Privacy Policy and - where applicable - Payment Operator documents made available to the User before payment.
 
-2. If any provision of the Terms proves invalid, ineffective or unenforceable, this does not affect the validity of the remaining provisions of the Terms.
+2. If any provision of the Terms is found to be invalid, ineffective or unenforceable, this does not affect the validity of the remaining provisions of the Terms.
 
-3. Matters not regulated by the Terms are governed by the relevant provisions of Polish law.
+3. Matters not regulated by the Terms are governed by applicable Polish law.
 
-4. Contact with the Service Provider is possible at the e-mail address: kontakt@zetasignals.pl.
+4. The Service Provider may be contacted at: kontakt@zetasignals.pl.
 
-5. The Terms apply from: 07.06.2026.
+5. The Terms are effective from: 08.07.2026.
 
-6. This version of the Terms is marked as version 1.1 and replaces previous versions from its effective date, subject to Users' acquired rights and mandatory provisions of law.
+6. This version of the Terms is designated as version 1.2 and replaces previous versions from its effective date, subject to Users' acquired rights and mandatory provisions of law.
+

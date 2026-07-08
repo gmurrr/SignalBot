@@ -240,7 +240,7 @@
   "billing": {
     "badge": "Dostęp premium",
     "title": "Subskrypcja i dostęp",
-    "body": "To centrum dostępu dla konta użytkownika. Płatność jest miesięczną subskrypcją odnawianą automatycznie i obsługiwaną przez Lemon Squeezy albo skonfigurowanego Operatora Płatności.",
+    "body": "To centrum dostępu dla konta użytkownika. Płatność będzie miesięczną subskrypcją odnawianą automatycznie po uruchomieniu wybranego Operatora Płatności.",
     "refresh": "Odśwież",
     "loading": "Ładuję dane konta...",
     "loadError": "Nie udało się pobrać danych subskrypcji.",
@@ -257,17 +257,23 @@
     "periodEndLabel": "Koniec okresu",
     "planEyebrow": "Plan bazowy",
     "planTitle": "Zeta Signals Premium",
-    "planBody": "Dostęp do Realtime Cockpit, Alertów Analitycznych i funkcji konta premium. Ten plan jest kodem wewnętrznym mapowanym na produkt u Operatora Płatności.",
+    "planBody": "Dostęp do Realtime Cockpit, Alertów Analitycznych i funkcji konta premium. Ten plan jest przygotowany do podpięcia pod produkt u wybranego Operatora Płatności.",
     "planCodeLabel": "Kod planu",
     "checkoutCta": "Przejdź do płatności",
+    "operatorPendingTitle": "Operator płatności w przygotowaniu",
+    "operatorPendingBody": "Aktualnie czekamy na wybór i konfigurację Operatora Płatności. Zakup subskrypcji zostanie udostępniony po zakończeniu integracji, a dostęp premium będzie aktywowany dopiero po potwierdzeniu płatności przez operatora.",
+    "operatorPendingNotice": "Zakup subskrypcji nie jest jeszcze dostępny, ponieważ czekamy na konfigurację Operatora Płatności.",
+    "operatorPendingCta": "Operator w przygotowaniu",
+    "operatorPendingMetric": "Oczekujemy na operatora",
+    "providerConfigured": "Operator płatności",
     "consentsTitle": "Wymagane zgody przed płatnością",
     "consentsIntro": "Zaznacz zgody wymagane wyłącznie przed zakupem subskrypcji.",
     "consentsRequired": "Zaznacz wszystkie wymagane zgody zakupowe przed przejściem do płatności.",
-    "paymentCookiesNotice": "Płatność może być obsługiwana przez Lemon Squeezy. Operator płatności może stosować własne cookies lub podobne technologie niezbędne do obsługi transakcji i zapobiegania fraudom.",
+    "paymentCookiesNotice": "Po uruchomieniu płatności wybrany Operator Płatności może stosować własne cookies lub podobne technologie niezbędne do obsługi transakcji i zapobiegania fraudom.",
     "subscriptionSectionTitle": "Subskrypcja",
     "subscriptionSectionBody": "Subskrypcja odnawia się automatycznie co miesiąc. Anulowanie zatrzymuje kolejne odnowienie, a dostęp pozostaje aktywny do końca opłaconego okresu.",
     "manageSubscription": "Zarządzaj subskrypcją",
-    "portalUnavailable": "Portal zarządzania Lemon Squeezy nie jest jeszcze skonfigurowany. W sprawie anulowania skontaktuj się przez e-mail.",
+    "portalUnavailable": "Portal zarządzania subskrypcją nie jest jeszcze skonfigurowany. W sprawie anulowania skontaktuj się przez e-mail.",
     "renewalNotice": "Subskrypcja odnawia się automatycznie co miesiąc. Możesz ją anulować w dowolnym momencie, zachowując dostęp do końca opłaconego okresu.",
     "mockCta": "Aktywuj testowo",
     "features": [
@@ -310,28 +316,28 @@
   "terms": {
     "eyebrow": "Dokumenty prawne",
     "title": "Regulamin, prywatność i cookies",
-    "intro": "Aktualne dokumenty prawne Zeta Signals są dostępne jako osobne podstrony i pliki PDF w wersjach obowiązujących od 07.06.2026.",
+    "intro": "Aktualne dokumenty prawne Zeta Signals są dostępne jako osobne podstrony i pliki PDF w wersjach obowiązujących od 08.07.2026.",
     "toc": "Spis treści",
     "sections": [
       {
         "id": "terms-of-service",
         "title": "Regulamin Usługi",
         "body": [
-          "Aktualny Regulamin Zeta Signals jest dostępny pod trasą /pl/regulamin oraz jako plik PDF do pobrania z tej podstrony."
+          "Aktualny Regulamin Zeta Signals w wersji 1.2 jest dostępny pod trasą /pl/regulamin oraz jako plik PDF do pobrania z tej podstrony."
         ]
       },
       {
         "id": "privacy-policy",
         "title": "Polityka Prywatności",
         "body": [
-          "Aktualna Polityka Prywatności w wersji 1.2 jest dostępna pod trasą /pl/polityka-prywatnosci oraz jako plik PDF do pobrania z tej podstrony."
+          "Aktualna Polityka Prywatności w wersji 1.3 jest dostępna pod trasą /pl/polityka-prywatnosci oraz jako plik PDF do pobrania z tej podstrony."
         ]
       },
       {
         "id": "cookies-policy",
         "title": "Polityka Cookies",
         "body": [
-          "Aktualna Polityka Cookies jest dostępna pod trasą /pl/polityka-cookies oraz jako plik PDF do pobrania z tej podstrony."
+          "Aktualna Polityka Cookies w wersji 1.2 jest dostępna pod trasą /pl/polityka-cookies oraz jako plik PDF do pobrania z tej podstrony."
         ]
       }
     ]

@@ -1,8 +1,8 @@
 # COOKIE POLICY AND SIMILAR TECHNOLOGIES POLICY
 ## ZETA SIGNALS SERVICE
 
-**Effective date:** 07.06.2026  
-**Document version:** 1.1  
+**Effective date:** 08.07.2026  
+**Document version:** 1.2  
 **Website address:** https://www.zetasignals.pl/
 
 ## § 1. General provisions
@@ -10,15 +10,16 @@
 1. This Cookie Policy and Similar Technologies Policy, hereinafter referred to as the **"Cookie Policy"**, sets out the rules for using cookies, LocalStorage, SessionStorage and other similar technologies within the website operating under the name **Zeta Signals**, available at **https://www.zetasignals.pl/**, hereinafter referred to as the **"Service"**.
 2. The Service is administered by **Damian Gmur**, a natural person conducting non-registered activity, contact address: **Truskawkowa 13, 05-200 Zagościniec, Poland**, contact e-mail address: **kontakt@zetasignals.pl**, hereinafter referred to as the **"Administrator"**.
 3. This Cookie Policy supplements the Terms of Service of Zeta Signals and the Privacy Policy of Zeta Signals.
-4. The Service is based on Next.js technology and uses technical solutions provided by third parties, in particular Supabase and Lemon Squeezy.
-5. The purpose of this Cookie Policy is to provide the User with clear information on what technologies are used in the Service, for what purposes, by whom, for how long and how the User may manage them.
-6. This Cookie Policy covers both cookies stored in the browser and similar technologies, in particular LocalStorage, SessionStorage, session identifiers, authentication tokens and other mechanisms for storing information in the User's terminal device.
-7. This document shall be interpreted together with the Privacy Policy, because some information stored or accessed through cookies or similar technologies may constitute personal data or be linked to personal data.
+4. The Service is based on Next.js technology and uses technical solutions provided by third parties, in particular Supabase and, depending on the active configuration, Cloudflare infrastructure and security features.
+5. As of the effective date of this Cookie Policy, the Service does not use an active payment operator integration. Technologies related to checkout, payments or access renewals will be implemented only after an appropriate operator has been selected and activated, and this document will then be updated accordingly.
+6. The purpose of this Cookie Policy is to provide the User with clear information on what technologies are used in the Service, for what purposes, by whom, for how long and how the User may manage them.
+7. This Cookie Policy covers both cookies stored in the browser and similar technologies, in particular LocalStorage, SessionStorage, session identifiers, authentication tokens and other mechanisms for storing information in the User's terminal device.
+8. This document shall be interpreted together with the Privacy Policy, because some information stored or accessed through cookies or similar technologies may constitute personal data or be linked to personal data.
 
 ## § 2. What cookies, LocalStorage and similar technologies are
 
 1. **Cookies** are small text files stored on the User's terminal device, such as a computer, phone, tablet or another device enabling Internet access.
-2. Cookies may contain technical information enabling browser recognition, session maintenance, remembering User preferences, ensuring security, login support, payment processing or proper operation of selected Service functions.
+2. Cookies may contain technical information enabling browser recognition, session maintenance, remembering User preferences, ensuring security, login support or proper operation of selected Service functions. After sales are launched, they may also be used to support paid access, checkout or payments where necessary.
 3. **LocalStorage** is a browser storage mechanism that allows data to be stored locally on the User's device. Data stored in LocalStorage may remain stored after the browser is closed until it is deleted by the User, the Service or the browser mechanism.
 4. **SessionStorage** is a browser storage mechanism similar to LocalStorage, but the data stored in SessionStorage is generally maintained only for the duration of a given browser session.
 5. **Similar technologies** mean other technical solutions enabling information to be stored in the User's terminal device or access to information already stored in that device, regardless of the name or technical implementation.
@@ -33,12 +34,12 @@
    b) the User has given consent, where consent is required,
    c) storage or access is necessary to provide a service requested by the User,
    d) storage or access is necessary to transmit a communication over a telecommunications network.
-3. Cookies and technologies necessary for the operation of the Service may be used without separate User consent if they are necessary to provide a service explicitly requested by the User, ensure communication transmission, login, session maintenance, payment processing, security or remembering the User's privacy choices.
+3. Cookies and technologies necessary for the operation of the Service may be used without separate User consent if they are necessary to provide a service explicitly requested by the User, ensure communication transmission, login, session maintenance, security, remember the User's privacy choices or - after sales are launched - correctly process an order and payment.
 4. Optional cookies and technologies, in particular analytical, advertising, marketing, remarketing, personalization or profiling technologies, may be used only after obtaining the User's appropriate consent, where such consent is required by law.
 5. Optional cookies are not activated before the User gives consent where consent is required by law. Lack of consent to optional cookies does not block access to the basic functions of the Service if the technology is not necessary to provide the service requested by the User.
 6. Where personal data is processed through cookies or similar technologies, the legal basis for processing may include in particular:
    a) Article 6(1)(b) GDPR - performance of a contract or taking steps prior to entering into a contract,
-   b) Article 6(1)(f) GDPR - the Administrator's legitimate interest in ensuring security, stability, protection against abuse, payment support and defense against claims,
+   b) Article 6(1)(f) GDPR - the Administrator's legitimate interest in ensuring security, stability, protection against abuse and defense against claims and, after sales are launched, also in correctly supporting payments,
    c) Article 6(1)(a) GDPR - the User's consent, where a given category of cookies or similar technologies requires consent.
 7. The Administrator's legitimate interest does not replace the requirement to obtain consent to cookies or similar technologies where such consent is required under the rules concerning storing information or accessing information in the User's terminal device.
 
@@ -48,21 +49,22 @@
 
 ### 1) Necessary cookies and technologies
 
-1. These are cookies, LocalStorage, SessionStorage or other technologies necessary for the proper operation of the Service, login, session maintenance, security, Account support, Subscription support, correct checkout operation or remembering the User's cookie decisions.
-2. Without these technologies, the Service may not function properly and use of the Account, user panel, paid functions or payments may be impossible.
+1. These are cookies, LocalStorage, SessionStorage or other technologies necessary for the proper operation of the Service, login, session maintenance, security, Account support or remembering the User's cookie decisions. After sales are launched, they may also include technologies necessary for the correct operation of paid access, checkout or payments.
+2. Without these technologies, the Service may not function properly and use of the Account, user panel or - after sales are launched - paid functions and payments may be impossible.
 3. These technologies do not require separate User consent if they are genuinely necessary to provide the service requested by the User.
 
 ### 2) Security cookies and technologies
 
-1. These technologies are used to protect the Service against abuse, attacks, unauthorized access, attempts to bypass security, payment fraud, CSRF attacks and other technical threats.
+1. These technologies are used to protect the Service against abuse, attacks, unauthorized access, attempts to bypass security, CSRF attacks and other technical threats. After sales are launched, they may also be used to prevent payment fraud.
 2. They may include session identifiers, security tokens, timestamps, login attempt information, technical error data or elements allowing suspicious activity to be detected.
-3. The purpose of these technologies is to protect the User, the Administrator, payments, the Account and the integrity of the Service.
+3. The purpose of these technologies is to protect the User, the Administrator, the Account and the integrity of the Service and, after sales are launched, also payment security.
 
 ### 3) Payment cookies and technologies
 
-1. These technologies are used to process payments, Subscriptions, cart, checkout, link transactions with the User Account and prevent financial fraud.
-2. These technologies may be used by Lemon Squeezy as an external payment operator and Merchant of Record.
-3. Lemon Squeezy cookies and technologies may be used in particular when the User proceeds to checkout, opens the payment form, initiates a purchase, manages a Subscription or handles a chargeback.
+1. After sales are launched, technologies may be used to process orders, paid access, one-time plans, subscriptions, carts, checkout, link transactions with the User Account and prevent financial fraud.
+2. These technologies may be used by the selected external payment operator, checkout provider or Merchant of Record, depending on the final payment model.
+3. As of the effective date of this Cookie Policy, the Service does not use an active payment operator, and the technologies described in this category are therefore not active in the production payment process.
+4. Before a payment integration is launched, the Administrator will supplement this Cookie Policy with information on the selected provider, the technologies used, their purposes and retention periods.
 
 ### 4) Preference cookies
 
@@ -76,13 +78,13 @@
 
 ## § 5. Detailed list of cookies and similar technologies
 
-1. The following list describes the main categories of cookies and similar technologies used or potentially used in the Service. Specific technical names may vary depending on the configuration of the Service, Supabase, Lemon Squeezy, browser and software version.
+1. The following list describes the main categories of cookies and similar technologies used or potentially used in the Service. Specific technical names may vary depending on the configuration of the Service, Supabase, Cloudflare, browser and software version.
 2. The Administrator periodically verifies, where reasonably possible, the actual cookies, LocalStorage keys and third-party technologies used in the Service and updates the list where necessary due to a change in configuration, provider or processing purpose.
 
 ### 1) Supabase Auth - session and login
 
 - **Provider:** Zeta Signals / Supabase.
-- **Example technology:** LocalStorage, session token, access_token, refresh_token, Supabase Auth keys, e.g. `sb-[project-ref]-auth-token`.
+- **Example technology:** LocalStorage, session token, `access_token`, `refresh_token`, Supabase Auth keys, e.g. `sb-[project-ref]-auth-token`.
 - **Purpose:** maintaining the User session, enabling login, preserving access after page refresh, supporting the Account and user panel.
 - **Retention period:** for the duration of the session, until logout, token expiry, deletion by the User or according to Supabase configuration.
 - **Category:** necessary.
@@ -92,7 +94,7 @@
 
 - **Provider:** Supabase / Zeta Signals.
 - **Example technology:** Supabase Auth session data, access token, refresh token, session identifier.
-- **Purpose:** User authentication, securing access to the paid panel, verifying login status.
+- **Purpose:** User authentication, securing access to the panel, verifying login status and - after sales are launched - controlling access to paid functions.
 - **Retention period:** according to Supabase session configuration.
 - **Category:** necessary.
 - **Consent:** no, if necessary to use the Account.
@@ -124,16 +126,25 @@
 - **Category:** preferences / necessary to provide the service according to the User's choice.
 - **Consent:** usually no, if used to implement the User's choice.
 
-### 6) Lemon Squeezy - checkout, payments and Subscription
+### 6) Cloudflare - security technologies, if active
 
-- **Provider:** Lemon Squeezy.
-- **Example technology:** Lemon Squeezy checkout cookies and identifiers, transaction identifiers, anti-fraud mechanisms.
-- **Purpose:** checkout, cart, payments, Subscription support, linking transactions with the Account, preventing fraud, chargebacks and payment abuse.
-- **Retention period:** according to Lemon Squeezy policies, payment service configuration and payment security requirements.
-- **Category:** payment / security / necessary for payment processing.
-- **Consent:** generally no, if the technology is necessary for payment processing, transaction security or fraud prevention; otherwise according to Lemon Squeezy policies and applicable law.
+- **Provider:** Cloudflare.
+- **Example technology:** cookies or browser identifiers required by active traffic protection, browser verification, bot prevention or infrastructure security features.
+- **Purpose:** protecting the Service against abuse, automated attacks, unauthorized traffic and other technical threats.
+- **Retention period:** according to the active Cloudflare security configuration and for the period necessary to achieve the relevant purpose.
+- **Category:** security / necessary where the relevant feature is active and required to protect the Service.
+- **Consent:** generally no where the technology is genuinely necessary for security or to provide the service requested by the User; otherwise in accordance with applicable law.
 
-### 7) Analytics and marketing
+### 7) Future payment operator - checkout and paid access
+
+- **Provider:** no active provider as of the effective date of this document.
+- **Example technology:** checkout cookies, order and transaction identifiers, anti-fraud mechanisms or technologies necessary to process payments.
+- **Purpose:** supporting checkout, cart, payments, a one-time plan or subscription, linking the transaction with the Account and preventing fraud, chargebacks and payment abuse.
+- **Retention period:** to be specified after the operator is selected, in accordance with its documents and implementation configuration.
+- **Category:** payment / security / necessary for payment processing if sales are launched.
+- **Consent:** depending on the actual function of the technology and applicable law; technologies necessary for payment may be used without separate consent, while optional technologies require consent where required by law.
+
+### 8) Analytics and marketing
 
 - **Provider:** no active provider as of the effective date of this document, unless the Service implements such tools later.
 - **Example technology:** Google Analytics, Meta Pixel, TikTok Pixel, Hotjar, Microsoft Clarity, affiliate pixels.
@@ -151,28 +162,28 @@
    b) remain logged in after refreshing the page,
    c) use the user panel,
    d) access functions available only to logged-in Users,
-   e) use paid functions after Subscription activation.
+   e) after sales are launched, use paid functions once the relevant access has been activated.
 4. Blocking LocalStorage, cookies or other browser storage mechanisms may prevent login, session maintenance or proper use of the Zeta Signals panel.
 5. Deleting Supabase Auth data stored in the browser may immediately log the User out and require logging in again.
 6. The User may end the session by logging out of the Account. The User may also delete locally stored data through browser settings.
 
-## § 7. Lemon Squeezy and payment-related cookies
+## § 7. Future Payment Operator and payment-related technologies
 
-1. Payments and Subscriptions in the Service are handled by Lemon Squeezy.
-2. When initiating payment, proceeding to checkout, managing a Subscription or processing a transaction, Lemon Squeezy may use its own cookies or similar technologies.
-3. Lemon Squeezy technologies may be used in particular to:
-   a) properly operate checkout,
+1. As of the effective date of this Cookie Policy, payments in the Service are not actively handled by an external payment operator and the production checkout has not been launched.
+2. After a payment operator, checkout provider or Merchant of Record is selected, its own cookies or similar technologies may be used in the purchase process.
+3. Payment-related technologies may be used in particular to:
+   a) correctly operate checkout,
    b) support the cart or payment form,
-   c) identify the transaction,
+   c) identify an order or transaction,
    d) link the payment with the User Account,
-   e) support the Subscription,
+   e) support a one-time plan or an automatically renewing subscription if such a model is launched,
    f) detect and prevent financial fraud,
    g) counteract chargebacks and abuse,
    h) ensure payment security,
-   i) fulfill Lemon Squeezy's legal obligations as payment operator and Merchant of Record.
-4. If the User is redirected to the Lemon Squeezy payment environment or uses embedded checkout, independent Lemon Squeezy cookies and technologies may apply, and their detailed scope, retention period and configuration may result from Lemon Squeezy legal documents.
-5. The Administrator does not have full control over all cookies and technologies used directly by Lemon Squeezy in its own payment environment.
-6. Lemon Squeezy legal documents may also apply to cookies and similar technologies used by Lemon Squeezy, in particular its privacy policy, cookie policy, terms of service and payment documents.
+   i) fulfil the selected provider's legal obligations.
+4. If the User is redirected to an external payment environment or uses embedded checkout, independent cookies and technologies of the selected provider may apply. Their detailed scope, retention period and configuration will result from that provider's legal documents and the integration settings.
+5. The Administrator may not have full control over all cookies and technologies used directly by the operator in its own payment environment.
+6. Before payments are launched, the Administrator will update this Cookie Policy, the Privacy Policy and checkout information so that they identify the provider actually selected and describe the actual operation of the integration.
 
 ## § 8. Cookie banner and consent management in the Service
 
@@ -198,7 +209,7 @@
    b) Firefox: click the shield or lock icon next to the address bar and go to cookie and site data information,
    c) Safari: go to privacy settings and the section for managing website data.
 3. Technical users may also check LocalStorage and SessionStorage using browser developer tools, usually in the **Application**, **Storage** or similar tab.
-4. The actual list of cookies and local data may depend on whether the User is logged in, has initiated payment, uses the user panel and has consented to optional cookies.
+4. The actual list of cookies and local data may depend on whether the User is logged in, has - after sales are launched - initiated payment, uses the user panel and has consented to optional cookies.
 
 ## § 10. How to manage cookies and LocalStorage in the browser
 
@@ -214,8 +225,8 @@
    a) inability to log in to the Account,
    b) the User session not being maintained after refreshing the page,
    c) the Zeta Signals panel not working properly,
-   d) the Subscription not being correctly recognized,
-   e) checkout or payment not being processed correctly,
+   d) after sales are launched, paid access status not being correctly recognized,
+   e) after sales are launched, checkout or payment not being processed correctly,
    f) technical errors being displayed by the Service.
 4. The following are sample paths for managing cookies in popular browsers. Settings names may differ depending on the browser version, operating system or interface language.
 
@@ -261,17 +272,19 @@
 2. **Session cookies** are stored for the duration of the browser session and are usually deleted after the browser is closed, unless the browser or service configuration works differently.
 3. **Persistent cookies** remain stored on the User's device for a specified period or until deleted by the User, browser, Service or provider of a given technology.
 4. LocalStorage may work similarly to persistent cookies because data stored in it may remain in the browser until deleted.
-5. The retention period of individual cookies and local data may depend on the configuration of the Service, Supabase, Lemon Squeezy, the User's browser settings, manual deletion by the User or technical changes in the Service.
+5. The retention period of individual cookies and local data may depend on the configuration of the Service, Supabase, active Cloudflare features, a future payment operator, the User's browser settings, manual deletion by the User or technical changes in the Service.
 
 ## § 12. First-party and third-party cookies
 
 1. **First-party cookies** are set directly by the Service or within its domain.
-2. **Third-party cookies** are set by external service providers whose solutions are used in the Service or in the payment process.
+2. **Third-party cookies** are set by external service providers whose solutions are used in the Service or - after sales are launched - in the payment process.
 3. Cookies or third-party technologies in the Service may come in particular from:
    a) Supabase - for authentication, database and session infrastructure,
-   b) Lemon Squeezy - for payments, checkout, Subscription, settlements and transaction security.
-4. The Administrator does not have full control over the lifecycle of all cookies used by third parties in their own environments, in particular in the external Lemon Squeezy checkout.
-5. When proceeding to an external provider's website, the User is advised to read that provider's legal documents.
+   b) Cloudflare - for infrastructure security where the active protection configuration requires browser technologies,
+   c) a future payment operator - only after checkout or a payment process is implemented.
+4. As of the effective date of this document, the Service does not use a production payment operator integration, and technologies of a specific payment provider are therefore not active.
+5. The Administrator does not have full control over the lifecycle of all cookies used by third parties in their own environments.
+6. When proceeding to an external provider's website, the User is advised to read that provider's legal documents.
 
 ## § 13. Lack of consent to optional cookies
 
@@ -282,7 +295,7 @@
 
 ## § 14. Updating the cookie list
 
-1. Technologies used in the Service may change along with the development of the Service, Next.js updates, Supabase configuration, Lemon Squeezy configuration or implementation of new functions.
+1. Technologies used in the Service may change along with the development of the Service, Next.js updates, Supabase configuration, changes to Cloudflare settings, implementation of a payment operator or introduction of new functions.
 2. The Administrator periodically verifies, where reasonably possible, the actual list of cookies, LocalStorage keys, SessionStorage data and similar technologies used in the Service.
 3. In the event of implementing new categories of cookies, in particular analytical, marketing, advertising or remarketing cookies, the Administrator will:
    a) update this Cookie Policy,
@@ -297,7 +310,7 @@
 2. The Administrator applies appropriate technical and organizational measures to protect data processed through cookies and similar technologies.
 3. The use of cookies and similar technologies does not knowingly lead to the collection of data excessive in relation to the purposes specified in this Cookie Policy.
 4. The User is advised to regularly update the web browser and operating system, as outdated software may increase security risks.
-5. The User is advised to use trusted devices and networks, particularly when logging in to the Account or making payments.
+5. The User is advised to use trusted devices and networks, particularly when logging in to the Account and, after sales are launched, when making payments.
 
 ## § 16. Changes to the Cookie Policy
 
@@ -319,7 +332,7 @@
 
 ## § 18. Final provisions
 
-1. This Cookie Policy applies from **07.06.2026**.
+1. This Cookie Policy applies from **08.07.2026**.
 2. The Cookie Policy is available free of charge in the Service in a manner enabling its acquisition, reproduction and recording.
 3. In matters not regulated by this Cookie Policy, applicable Polish and European Union law shall apply.
 4. This Cookie Policy shall be interpreted together with the Terms of Service and the Privacy Policy of Zeta Signals.

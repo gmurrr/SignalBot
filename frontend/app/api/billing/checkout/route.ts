@@ -45,7 +45,7 @@ export async function POST(request: Request) {
     const auditMetadata = getRequestAuditMetadata(request);
 
     await recordCheckoutConsents({
-      checkoutProvider: provider.name === "mock" ? "mock" : "Lemon Squeezy",
+      checkoutProvider: provider.name === "mock" ? "mock" : "payment_operator",
       checkoutSessionId: result.externalReference,
       checkoutUrl: getAuditableCheckoutUrl(result.checkoutUrl),
       email: account.billing_email ?? account.email,

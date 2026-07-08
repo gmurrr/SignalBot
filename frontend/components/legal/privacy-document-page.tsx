@@ -258,8 +258,12 @@ function shouldSkipLeadLine(text: string) {
   const plainText = stripInlineMarkdown(text);
 
   return (
+    plainText === "POLITYKA PRYWATNOŚCI" ||
     plainText === "POLITYKA PRYWATNOŚCI SERWISU ZETA SIGNALS" ||
+    plainText === "PRIVACY POLICY" ||
     plainText === "PRIVACY POLICY OF THE ZETA SIGNALS SERVICE" ||
+    plainText === "SERWISU ZETA SIGNALS" ||
+    plainText === "ZETA SIGNALS SERVICE" ||
     plainText.startsWith("Data wejścia w życie:") ||
     plainText.startsWith("Wersja dokumentu:") ||
     plainText.startsWith("Adres serwisu:") ||
