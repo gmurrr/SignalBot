@@ -46,6 +46,7 @@ export function BillingShell() {
   const [isMockPending, setIsMockPending] = useState(false);
   const [checkoutConsents, setCheckoutConsents] = useState(initialCheckoutConsents);
   const isPaymentOperatorPending = state.status === "ready" && state.overview.provider === PENDING_PAYMENT_OPERATOR;
+  const shouldShowPaymentOperatorNotice = state.status !== "ready" || isPaymentOperatorPending;
 
   const statusLabel = useMemo(() => {
     if (state.status !== "ready") {
@@ -231,21 +232,25 @@ export function BillingShell() {
               <p className="mt-2 text-lg text-brass">{planCode}</p>
             </div>
           </div>
-          {isPaymentOperatorPending ? (
-            <div className="mt-6 rounded-2xl border border-[rgba(212,175,55,0.2)] bg-[rgba(212,175,55,0.08)] p-5">
+          {shouldShowPaymentOperatorNotice ? (
+            <section className="mt-6 border-l-2 border-brass pl-5">
               <p className="text-xs uppercase tracking-[0.28em] text-brass">{dict.billing.operatorPendingTitle}</p>
               <p className="mt-3 text-sm leading-7 text-muted">{dict.billing.operatorPendingBody}</p>
-            </div>
+            </section>
           ) : null}
           <Separator className="my-8" />
-          <div className="grid gap-4 md:grid-cols-3">
-            {dict.billing.features.map((feature) => (
-              <div key={feature} className="rounded-2xl border border-[rgba(212,175,55,0.1)] bg-[rgba(255,255,255,0.02)] p-4 text-sm leading-7 text-muted">
-                <Zap className="mb-3 h-4 w-4 text-brass" />
-                {feature}
-              </div>
-            ))}
-          </div>
+          <section>
+            <p className="text-xs uppercase tracking-[0.28em] text-brass">{dict.billing.afterPurchaseTitle}</p>
+            <p className="mt-3 max-w-2xl text-sm leading-7 text-muted">{dict.billing.afterPurchaseBody}</p>
+            <div className="mt-5 grid gap-4 md:grid-cols-2">
+              {dict.billing.features.map((feature) => (
+                <div key={feature} className="rounded-2xl border border-[rgba(212,175,55,0.1)] bg-[rgba(255,255,255,0.02)] p-4 text-sm leading-7 text-muted">
+                  <Zap className="mb-3 h-4 w-4 text-brass" />
+                  {feature}
+                </div>
+              ))}
+            </div>
+          </section>
           <div className="mt-8 rounded-2xl border border-[#1A1A1A] bg-[rgba(255,255,255,0.02)] p-5">
             <p className="text-xs uppercase tracking-[0.28em] text-brass">{dict.billing.consentsTitle}</p>
             <p className="mt-3 text-sm leading-7 text-muted">

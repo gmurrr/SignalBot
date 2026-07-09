@@ -266,6 +266,8 @@
     "operatorPendingCta": "Operator w przygotowaniu",
     "operatorPendingMetric": "Oczekujemy na operatora",
     "providerConfigured": "Operator płatności",
+    "afterPurchaseTitle": "Co otrzymasz po zakupie",
+    "afterPurchaseBody": "Po uruchomieniu płatności i opłaceniu subskrypcji konto otrzyma dostęp premium do prywatnego panelu analitycznego Zeta Signals.",
     "consentsTitle": "Wymagane zgody przed płatnością",
     "consentsIntro": "Zaznacz zgody wymagane wyłącznie przed zakupem subskrypcji.",
     "consentsRequired": "Zaznacz wszystkie wymagane zgody zakupowe przed przejściem do płatności.",
@@ -277,9 +279,10 @@
     "renewalNotice": "Subskrypcja odnawia się automatycznie co miesiąc. Możesz ją anulować w dowolnym momencie, zachowując dostęp do końca opłaconego okresu.",
     "mockCta": "Aktywuj testowo",
     "features": [
-      "Prywatny dostęp do dashboardu XAU/USD",
-      "Alerty Analityczne realtime zabezpieczone przez RLS",
-      "Gotowy kontrakt pod webhooki płatności"
+      "Realtime Cockpit z bieżącą ceną XAU/USD, statusem rynku i uporządkowaną historią Alertów Analitycznych",
+      "Dostęp do aktywnych Alertów Analitycznych XAU/USD w czasie rzeczywistym",
+      "Widok konta premium z informacją o statusie planu i okresie dostępu",
+      "Dostęp utrzymany do końca opłaconego okresu po ewentualnym anulowaniu odnowienia"
     ],
     "status": {
       "inactive": "Nieaktywna",
