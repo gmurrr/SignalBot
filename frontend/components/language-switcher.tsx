@@ -56,6 +56,7 @@ function getLocalizedLegalPath(pathname: string, locale: "pl" | "en") {
     "/pl/polityka-cookies": "/en/cookie-policy",
     "/pl/ostrzezenie-o-ryzyku": "/en/risk-warning",
     "/pl/polityka-prywatnosci": "/en/privacy-policy",
+    "/pl/polityka-zwrotow": "/en/refund-policy",
     "/pl/regulamin": "/en/terms"
   };
   const enToPl = Object.fromEntries(Object.entries(plToEn).map(([plPath, enPath]) => [enPath, plPath]));

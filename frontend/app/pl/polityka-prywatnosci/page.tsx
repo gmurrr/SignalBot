@@ -30,12 +30,14 @@ export default function PolishPrivacyPolicyPage() {
         contact: LEGAL_LINKS.contact,
         cookie: LEGAL_LINKS.plCookie,
         privacyPdf: LEGAL_LINKS.privacyPdf,
+        refund: LEGAL_LINKS.plRefund,
         riskWarning: LEGAL_LINKS.plRiskWarning,
         terms: LEGAL_LINKS.plTerms
       }}
       navigationLabels={{
         contact: "Kontakt",
         cookie: "Polityka cookies",
+        refund: "Polityka zwrotów",
         riskWarning: "Ostrzeżenie o ryzyku",
         terms: "Regulamin"
       }}

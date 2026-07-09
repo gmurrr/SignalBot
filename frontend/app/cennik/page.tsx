@@ -59,6 +59,9 @@ export default function PricingPage() {
             <Link href={LEGAL_LINKS.cookie} className="text-brass transition-colors hover:text-[#e6c55a]">
               Polityka cookies
             </Link>
+            <Link href={LEGAL_LINKS.refund} className="text-brass transition-colors hover:text-[#e6c55a]">
+              Polityka zwrotów
+            </Link>
           </div>
         </Card>
       </main>

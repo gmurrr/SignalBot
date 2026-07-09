@@ -17,12 +17,14 @@ type PrivacyDocumentPageProps = {
     contact: string;
     cookie: string;
     privacyPdf: string;
+    refund: string;
     riskWarning: string;
     terms: string;
   };
   navigationLabels: {
     contact: string;
     cookie: string;
+    refund: string;
     riskWarning: string;
     terms: string;
   };
@@ -95,6 +97,7 @@ export function PrivacyDocumentPage({
             links={[
               { href: links.terms, label: navigationLabels.terms },
               { href: links.cookie, label: navigationLabels.cookie },
+              { href: links.refund, label: navigationLabels.refund },
               { href: links.riskWarning, label: navigationLabels.riskWarning },
               { href: links.contact, label: navigationLabels.contact }
             ]}

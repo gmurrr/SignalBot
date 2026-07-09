@@ -17,12 +17,14 @@ type CookieDocumentPageProps = {
     contact: string;
     cookiePdf: string;
     privacy: string;
+    refund: string;
     riskWarning: string;
     terms: string;
   };
   navigationLabels: {
     contact: string;
     privacy: string;
+    refund: string;
     riskWarning: string;
     terms: string;
   };
@@ -100,6 +102,7 @@ export function CookieDocumentPage({
             links={[
               { href: links.privacy, label: navigationLabels.privacy },
               { href: links.terms, label: navigationLabels.terms },
+              { href: links.refund, label: navigationLabels.refund },
               { href: links.riskWarning, label: navigationLabels.riskWarning },
               { href: links.contact, label: navigationLabels.contact }
             ]}

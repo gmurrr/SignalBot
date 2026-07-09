@@ -8,6 +8,7 @@
     "terms": "Regulamin",
     "privacy": "Polityka prywatności",
     "cookiePolicy": "Polityka cookies",
+    "refundPolicy": "Polityka zwrotów",
     "riskWarning": "Ostrzeżenie o ryzyku",
     "manageSubscription": "Zarządzaj subskrypcją",
     "contact": "Kontakt",
@@ -318,7 +319,7 @@
   },
   "terms": {
     "eyebrow": "Dokumenty prawne",
-    "title": "Regulamin, prywatność i cookies",
+    "title": "Regulamin, prywatność, zwroty i cookies",
     "intro": "Aktualne dokumenty prawne Zeta Signals są dostępne jako osobne podstrony i pliki PDF w wersjach obowiązujących od 08.07.2026.",
     "toc": "Spis treści",
     "sections": [
@@ -334,6 +335,13 @@
         "title": "Polityka Prywatności",
         "body": [
           "Aktualna Polityka Prywatności w wersji 1.3 jest dostępna pod trasą /pl/polityka-prywatnosci oraz jako plik PDF do pobrania z tej podstrony."
+        ]
+      },
+      {
+        "id": "refund-policy",
+        "title": "Polityka Zwrotów",
+        "body": [
+          "Aktualna Polityka Zwrotów w wersji 1.0 jest dostępna pod trasą /pl/polityka-zwrotow oraz jako plik PDF do pobrania z tej podstrony."
         ]
       },
       {

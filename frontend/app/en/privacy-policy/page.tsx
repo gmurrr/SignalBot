@@ -30,12 +30,14 @@ export default function EnglishPrivacyPolicyPage() {
         contact: LEGAL_LINKS.contact,
         cookie: LEGAL_LINKS.enCookie,
         privacyPdf: LEGAL_LINKS.privacyPdfEn,
+        refund: LEGAL_LINKS.enRefund,
         riskWarning: LEGAL_LINKS.enRiskWarning,
         terms: LEGAL_LINKS.enTerms
       }}
       navigationLabels={{
         contact: "Contact",
         cookie: "Cookie Policy",
+        refund: "Refund Policy",
         riskWarning: "Risk Warning",
         terms: "Terms of Service"
       }}

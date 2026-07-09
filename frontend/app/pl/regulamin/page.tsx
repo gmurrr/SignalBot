@@ -31,6 +31,7 @@ export default function PolishTermsPage() {
       relatedLinks={[
         { href: LEGAL_LINKS.plPrivacy, label: "Polityka prywatności" },
         { href: LEGAL_LINKS.plCookie, label: "Polityka cookies" },
+        { href: LEGAL_LINKS.plRefund, label: "Polityka zwrotów" },
         { href: LEGAL_LINKS.plRiskWarning, label: "Ostrzeżenie o ryzyku" },
         { href: LEGAL_LINKS.contact, label: "Kontakt" }
       ]}

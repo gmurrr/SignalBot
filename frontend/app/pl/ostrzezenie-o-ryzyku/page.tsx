@@ -36,6 +36,7 @@ export default function PolishRiskWarningPage() {
               { href: LEGAL_LINKS.plTerms, label: "Regulamin" },
               { href: LEGAL_LINKS.plPrivacy, label: "Polityka prywatności" },
               { href: LEGAL_LINKS.plCookie, label: "Polityka cookies" },
+              { href: LEGAL_LINKS.plRefund, label: "Polityka zwrotów" },
               { href: LEGAL_LINKS.contact, label: "Kontakt" }
             ]}
           />

@@ -31,6 +31,9 @@ export function Footer() {
             <Link href={legalLinks.cookie} className="transition-colors hover:text-brass">
               {dict.common.cookiePolicy}
             </Link>
+            <Link href={legalLinks.refund} className="transition-colors hover:text-brass">
+              {dict.common.refundPolicy}
+            </Link>
             <Link href={legalLinks.riskWarning} className="transition-colors hover:text-brass">
               {dict.common.riskWarning}
             </Link>

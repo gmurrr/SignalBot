@@ -35,6 +35,7 @@ export default function EnglishTermsPage() {
       relatedLinks={[
         { href: LEGAL_LINKS.enPrivacy, label: "Privacy Policy" },
         { href: LEGAL_LINKS.enCookie, label: "Cookie Policy" },
+        { href: LEGAL_LINKS.enRefund, label: "Refund Policy" },
         { href: LEGAL_LINKS.enRiskWarning, label: "Risk Warning" },
         { href: LEGAL_LINKS.contact, label: "Contact" }
       ]}

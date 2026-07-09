@@ -270,6 +270,10 @@ export function BillingShell() {
               <Link href={legalLinks.cookie} target="_blank" rel="noreferrer" className="text-brass transition-colors hover:text-[#e6c55a]">
                 {dict.common.cookiePolicy}
               </Link>
+              {" / "}
+              <Link href={legalLinks.refund} target="_blank" rel="noreferrer" className="text-brass transition-colors hover:text-[#e6c55a]">
+                {dict.common.refundPolicy}
+              </Link>
             </p>
             <p className="mt-3 text-xs leading-6 text-zinc-500">{dict.billing.paymentCookiesNotice}</p>
             <div className="mt-5 space-y-3">

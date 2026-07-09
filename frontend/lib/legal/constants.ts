@@ -7,6 +7,9 @@ export const PRIVACY_EFFECTIVE_DATE_EN = "08.07.2026";
 export const COOKIE_POLICY_VERSION = "1.2";
 export const COOKIE_POLICY_EFFECTIVE_DATE = "08.07.2026";
 export const COOKIE_POLICY_EFFECTIVE_DATE_EN = "08.07.2026";
+export const REFUND_POLICY_VERSION = "1.0";
+export const REFUND_POLICY_EFFECTIVE_DATE = "09.07.2026";
+export const REFUND_POLICY_EFFECTIVE_DATE_EN = "09.07.2026";
 export const RISK_WARNING_VERSION = "1.0";
 export const WITHDRAWAL_CONSENT_VERSION = "1.0";
 export const SUBSCRIPTION_RENEWAL_CONSENT_VERSION = "1.0";
@@ -18,6 +21,8 @@ export const LEGAL_DOCUMENTS = {
   cookiePolicyVersion: COOKIE_POLICY_VERSION,
   privacyPolicyEffectiveDate: PRIVACY_EFFECTIVE_DATE,
   privacyPolicyVersion: PRIVACY_VERSION,
+  refundPolicyEffectiveDate: REFUND_POLICY_EFFECTIVE_DATE,
+  refundPolicyVersion: REFUND_POLICY_VERSION,
   riskWarningVersion: RISK_WARNING_VERSION,
   subscriptionRenewalConsentVersion: SUBSCRIPTION_RENEWAL_CONSENT_VERSION,
   termsVersion: TERMS_VERSION,
@@ -31,18 +36,23 @@ export const LEGAL_LINKS = {
   enCookie: "/en/cookie-policy",
   contact: "mailto:kontakt@zetasignals.pl",
   enPrivacy: "/en/privacy-policy",
+  enRefund: "/en/refund-policy",
   enRiskWarning: "/en/risk-warning",
   enTerms: "/en/terms",
   plPrivacy: "/pl/polityka-prywatnosci",
+  plRefund: "/pl/polityka-zwrotow",
   plRiskWarning: "/pl/ostrzezenie-o-ryzyku",
   plTerms: "/pl/regulamin",
   plCookie: "/pl/polityka-cookies",
   privacy: "/pl/polityka-prywatnosci",
+  refund: "/pl/polityka-zwrotow",
   riskWarning: "/pl/ostrzezenie-o-ryzyku",
   subscriptionManagement: "/billing",
   terms: "/pl/regulamin",
   privacyPdf: "/files/polityka-prywatnosci-zeta-signals-pl-v1-3-final.pdf",
   privacyPdfEn: "/files/privacy-policy-zeta-signals-en-v1-3-final.pdf",
+  refundPdf: "/files/polityka-zwrotow-zeta-signals-pl-v1-0-final.pdf",
+  refundPdfEn: "/files/refund-policy-zeta-signals-en-v1-0-final.pdf",
   termsPdf: "/files/regulamin-zeta-signals-pl-v1-2-final.pdf",
   termsPdfEn: "/files/terms-zeta-signals-en-v1-2-final.pdf"
 } as const;
@@ -95,6 +105,8 @@ export function getLocalizedLegalLinks(language: "PL" | "EN") {
         cookie: LEGAL_LINKS.enCookie,
         cookiePdf: LEGAL_LINKS.cookiePdfEn,
         privacyPdf: LEGAL_LINKS.privacyPdfEn,
+        refund: LEGAL_LINKS.enRefund,
+        refundPdf: LEGAL_LINKS.refundPdfEn,
         riskWarning: LEGAL_LINKS.enRiskWarning,
         terms: LEGAL_LINKS.enTerms,
         termsPdf: LEGAL_LINKS.termsPdfEn
@@ -104,6 +116,8 @@ export function getLocalizedLegalLinks(language: "PL" | "EN") {
         cookie: LEGAL_LINKS.plCookie,
         cookiePdf: LEGAL_LINKS.cookiePdf,
         privacyPdf: LEGAL_LINKS.privacyPdf,
+        refund: LEGAL_LINKS.plRefund,
+        refundPdf: LEGAL_LINKS.refundPdf,
         riskWarning: LEGAL_LINKS.plRiskWarning,
         terms: LEGAL_LINKS.plTerms,
         termsPdf: LEGAL_LINKS.termsPdf
