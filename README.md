@@ -1,6 +1,6 @@
-# SignalBot Monorepo
+# SignalBot 
 
-Profesjonalna platforma sygnałowa XAU/USD zbudowana jako monorepo:
+Platforma sygnałowa XAU/USD zbudowana jako monorepo:
 
 - `backend/` - Python + MetaTrader5 + `supabase-py`
 - `frontend/` - Next.js App Router + Tailwind CSS + Framer Motion + Shadcn/ui
@@ -601,30 +601,3 @@ Dla DXY:
 - jeśli broker używa innych nazw symboli, trzeba je wpisać w `backend/.env`
 - widget TradingView działa po stronie klienta i ładuje zewnętrzny skrypt
 
-## Windows VPS Ready
-
-Repo jest już przygotowane pod późniejsze postawienie na Windows VPS:
-
-- przykładowe env:
-  - [backend/.env.example](/C:/Users/gmdam/Documents/GitHub/SignalBot/backend/.env.example)
-  - [frontend/.env.local.example](/C:/Users/gmdam/Documents/GitHub/SignalBot/frontend/.env.local.example)
-- skrypty deploymentowe:
-  - [deploy/windows-vps/bootstrap-vps.ps1](/C:/Users/gmdam/Documents/GitHub/SignalBot/deploy/windows-vps/bootstrap-vps.ps1)
-  - [deploy/windows-vps/start-backend.ps1](/C:/Users/gmdam/Documents/GitHub/SignalBot/deploy/windows-vps/start-backend.ps1)
-  - [deploy/windows-vps/start-frontend.ps1](/C:/Users/gmdam/Documents/GitHub/SignalBot/deploy/windows-vps/start-frontend.ps1)
-  - [deploy/windows-vps/register-startup-tasks.ps1](/C:/Users/gmdam/Documents/GitHub/SignalBot/deploy/windows-vps/register-startup-tasks.ps1)
-  - [deploy/windows-vps/check-runtime.ps1](/C:/Users/gmdam/Documents/GitHub/SignalBot/deploy/windows-vps/check-runtime.ps1)
-- osobna instrukcja:
-  - [deploy/windows-vps/README.md](/C:/Users/gmdam/Documents/GitHub/SignalBot/deploy/windows-vps/README.md)
-
-Nowy tryb `APP_MODE=SHADOW` pozwala odpalić realny monitoring MT5 bez publikowania sygnałów do głównej tabeli `signals`. `SHADOW` i `BACKTEST` korzystają już z tej samej warstwy filtrów, więc porównanie wyników będzie znacznie uczciwsze.
-
-## Następne Etapy
-
-Najbardziej sensowna kolejność prac od tego miejsca:
-
-1. Dokończyć system logowania użytkowników.
-2. Doszlifować frontend i flow produktu.
-3. Postawić Windows VPS i uruchomić `SHADOW`.
-4. Po potwierdzeniu `SHADOW` przełączyć strategię na `PROD`.
-5. Dopiąć płatności, domenę i finalny deployment strony.
